@@ -5,12 +5,16 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.validation.AccountValidation;
 import com.simpledpgfapi.user.repository.UserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class EmailService {
 
@@ -20,16 +24,24 @@ public class EmailService {
     private UserRepository userRepository;
 
     public void sendActivationCodeEmail(AccountValidation accountValidation) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        // de qui vient le mail
-        simpleMailMessage.setFrom("no-reply@example.com");
-        // à qui il est envoyé
-        User user = userRepository.findById(accountValidation.getUserId()).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
-        simpleMailMessage.setTo(user.getEmail());
-        // le sujet
-        simpleMailMessage.setSubject("Votre code d'activation");
-        simpleMailMessage.setText(String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.", user.getFirstName(), user.getLastName(),accountValidation.getActivationCode()));
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            // de qui vient le mail
+            mimeMessageHelper.setFrom("no-reply@example.com");
+            // à qui il est envoyé
+            User user = userRepository.findById(accountValidation.getUserId()).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
+            mimeMessageHelper.setTo(user.getEmail());
+            // le sujet
+            mimeMessageHelper.setSubject("Votre code d'activation");
 
-        javaMailSender.send(simpleMailMessage);
+            String htmlContent = String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.", user.getFirstName(), user.getLastName(),accountValidation.getActivationCode());
+
+            mimeMessageHelper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            log.error("Un problème est survenu : {}", e.getMessage());
+        }
     }
 }
