@@ -34,5 +34,5 @@ build/
 
 ### application-local.yml ###
 application.properties
-application-local.properties
+application-prod.properties
 .env
