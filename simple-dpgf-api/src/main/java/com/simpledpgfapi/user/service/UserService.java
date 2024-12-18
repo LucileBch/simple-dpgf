@@ -7,7 +7,6 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
-import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.UserAuthenticationDto;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
@@ -54,14 +53,15 @@ public class UserService {
     private AccountValidationRepository accountValidationRepository;
 
     @Transactional
-    public UserDto createUser(UserCreationDto userCreationDto, OrganizationTypeEnum organizationTypeEnum) {
+    public UserDto createUser(UserCreationDto userCreationDto) {
         Optional<User> existingUser = userRepository.findByEmail(userCreationDto.getEmail());
         if (existingUser.isPresent()) {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ALREADY_EXISTS);
         }
 
         Organization organization = organizationMapper.creationDtoToModel(userCreationDto.getOrganization());
-        organization.setOrganizationType(organizationTypeEnum);
+        organization.setOrganizationType(userCreationDto.getOrganization().getOrganizationType());
+        organization.setName(userCreationDto.getOrganization().getName());
         organizationRepository.save(organization);
 
         // TODO: method UTILS for crypte ?

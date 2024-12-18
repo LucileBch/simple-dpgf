@@ -1,15 +1,18 @@
 package com.simpledpgfapi.global.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler({EntityNotFoundException.class})
-//    public @ResponseBody ErrorEntity handleException(EntityNotFoundException exception) {
-//        return new ErrorEntity(null, exception.getMessage());
-//    }
-
-
+    @ExceptionHandler(HttpException.class)
+    public ResponseEntity<String> handleHttpException(HttpException ex) {
+        // Retourne l'exception avec le code d'état et le message
+        String errorMessage = ex.getReason();
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+        return new ResponseEntity<>(errorMessage, status);
+    }
 }

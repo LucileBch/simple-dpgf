@@ -1,6 +1,5 @@
 package com.simpledpgfapi.user.controller;
 
-import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
 import com.simpledpgfapi.user.model.user.dto.UserAuthenticationDto;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
@@ -26,8 +25,8 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User created"), @ApiResponse(responseCode = "400", description = "[USER_ALREADY_EXISTS]")})
     public UserDto createUserMoa(@RequestBody UserCreationDto userCreationDto) {
-        log.info("userCreationDto MOA created");
-        return userService.createUser(userCreationDto, OrganizationTypeEnum.MOA_MOE);
+        log.info("userCreationDto created");
+        return userService.createUser(userCreationDto);
     }
 
     // ACTIVATE ACCOUNT
