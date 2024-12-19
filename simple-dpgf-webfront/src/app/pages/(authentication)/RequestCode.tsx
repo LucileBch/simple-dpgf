@@ -1,20 +1,18 @@
-import { Box, Container, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { TextInput } from "../../components/inputs/TextInput";
-import { useState } from "react";
-import { UserAuthenticationDto } from "../../core/dtos/user/UserAuthenticationDto";
-import { Link, useNavigate } from "react-router-dom";
-import { apiEndpoints, pagesUrl } from "../../core/appConstants";
-import axios from "axios";
-import SubmitButton from "../../components/buttons/SubmitButton";
+import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
 import { getErrorMessage } from "../../core/utils/error-handler";
+import axios from "axios";
+import { apiEndpoints, pagesUrl } from "../../core/appConstants";
+import { Box, Container, Typography } from "@mui/material";
 import AlertSnack from "../../components/alert/AlertSnack";
+import { useState } from "react";
+import SubmitButton from "../../components/buttons/SubmitButton";
 
-export default function SignIn() {
-  const [formData, setFormData] = useState<UserAuthenticationDto>({
+export default function RequestCode(): JSX.Element {
+  const [email, setEmail] = useState<UserCodeRequestDto>({
     email: "",
-    password: "",
   });
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -22,8 +20,8 @@ export default function SignIn() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setEmail({
+      ...email,
       [name]: value,
     });
   };
@@ -31,8 +29,8 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(apiEndpoints.SIGN_IN, formData);
-      navigate(pagesUrl.MOA_DASHBOARD_PAGE);
+      await axios.post(apiEndpoints.USER_REQUEST_NEW_CODE, email);
+      navigate(pagesUrl.ACCOUNT_VALIDATION_PAGE);
     } catch (error) {
       console.log(error);
 
@@ -50,9 +48,10 @@ export default function SignIn() {
   return (
     <Container maxWidth="lg" sx={{ mb: 4 }}>
       <Box sx={{ textAlign: "center", p: 4 }}>
-        <Typography variant="h1">Se connecter</Typography>
+        <Typography variant="h1">
+          Entrez votre email pour recevoir un nouveau code.
+        </Typography>
       </Box>
-
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -70,27 +69,9 @@ export default function SignIn() {
             required
             onChange={handleChange}
           />
-          <TextInput
-            id="password"
-            name="password"
-            type="password"
-            label="Mot de passe"
-            required
-            onChange={handleChange}
-          />
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "end",
-            justifyContent: "end",
-            gap: 2,
-          }}
-        >
-          <Link to={pagesUrl.FORGOT_PASSWORD}>Mot de passe oublié</Link>
-          <SubmitButton label="Se connecter" />
-        </Box>
+        <SubmitButton label="Valider" />
       </form>
 
       <AlertSnack

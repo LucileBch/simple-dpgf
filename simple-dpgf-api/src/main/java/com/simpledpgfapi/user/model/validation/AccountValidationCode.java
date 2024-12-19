@@ -12,7 +12,7 @@ import java.time.Instant;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class AccountValidation extends BaseEntity {
+public class AccountValidationCode extends BaseEntity {
     @Id
     private ObjectId id;
 

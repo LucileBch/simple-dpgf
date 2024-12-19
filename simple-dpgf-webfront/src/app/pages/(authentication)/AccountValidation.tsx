@@ -1,20 +1,19 @@
-import { Box, Container, Typography } from "@mui/material";
-import { TextInput } from "../../components/inputs/TextInput";
 import { useState } from "react";
-import { UserAuthenticationDto } from "../../core/dtos/user/UserAuthenticationDto";
-import { Link, useNavigate } from "react-router-dom";
+import { AccountValidationDto } from "../../core/dtos/user/AccountValidationDto";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { TextInput } from "../../components/inputs/TextInput";
 import SubmitButton from "../../components/buttons/SubmitButton";
+import { Box, Container, Typography } from "@mui/material";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import AlertSnack from "../../components/alert/AlertSnack";
+import NavigationButton from "../../components/buttons/NavigationButton";
 
-export default function SignIn() {
-  const [formData, setFormData] = useState<UserAuthenticationDto>({
-    email: "",
-    password: "",
+export default function AccountValidation(): JSX.Element {
+  const [activationCode, setActivationCode] = useState<AccountValidationDto>({
+    activationCode: "",
   });
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -22,8 +21,8 @@ export default function SignIn() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setActivationCode({
+      ...activationCode,
       [name]: value,
     });
   };
@@ -31,8 +30,8 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(apiEndpoints.SIGN_IN, formData);
-      navigate(pagesUrl.MOA_DASHBOARD_PAGE);
+      await axios.post(apiEndpoints.USER_ACCOUNT_VALIDATION, activationCode);
+      navigate(pagesUrl.SIGN_IN_PAGE);
     } catch (error) {
       console.log(error);
 
@@ -50,7 +49,7 @@ export default function SignIn() {
   return (
     <Container maxWidth="lg" sx={{ mb: 4 }}>
       <Box sx={{ textAlign: "center", p: 4 }}>
-        <Typography variant="h1">Se connecter</Typography>
+        <Typography variant="h1">Entrez votre code d'activation.</Typography>
       </Box>
 
       <form onSubmit={handleSubmit}>
@@ -63,33 +62,23 @@ export default function SignIn() {
           }}
         >
           <TextInput
-            id="email"
-            name="email"
-            type="email"
-            label="Email"
-            required
-            onChange={handleChange}
-          />
-          <TextInput
-            id="password"
-            name="password"
-            type="password"
-            label="Mot de passe"
+            id="activationCode"
+            name="activationCode"
+            type="text"
+            label="Code d'activation"
             required
             onChange={handleChange}
           />
         </Box>
+        <Box sx={{ display: "flex", justifyContent: "end", gap: 2 }}>
+          <SubmitButton label="Valider" />
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "end",
-            justifyContent: "end",
-            gap: 2,
-          }}
-        >
-          <Link to={pagesUrl.FORGOT_PASSWORD}>Mot de passe oublié</Link>
-          <SubmitButton label="Se connecter" />
+          {errorMessage && (
+            <NavigationButton
+              path={pagesUrl.NEW_CODE_REQUEST}
+              label="Recevoir un code"
+            />
+          )}
         </Box>
       </form>
 

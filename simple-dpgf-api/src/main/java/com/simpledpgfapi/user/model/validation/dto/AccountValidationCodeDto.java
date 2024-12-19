@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class AccountValidationDto {
+public class AccountValidationCodeDto {
     @NotEmpty(message = "Activation code is required")
     private String activationCode;
 }

@@ -1,6 +1,6 @@
 import { Box, Container, Grid2, Typography } from "@mui/material";
-import { pagesUrl } from "../utils/appConstants";
-import ContainedButton from "./buttons/ContainedButton";
+import { pagesUrl } from "../core/appConstants";
+import ContainedButton from "./buttons/NavigationButton";
 
 export default function Header() {
   return (

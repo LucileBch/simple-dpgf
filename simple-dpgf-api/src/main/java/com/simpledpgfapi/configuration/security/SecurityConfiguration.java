@@ -1,5 +1,6 @@
 package com.simpledpgfapi.configuration.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,10 @@ public class SecurityConfiguration {
             //"/actuator/health", ???
             "/user/signup",
             "/user/activate-account",
-            "/user/signin"
+            "user/code-request",
+            "/user/signin",
+            "/user/update-password-request",
+            "/user/generate-new-password"
     };
 
 
@@ -63,6 +67,19 @@ public class SecurityConfiguration {
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 );
+
+        httpSecurity.exceptionHandling(exceptionHandling ->
+                exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+                            response.getWriter().write("Unauthorized: " + authException.getMessage());
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
+                            response.getWriter().write("Access Denied: " + accessDeniedException.getMessage());
+                        })
+        );
+
          // application du filtre jwt filter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -75,7 +92,7 @@ public class SecurityConfiguration {
         // headers
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         // origins (qui à le droit d'appeller quels host
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080"));
         // methodes authoriées
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         // si app securisée avec authorisation header

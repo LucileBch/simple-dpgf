@@ -1,31 +1,37 @@
 import { TextField } from "@mui/material";
 
 interface ITextInputProps {
-  fieldName: string;
+  id: string;
+  name: string;
+  type?: string;
   label: string;
   required?: boolean;
   disabled?: boolean;
-  defaultValue?: string;
-  type?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  autoComplete?: string;
 }
 
 export function TextInput({
-  fieldName,
-  label,
-  required = true,
-  disabled = false,
-  defaultValue,
+  id,
+  name,
   type,
+  label,
+  required,
+  disabled = false,
+  onChange,
+  autoComplete = "off",
 }: ITextInputProps): JSX.Element {
   return (
     <TextField
-      id={fieldName}
-      variant="outlined"
+      id={id}
+      name={name}
+      type={type}
       label={label}
       required={required}
       disabled={disabled}
-      defaultValue={defaultValue}
-      type={type}
+      onChange={onChange}
+      autoComplete={autoComplete}
+      variant="outlined"
       sx={{ width: "500px" }}
     />
   );
