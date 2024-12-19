@@ -37,7 +37,10 @@ public class SecurityConfiguration {
             //"/actuator/health", ???
             "/user/signup",
             "/user/activate-account",
-            "/user/signin"
+            "user/code-request",
+            "/user/signin",
+            "/user/update-password-request",
+            "/user/generate-new-password"
     };
 
 

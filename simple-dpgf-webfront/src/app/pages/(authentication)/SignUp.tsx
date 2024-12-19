@@ -5,6 +5,10 @@ import axios from "axios";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { OrganizationTypeEnum } from "../../core/enums/OrganizationTypeEnum";
 import { useNavigate } from "react-router-dom";
+import { TextInput } from "../../components/inputs/TextInput";
+import SubmitButton from "../../components/buttons/SubmitButton";
+import AlertSnack from "../../components/alert/AlertSnack";
+import { getErrorMessage } from "../../core/utils/error-handler";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<UserCreationDto>({
@@ -15,7 +19,8 @@ export default function SignIn() {
     organization: { organizationType: OrganizationTypeEnum.MOA, name: "" },
   });
 
-  //const [errorMessage, setErrorMessage] = useState({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const navigate = useNavigate();
 
@@ -26,13 +31,13 @@ export default function SignIn() {
         ...formData,
         organization: {
           ...formData.organization,
-          [name]: value, // Mise à jour de l'objet `organizationCreationDto`
+          [name]: value,
         },
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value, // Mise à jour des autres champs
+        [name]: value,
       });
     }
   };
@@ -44,7 +49,16 @@ export default function SignIn() {
       navigate(pagesUrl.ACCOUNT_VALIDATION_PAGE);
     } catch (error) {
       console.log(error);
+
+      if (axios.isAxiosError(error) && error.response) {
+        setErrorMessage(getErrorMessage(error.response.data));
+        setOpenAlert(true);
+      }
     }
+  };
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
   };
 
   return (
@@ -54,34 +68,7 @@ export default function SignIn() {
       </Box>
 
       <form onSubmit={handleSubmit}>
-        <input
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleChange}
-        />
-        <input
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleChange}
-        />
-        <input
-          name="organizationType"
-          value={formData.organization.organizationType}
-          onChange={handleChange}
-        />
-        <input
-          name="name"
-          value={formData.organization.name}
-          onChange={handleChange}
-        />
-        <input name="email" value={formData.email} onChange={handleChange} />
-        <input
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        <button type="submit">Valider</button>
-        {/* <Box
+        <Box
           sx={{
             display: "flex",
             justifyContent: "space-around",
@@ -89,8 +76,22 @@ export default function SignIn() {
             p: 1,
           }}
         >
-          <TextInput fieldName="Prénom" label="Prénom" required />
-          <TextInput fieldName="Nom" label="Nom" required />
+          <TextInput
+            id="firstName"
+            name="firstName"
+            type="text"
+            label="Prénom"
+            required
+            onChange={handleChange}
+          />
+          <TextInput
+            id="lastName"
+            name="lastName"
+            type="text"
+            label="Nom"
+            required
+            onChange={handleChange}
+          />
         </Box>
 
         <Box
@@ -102,16 +103,20 @@ export default function SignIn() {
           }}
         >
           <TextInput
-            fieldName="Organisation"
-            label="Organisation"
+            id="organizationType"
+            name="organizationType"
+            type="text"
+            label="Type d'organisation"
             required
-            disabled={false}
+            onChange={handleChange}
           />
           <TextInput
-            fieldName="Type d'Organisation"
-            label="Type d'Organisation"
-            defaultValue="Maîtrise d'Ouvrage"
-            disabled
+            id="name"
+            name="name"
+            type="text"
+            label="Nom de l'organisation"
+            required
+            onChange={handleChange}
           />
         </Box>
 
@@ -120,25 +125,35 @@ export default function SignIn() {
             display: "flex",
             justifyContent: "space-around",
             gap: 2,
-            pt: 1,
-            pb: 4,
+            p: 1,
           }}
         >
-          <TextInput fieldName="Email" label="Email" required />
           <TextInput
+            id="email"
+            name="email"
+            type="email"
+            label="Email"
             required
-            fieldName="Mot de Passe"
-            label="Mot de passe"
+            onChange={handleChange}
+          />
+          <TextInput
+            id="password"
+            name="password"
             type="password"
+            label="Mot de passe"
+            required
+            onChange={handleChange}
           />
-        </Box> */}
-
-        {/* <ValidationButton
-          label={isSubmitting ? "Envoi..." : "Valider"}
-          disabled={isSubmitting}
-          onClick={handleSubmit}
-        ></ValidationButton> */}
+        </Box>
+        <SubmitButton label="S'inscrire" />
       </form>
+
+      <AlertSnack
+        open={openAlert}
+        onClose={handleCloseAlert}
+        severity="error"
+        errorMessage={errorMessage}
+      />
     </Container>
   );
 }

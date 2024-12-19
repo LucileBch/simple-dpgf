@@ -8,12 +8,10 @@ import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.user.User;
-import com.simpledpgfapi.user.model.user.dto.UserAuthenticationDto;
-import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
-import com.simpledpgfapi.user.model.user.dto.UserDto;
-import com.simpledpgfapi.user.model.validation.AccountValidation;
-import com.simpledpgfapi.user.model.validation.dto.AccountValidationDto;
-import com.simpledpgfapi.user.repository.AccountValidationRepository;
+import com.simpledpgfapi.user.model.user.dto.*;
+import com.simpledpgfapi.user.model.validation.AccountValidationCode;
+import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
+import com.simpledpgfapi.user.repository.AccountValidationCodeRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +36,7 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private AccountValidationService accountValidationService;
+    private AccountValidationCodeService accountValidationCodeService;
     @Autowired
     private JwtAuthenticationService jwtAuthenticationService;
     @Autowired
@@ -50,7 +48,7 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
     @Autowired
-    private AccountValidationRepository accountValidationRepository;
+    private AccountValidationCodeRepository accountValidationCodeRepository;
 
     @Transactional
     public UserDto createUser(UserCreationDto userCreationDto) {
@@ -71,33 +69,43 @@ public class UserService {
         user.setOrganizationId(organization.getId());
 
         userRepository.insert(user);
-        accountValidationService.confirmUserAccount(user);
+        accountValidationCodeService.generateAccountValidationCode(user);
 
         return userMapper.modelToDto(user, organization);
     }
 
-    public void activateUserAccount(AccountValidationDto accountValidationDto) {
-        AccountValidation accountValidation = accountValidationRepository.findByActivationCode(accountValidationDto.getActivationCode())
+    public void activateUserAccount(AccountValidationCodeDto accountValidationCodeDto) {
+        AccountValidationCode accountValidationCode = accountValidationCodeRepository.findByActivationCode(accountValidationCodeDto.getActivationCode())
                 .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, AccountValidationErrorCodes.INVALID_CODE));
 
-        if(Instant.now().isAfter(accountValidation.getExpiration())) {
-            accountValidationRepository.delete(accountValidation);
+        if(Instant.now().isAfter(accountValidationCode.getExpiration())) {
+            accountValidationCodeRepository.delete(accountValidationCode);
             throw new HttpException(HttpStatus.BAD_REQUEST, AccountValidationErrorCodes.CODE_EXPIRED);
         }
 
-        User userAccountToActivate = userRepository.findById(accountValidation.getUserId())
+        User userAccountToActivate = userRepository.findById(accountValidationCode.getUserId())
                 .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
         userAccountToActivate.setAccountActivated(true);
         userRepository.save(userAccountToActivate);
 
-        accountValidationRepository.delete(accountValidation);
+        accountValidationCodeRepository.delete(accountValidationCode);
+    }
+
+    public void generateNewAccountValidationCode(UserCodeRequestDto userCodeRequestDto) {
+        User currentUser = userRepository.findByEmail(userCodeRequestDto.getEmail())
+                .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+
+        if(currentUser.isAccountActivated()) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ACCOUNT_ALREADY_ACTIVATED);
+        }
+
+        accountValidationCodeService.generateAccountValidationCode(currentUser);
     }
 
     public String authenticateUser(UserAuthenticationDto userAuthenticationDto) {
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
-        // vérifier que le compte est activé
         if(!currentUser.isAccountActivated()) {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ACCOUNT_NOT_ACTIVATED);
         }
@@ -111,6 +119,33 @@ public class UserService {
             return jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
+        }
+    }
+
+    public void sendCodeForPasswordUpdate(UserCodeRequestDto userCodeRequestDto){
+        User currentUser = userRepository.findByEmail(userCodeRequestDto.getEmail())
+                .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+
+        accountValidationCodeService.generateAccountValidationCode(currentUser);
+    }
+
+    @Transactional
+    public void updateUserPassword(UserUpdatePasswordDto userUpdatePasswordDto) {
+        User currentUser = userRepository.findByEmail(userUpdatePasswordDto.getEmail())
+                .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+
+        AccountValidationCode accountValidationCode = accountValidationCodeRepository.findByActivationCode(userUpdatePasswordDto.getActivationCode())
+                .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, AccountValidationErrorCodes.INVALID_CODE));
+
+        if(Instant.now().isAfter(accountValidationCode.getExpiration())) {
+            accountValidationCodeRepository.delete(accountValidationCode);
+            throw new HttpException(HttpStatus.BAD_REQUEST, AccountValidationErrorCodes.CODE_EXPIRED);
+        }
+
+        if(accountValidationCode.getUserId().equals(currentUser.getId())) {
+            String cryptedPassword = bCryptPasswordEncoder.encode(userUpdatePasswordDto.getPassword());
+            currentUser.setPassword(cryptedPassword);
+            userRepository.save(currentUser);
         }
     }
 }

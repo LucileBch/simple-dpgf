@@ -3,7 +3,7 @@ package com.simpledpgfapi.user.service;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.model.user.User;
-import com.simpledpgfapi.user.model.validation.AccountValidation;
+import com.simpledpgfapi.user.model.validation.AccountValidationCode;
 import com.simpledpgfapi.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -23,19 +23,20 @@ public class EmailService {
     @Autowired
     private UserRepository userRepository;
 
-    public void sendActivationCodeEmail(AccountValidation accountValidation) {
+    public void sendActivationCodeEmail(AccountValidationCode accountValidationCode) {
         try{
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             // de qui vient le mail
             mimeMessageHelper.setFrom("no-reply@example.com");
             // à qui il est envoyé
-            User user = userRepository.findById(accountValidation.getUserId()).orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
+            User user = userRepository.findById(accountValidationCode.getUserId())
+                    .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
             mimeMessageHelper.setTo(user.getEmail());
             // le sujet
             mimeMessageHelper.setSubject("Votre code d'activation");
 
-            String htmlContent = String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.", user.getFirstName(), user.getLastName(),accountValidation.getActivationCode());
+            String htmlContent = String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.", user.getFirstName(), user.getLastName(),accountValidationCode.getActivationCode());
 
             mimeMessageHelper.setText(htmlContent, true);
 

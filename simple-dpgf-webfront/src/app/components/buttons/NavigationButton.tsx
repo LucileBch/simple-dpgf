@@ -1,4 +1,6 @@
+import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 interface IProps {
   label: string;
@@ -12,8 +14,20 @@ export default function NavigationButton({
   disabled = false,
 }: IProps): JSX.Element {
   return (
-    <Button variant="contained" href={path} disabled={disabled}>
-      {label}
-    </Button>
+    // entourer d'un Link !!
+
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "end",
+        pt: 1,
+      }}
+    >
+      <Link to={path}>
+        <Button variant="contained" disabled={disabled}>
+          {label}
+        </Button>
+      </Link>
+    </Box>
   );
 }

@@ -1,9 +1,7 @@
 package com.simpledpgfapi.user.controller;
 
-import com.simpledpgfapi.user.model.user.dto.UserAuthenticationDto;
-import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
-import com.simpledpgfapi.user.model.user.dto.UserDto;
-import com.simpledpgfapi.user.model.validation.dto.AccountValidationDto;
+import com.simpledpgfapi.user.model.user.dto.*;
+import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.service.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,9 +33,17 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "Activation code accepted"),
             @ApiResponse(responseCode = "400", description = "[INVALID_CODE], [CODE_EXPIRED]"),
             @ApiResponse(responseCode = "404", description = "[USER_NOT_FOUND]")})
-    public void activateAccount(@RequestBody AccountValidationDto accountValidationDto) {
-        userService.activateUserAccount(accountValidationDto);
+    public void activateAccount(@RequestBody AccountValidationCodeDto accountValidationCodeDto) {
+        userService.activateUserAccount(accountValidationCodeDto);
         log.info("User account activated");
+    }
+
+    // REQUEST NEW VALIDATION CODE
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @PostMapping(path= "/code-request")
+
+    public void getNewAccountValidation(@RequestBody UserCodeRequestDto userCodeRequestDto) {
+        userService.generateNewAccountValidationCode(userCodeRequestDto);
     }
 
     // SIGNIN
@@ -50,5 +56,24 @@ public class UserController {
     }
 
     // SIGNOUT
+
+
+    // UPDATE PASSWORD
+    @ResponseStatus(value = HttpStatus.OK)
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Code sent"),
+            @ApiResponse(responseCode = "400", description = "[USER_NOT_FOUND]")})
+    @PostMapping(path = "/update-password-request")
+    public void updatePasswordRequest(@RequestBody UserCodeRequestDto userCodeRequestDto) {
+        userService.sendCodeForPasswordUpdate(userCodeRequestDto);
+    }
+
+    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "New password registered"),
+            @ApiResponse(responseCode = "400", description = "[USER_NOT_FOUND], [INVALID_CODE], [CODE_EXPIRED]")})
+    @PostMapping(path = "/generate-new-password")
+    public void updateUserPassword(@RequestBody UserUpdatePasswordDto userUpdatePasswordDto) {
+        userService.updateUserPassword(userUpdatePasswordDto);
+    }
+
 
 }

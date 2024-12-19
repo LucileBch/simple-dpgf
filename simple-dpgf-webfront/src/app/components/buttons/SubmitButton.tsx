@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import Button, { ButtonProps } from "@mui/material/Button";
 
 interface ISubmitButtonProps extends ButtonProps {
@@ -12,8 +13,16 @@ export default function SubmitButton({
   ...rest
 }: ISubmitButtonProps): JSX.Element {
   return (
-    <Button variant="contained" type={type} disabled={disabled} {...rest}>
-      {label}
-    </Button>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "end",
+        pt: 1,
+      }}
+    >
+      <Button variant="contained" type={type} disabled={disabled} {...rest}>
+        {label}
+      </Button>
+    </Box>
   );
 }

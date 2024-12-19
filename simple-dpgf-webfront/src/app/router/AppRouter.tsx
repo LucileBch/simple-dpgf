@@ -13,6 +13,9 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AccountValidation from "../pages/(authentication)/AccountValidation";
 import MoaDashboard from "../pages/(authenticated)/MoaDashboard";
+import RequestCode from "../pages/(authentication)/RequestCode";
+import Error from "../pages/Error";
+import ForgotPassord from "../pages/(authentication)/ForgotPassword";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -26,10 +29,14 @@ export default function AppRouter(): JSX.Element {
           path={pagesUrl.ACCOUNT_VALIDATION_PAGE}
           element={<AccountValidation />}
         />
+        <Route path={pagesUrl.NEW_CODE_REQUEST} element={<RequestCode />} />
         <Route path={pagesUrl.SIGN_IN_PAGE} element={<SignIn />} />
+        <Route path={pagesUrl.FORGOT_PASSWORD} element={<ForgotPassord />} />
 
         {/* Authenticated */}
         <Route path={pagesUrl.MOA_DASHBOARD_PAGE} element={<MoaDashboard />} />
+
+        <Route path={pagesUrl.ERROR_404} element={<Error />} />
       </Routes>
       <Footer />
     </Router>
