@@ -1,7 +1,12 @@
 import { Box, Container, Grid2, Typography } from "@mui/material";
 import { pagesUrl } from "../core/appConstants";
 import ContainedButton from "./buttons/NavigationButton";
+import { Link } from "react-router-dom";
+import Logo from "../../assets/images/logo.webp";
 
+{
+  /* TODO: temporary header */
+}
 export default function Header() {
   return (
     <Container
@@ -14,7 +19,17 @@ export default function Header() {
         backgroundColor: "lightgray",
       }}
     >
-      <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
+        <Link to="/">
+          {/* TODO: resize image */}
+          <img style={{ width: 60 }} src={Logo} alt="Logo de Vinted" />
+        </Link>
         <Typography variant="h1">Simple DPGF</Typography>
       </Box>
       <Grid2 container spacing={2}>
