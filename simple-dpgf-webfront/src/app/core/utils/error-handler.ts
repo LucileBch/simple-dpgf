@@ -22,7 +22,9 @@ export function getErrorMessage(errorMessage: string): string {
     case "REFRESH_TOKEN_EXPIRED":
       return "Votre session a expiré. Veuillez vous reconnecter.";
     case "REFRESH_TOKEN_NOT_FOUND":
-      return "Votre session a expiré. Veuillez vous reconnecter.";
+      return "Authentification échouée. Veuillez vous reconnecter.";
+    case "REFRESH_TOKEN_REVOKED":
+      return "Authentification révoquée. Veuillez vous reconnecter.";
 
     default:
       return "Une erreur est survenue";

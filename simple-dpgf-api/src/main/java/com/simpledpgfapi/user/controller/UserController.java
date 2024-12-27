@@ -1,13 +1,13 @@
 package com.simpledpgfapi.user.controller;
 
-import com.simpledpgfapi.user.model.refreshtoken.dto.RefreshTokenDto;
-import com.simpledpgfapi.user.model.refreshtoken.dto.RefreshTokenResponseDto;
 import com.simpledpgfapi.user.model.user.dto.*;
 import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.service.RefreshTokenService;
 import com.simpledpgfapi.user.service.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +56,8 @@ public class UserController {
     @PostMapping(path= "/signin")
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "User authenticated"),
         @ApiResponse(responseCode = "400", description = "[USER_ACCOUNT_NOT_ACTIVATED], [USER_NOT_AUTHENTICATED]")})
-    public RefreshTokenResponseDto authenticateUser(@Valid @RequestBody UserAuthenticationDto userAuthenticationDto) {
-        return userService.authenticateUser(userAuthenticationDto);
+    public String authenticateUser(@Valid @RequestBody UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
+        return userService.authenticateUser(userAuthenticationDto, httpServletResponse);
     }
 
     // REFRESH TOKEN
@@ -66,8 +66,8 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "New access token generated"),
             @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [USER_NOT_FOUND]"),
             @ApiResponse(responseCode = "401", description = "REFRESH_TOKEN_EXPIRED")})
-    public RefreshTokenResponseDto refreshToken(@RequestBody  RefreshTokenDto refreshTokenDto){
-        return refreshTokenService.generateNewAccessToken(refreshTokenDto);
+    public String refreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        return refreshTokenService.generateNewAccessToken(httpServletRequest, httpServletResponse);
     }
 
     // SIGNOUT

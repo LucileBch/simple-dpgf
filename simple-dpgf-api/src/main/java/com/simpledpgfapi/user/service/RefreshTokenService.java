@@ -2,14 +2,15 @@ package com.simpledpgfapi.user.service;
 
 import com.simpledpgfapi.configuration.security.JwtAuthenticationService;
 import com.simpledpgfapi.global.exceptions.HttpException;
-import com.simpledpgfapi.user.exceptions.TokenErrorCodes;
+import com.simpledpgfapi.user.exceptions.RefreshTokenErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.model.refreshtoken.RefreshToken;
-import com.simpledpgfapi.user.model.refreshtoken.dto.RefreshTokenDto;
-import com.simpledpgfapi.user.model.refreshtoken.dto.RefreshTokenResponseDto;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.repository.RefreshTokenRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,13 +35,22 @@ public class RefreshTokenService {
 
     @Value("${jwt.refresh-token-expiration-time}")
     private long refreshTokenDurationTime;
-
-    private final String COOKIE_NAME="token";
+    private static final String COOKIE_NAME="token";
     @Value("${cookie.expiration-time}")
     private int cookieDurationTime;
 
-    //TODO : voir ce que l'on passe ici si comme en dessous on passe le mail -> userrepostiroy.findByEmail
-    public RefreshToken createRefreshToken(ObjectId userId){
+    public void createRefreshToken(ObjectId userId, HttpServletResponse response){
+        List<RefreshToken> existingRefreshTokensByUserId = refreshTokenRepository.findByUserId(userId);
+
+        if(!existingRefreshTokensByUserId.isEmpty()) {
+            for(RefreshToken existingRefreshToken : existingRefreshTokensByUserId) {
+                if(!existingRefreshToken.isRevoked()){
+                    existingRefreshToken.setRevoked(true);
+                    refreshTokenRepository.save(existingRefreshToken);
+                }
+            }
+        }
+
         RefreshToken refreshToken = new RefreshToken();
         String grossRefreshToken = UUID.randomUUID().toString();
         refreshToken.setUserId(userId);
@@ -49,37 +60,66 @@ public class RefreshTokenService {
 
         refreshTokenRepository.save(refreshToken);
 
-        refreshToken.setToken(grossRefreshToken);
-        return refreshToken;
+        Cookie refreshTokenCookie = new Cookie(COOKIE_NAME, grossRefreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(cookieDurationTime);
+        response.addCookie(refreshTokenCookie);
     }
 
-    //TODO: refaire avec DTO ?
-    public RefreshToken verifyExpiration(RefreshToken refreshToken){
+    public void verifyExpiration(RefreshToken refreshToken){
         if(refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(refreshToken);
-            throw new HttpException(HttpStatus.UNAUTHORIZED, TokenErrorCodes.REFRESH_TOKEN_EXPIRED);
+            throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_EXPIRED);
         }
-        return refreshToken;
     }
 
-    public RefreshTokenResponseDto generateNewAccessToken(RefreshTokenDto refreshTokenDto) {
-       RefreshToken storedRefreshToken = refreshTokenRepository.findAll()
+    public String generateNewAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        String refreshTokenFromCookie = null;
+
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if(cookies != null) {
+            for(Cookie cookie: cookies) {
+                if(COOKIE_NAME.equals(cookie.getName())) {
+                    refreshTokenFromCookie = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if(refreshTokenFromCookie== null) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_IN_COOKIE);
+        }
+
+        String finalRefreshTokenFromCookie = refreshTokenFromCookie;
+        RefreshToken storedRefreshToken = refreshTokenRepository.findAll()
                .stream()
-               .filter(token -> bCryptPasswordEncoder.matches(refreshTokenDto.getRefreshToken(), token.getToken()))
+               .filter(token -> bCryptPasswordEncoder.matches(finalRefreshTokenFromCookie, token.getToken()))
                .findFirst()
-               .map(this::verifyExpiration)
-               .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, TokenErrorCodes.REFRESH_TOKEN_NOT_FOUND));
+               .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_FOUND));
+
+        if (storedRefreshToken.isRevoked()) {
+            throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_REVOKED);
+        }
+
+        verifyExpiration(storedRefreshToken);
 
         User currentUser = userRepository.findById(storedRefreshToken.getUserId())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
         String newAccessToken = jwtAuthenticationService.generateJwtToken(currentUser.getEmail());
 
-        RefreshTokenResponseDto refreshTokenResponseDto = new RefreshTokenResponseDto();
-        refreshTokenResponseDto.setAccessToken(newAccessToken);
-        refreshTokenResponseDto.setRefreshToken(refreshTokenDto.getRefreshToken());
+        String newRefreshToken = UUID.randomUUID().toString();
+        storedRefreshToken.setToken(bCryptPasswordEncoder.encode(newRefreshToken));
+        storedRefreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationTime));
+        refreshTokenRepository.save(storedRefreshToken);
 
-        return refreshTokenResponseDto;
+        Cookie newRefreshTokenCookie = new Cookie(COOKIE_NAME, newRefreshToken);
+        newRefreshTokenCookie.setHttpOnly(true);
+        newRefreshTokenCookie.setPath("/");
+        newRefreshTokenCookie.setMaxAge(cookieDurationTime);
+        httpServletResponse.addCookie(newRefreshTokenCookie);
+
+        return newAccessToken;
     }
-    // TODO end refresh token here
 }

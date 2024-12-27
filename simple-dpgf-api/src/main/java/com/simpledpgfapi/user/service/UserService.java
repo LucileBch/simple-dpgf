@@ -7,8 +7,6 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
-import com.simpledpgfapi.user.model.refreshtoken.RefreshToken;
-import com.simpledpgfapi.user.model.refreshtoken.dto.RefreshTokenResponseDto;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.*;
 import com.simpledpgfapi.user.model.validation.AccountValidationCode;
@@ -16,6 +14,7 @@ import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.repository.AccountValidationCodeRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -106,7 +105,7 @@ public class UserService {
         accountValidationCodeService.generateAccountValidationCode(currentUser);
     }
 
-    public RefreshTokenResponseDto authenticateUser(UserAuthenticationDto userAuthenticationDto) {
+    public String authenticateUser(UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
@@ -120,12 +119,9 @@ public class UserService {
 
         // si il est authentifié, je génère en JWT + un refresh token
         if(authenticate.isAuthenticated()) {
-            RefreshTokenResponseDto refreshTokenResponseDto = new RefreshTokenResponseDto();
             String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(currentUser.getId());
-            refreshTokenResponseDto.setAccessToken(accessToken);
-            refreshTokenResponseDto.setRefreshToken(refreshToken.getToken());
-            return refreshTokenResponseDto;
+            refreshTokenService.createRefreshToken(currentUser.getId(), httpServletResponse);
+            return accessToken;
 
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
