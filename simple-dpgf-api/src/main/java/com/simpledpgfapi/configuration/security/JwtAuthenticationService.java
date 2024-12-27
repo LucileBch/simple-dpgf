@@ -17,9 +17,20 @@ public class JwtAuthenticationService {
 
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.expiration-time}")
     private long durationTime;
+
+
+//    public Cookie generateCookie(String email) {
+//        Cookie jwtCookie = new jakarta.servlet.http.Cookie(COOKIE_NAME, createJwtToken(email));
+//        jwtCookie.setHttpOnly(true); // empêche l'accès via JS
+//        jwtCookie.setMaxAge(cookieDurationTime);
+//        return jwtCookie;
+//    }
+
+
+
+
 
     public String generateJwtToken(String email) {
         return createJwtToken(email);

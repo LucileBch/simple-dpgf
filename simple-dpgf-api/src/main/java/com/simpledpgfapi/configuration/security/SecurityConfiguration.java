@@ -39,6 +39,8 @@ public class SecurityConfiguration {
             "/user/activate-account",
             "user/code-request",
             "/user/signin",
+            // TODO : ajouter request refresh token
+            "user/refresh-token",
             "/user/update-password-request",
             "/user/generate-new-password"
     };

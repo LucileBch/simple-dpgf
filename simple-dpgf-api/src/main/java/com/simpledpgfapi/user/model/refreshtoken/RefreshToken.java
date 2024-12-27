@@ -1,0 +1,24 @@
+package com.simpledpgfapi.user.model.refreshtoken;
+
+import com.simpledpgfapi.global.model.BaseEntity;
+import lombok.Data;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+
+import java.time.Instant;
+
+@Data
+//@Builder
+//@NoArgsConstructor
+//@AllArgsConstructor
+public class RefreshToken extends BaseEntity {
+
+    @Id
+    private ObjectId id;
+    private String token;
+    private Instant expiryDate;
+    private ObjectId userId;
+    // ?
+    private boolean revoked;
+
+}

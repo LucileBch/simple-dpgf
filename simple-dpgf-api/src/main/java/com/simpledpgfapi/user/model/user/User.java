@@ -28,4 +28,5 @@ public class User extends BaseEntity {
     private ObjectId organizationId;
     private Set<Role> roles;
 
+    //private ObjectId refreshTokenId;
 }

@@ -7,6 +7,8 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.refreshtoken.RefreshToken;
+import com.simpledpgfapi.user.model.refreshtoken.dto.RefreshTokenResponseDto;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.*;
 import com.simpledpgfapi.user.model.validation.AccountValidationCode;
@@ -49,6 +51,8 @@ public class UserService {
     private UserMapper userMapper;
     @Autowired
     private AccountValidationCodeRepository accountValidationCodeRepository;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     @Transactional
     public UserDto createUser(UserCreationDto userCreationDto) {
@@ -102,7 +106,7 @@ public class UserService {
         accountValidationCodeService.generateAccountValidationCode(currentUser);
     }
 
-    public String authenticateUser(UserAuthenticationDto userAuthenticationDto) {
+    public RefreshTokenResponseDto authenticateUser(UserAuthenticationDto userAuthenticationDto) {
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
@@ -114,9 +118,15 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
         );
 
-        // si il est authentifié, je génère en JWT
+        // si il est authentifié, je génère en JWT + un refresh token
         if(authenticate.isAuthenticated()) {
-            return jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
+            RefreshTokenResponseDto refreshTokenResponseDto = new RefreshTokenResponseDto();
+            String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(currentUser.getId());
+            refreshTokenResponseDto.setAccessToken(accessToken);
+            refreshTokenResponseDto.setRefreshToken(refreshToken.getToken());
+            return refreshTokenResponseDto;
+
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
         }
