@@ -13,7 +13,9 @@ import com.simpledpgfapi.user.model.validation.AccountValidationCode;
 import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.repository.AccountValidationCodeRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
+import com.simpledpgfapi.user.repository.RefreshTokenRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +55,8 @@ public class UserService {
     private AccountValidationCodeRepository accountValidationCodeRepository;
     @Autowired
     private RefreshTokenService refreshTokenService;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public UserDto createUser(UserCreationDto userCreationDto) {
@@ -122,10 +127,21 @@ public class UserService {
             String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
             refreshTokenService.createRefreshToken(currentUser.getId(), httpServletResponse);
             return accessToken;
-
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
         }
+    }
+
+    public void signOutUserAndRevokeRefreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null || !authentication.isAuthenticated()) {
+           throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
+        }
+
+        String refreshTokenFromCookie = refreshTokenService.getRefreshTokenFromCookies(httpServletRequest);
+        refreshTokenService.revokeRefreshToken(refreshTokenFromCookie);
+
+        refreshTokenService.removeRefreshTokenFromCookie(httpServletResponse);
     }
 
     public void sendCodeForPasswordUpdate(UserCodeRequestDto userCodeRequestDto){

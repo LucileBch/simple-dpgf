@@ -71,7 +71,14 @@ public class UserController {
     }
 
     // SIGNOUT
-
+    @ResponseStatus(value = HttpStatus.OK)
+    @PostMapping(path = "/signout")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "User successfully signed out"),
+            @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [REFRESH_TOKEN_NOT_IN_COOKIE]"),
+            @ApiResponse(responseCode = "401", description = "[USER_NOT_AUTHENTICATED]")})
+    public void signOut(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+        userService.signOutUserAndRevokeRefreshToken(httpServletRequest, httpServletResponse);
+    }
 
     // UPDATE PASSWORD
     @ResponseStatus(value = HttpStatus.OK)

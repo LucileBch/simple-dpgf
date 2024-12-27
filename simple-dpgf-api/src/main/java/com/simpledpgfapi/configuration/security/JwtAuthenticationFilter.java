@@ -1,5 +1,7 @@
 package com.simpledpgfapi.configuration.security;
 
+import com.simpledpgfapi.global.exceptions.HttpException;
+import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,9 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 request.getServletPath().contains("/user/activate-account") ||
                 request.getServletPath().contains("/user/code-request") ||
                 request.getServletPath().contains("/user/signin") ||
-                // TODO : ajouter request refresh token
                 request.getServletPath().contains("/user/refresh-token") ||
-        request.getServletPath().contains("/user/update-password-request") ||
+                request.getServletPath().contains("/user/update-password-request") ||
                 request.getServletPath().contains("/user/generate-new-password") ) {
             filterChain.doFilter(request, response);
             return;
@@ -41,29 +43,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token;
         String email;
-        Boolean isTokenExpired;
+        boolean isTokenExpired;
 
         try {
 
-        // on récupère le header
-        final String headerAuthorization = request.getHeader("Authorization");
-        // on récupère le token en enlevant la partie "bearer"
-        if(headerAuthorization != null && headerAuthorization.startsWith("Bearer ")) {
-            token = headerAuthorization.substring(7);
-            isTokenExpired = jwtAuthenticationService.isTokenExpired(token);
-            email = jwtAuthenticationService.extractEmail(token);
+            // on récupère le header
+            final String headerAuthorization = request.getHeader("Authorization");
 
-            if(!isTokenExpired && email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            if (headerAuthorization == null || !headerAuthorization.startsWith("Bearer ")) {
+                throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
+            } else {
+                token = headerAuthorization.substring(7);
+                isTokenExpired = jwtAuthenticationService.isTokenExpired(token);
+                email = jwtAuthenticationService.extractEmail(token);
 
-                System.out.println("Authorities: " + userDetails.getAuthorities());
+                if(isTokenExpired) {
+                    throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
+                }
 
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(email);
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                    System.out.println("Authorities: " + userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+                // la chaine des filtres peut continuer à filtrer notre requete
+                filterChain.doFilter(request, response);
             }
-            // la chaine des filtres peut continuer à filtrer notre requete
-            filterChain.doFilter(request, response);
-        }} catch (JwtException e){
+        } catch (JwtException e){
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
         }
-}}
+    }
+}

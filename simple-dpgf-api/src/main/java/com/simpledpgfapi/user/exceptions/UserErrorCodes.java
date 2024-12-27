@@ -7,7 +7,8 @@ public enum UserErrorCodes implements ErrorCodes {
     USER_ALREADY_EXISTS,
     USER_ACCOUNT_ALREADY_ACTIVATED,
     USER_ACCOUNT_NOT_ACTIVATED,
-    USER_NOT_AUTHENTICATED;
+    USER_NOT_AUTHENTICATED,
+    USER_NOT_AUTHORIZED;
 
     @Override
     public String getCode() {

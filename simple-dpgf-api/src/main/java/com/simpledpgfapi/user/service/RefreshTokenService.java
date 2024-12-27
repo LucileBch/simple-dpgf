@@ -35,16 +35,16 @@ public class RefreshTokenService {
 
     @Value("${jwt.refresh-token-expiration-time}")
     private long refreshTokenDurationTime;
-    private static final String COOKIE_NAME="token";
+    private static final String COOKIE_NAME = "token";
     @Value("${cookie.expiration-time}")
     private int cookieDurationTime;
 
-    public void createRefreshToken(ObjectId userId, HttpServletResponse response){
+    public void createRefreshToken(ObjectId userId, HttpServletResponse response) {
         List<RefreshToken> existingRefreshTokensByUserId = refreshTokenRepository.findByUserId(userId);
 
-        if(!existingRefreshTokensByUserId.isEmpty()) {
-            for(RefreshToken existingRefreshToken : existingRefreshTokensByUserId) {
-                if(!existingRefreshToken.isRevoked()){
+        if (!existingRefreshTokensByUserId.isEmpty()) {
+            for (RefreshToken existingRefreshToken : existingRefreshTokensByUserId) {
+                if (!existingRefreshToken.isRevoked()) {
                     existingRefreshToken.setRevoked(true);
                     refreshTokenRepository.save(existingRefreshToken);
                 }
@@ -67,36 +67,15 @@ public class RefreshTokenService {
         response.addCookie(refreshTokenCookie);
     }
 
-    public void verifyExpiration(RefreshToken refreshToken){
-        if(refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.delete(refreshToken);
-            throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_EXPIRED);
-        }
-    }
 
     public String generateNewAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        String refreshTokenFromCookie = null;
+        String refreshTokenFromCookie = getRefreshTokenFromCookies(httpServletRequest);
 
-        Cookie[] cookies = httpServletRequest.getCookies();
-        if(cookies != null) {
-            for(Cookie cookie: cookies) {
-                if(COOKIE_NAME.equals(cookie.getName())) {
-                    refreshTokenFromCookie = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        if(refreshTokenFromCookie== null) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_IN_COOKIE);
-        }
-
-        String finalRefreshTokenFromCookie = refreshTokenFromCookie;
         RefreshToken storedRefreshToken = refreshTokenRepository.findAll()
-               .stream()
-               .filter(token -> bCryptPasswordEncoder.matches(finalRefreshTokenFromCookie, token.getToken()))
-               .findFirst()
-               .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_FOUND));
+                .stream()
+                .filter(token -> bCryptPasswordEncoder.matches(refreshTokenFromCookie, token.getToken()))
+                .findFirst()
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_FOUND));
 
         if (storedRefreshToken.isRevoked()) {
             throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_REVOKED);
@@ -121,5 +100,51 @@ public class RefreshTokenService {
         httpServletResponse.addCookie(newRefreshTokenCookie);
 
         return newAccessToken;
+    }
+
+    public void verifyExpiration(RefreshToken refreshToken) {
+        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
+            refreshTokenRepository.delete(refreshToken);
+            throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_EXPIRED);
+        }
+    }
+
+    public String getRefreshTokenFromCookies(HttpServletRequest httpServletRequest) {
+        String refreshTokenFromCookie = null;
+
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (COOKIE_NAME.equals(cookie.getName())) {
+                    refreshTokenFromCookie = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (refreshTokenFromCookie == null) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_IN_COOKIE);
+        }
+
+        return refreshTokenFromCookie;
+    }
+
+    public void revokeRefreshToken(String refreshToken) {
+        RefreshToken storedRefreshToken = refreshTokenRepository.findAll()
+                .stream()
+                .filter(token -> bCryptPasswordEncoder.matches(refreshToken, token.getToken()))
+                .findFirst()
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, RefreshTokenErrorCodes.REFRESH_TOKEN_NOT_FOUND));
+
+        storedRefreshToken.setRevoked(true);
+        refreshTokenRepository.save(storedRefreshToken);
+    }
+
+    public void removeRefreshTokenFromCookie(HttpServletResponse httpServletResponse){
+        Cookie cookie = new Cookie(COOKIE_NAME, null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        httpServletResponse.addCookie(cookie);
     }
 }
