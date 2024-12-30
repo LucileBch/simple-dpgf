@@ -20,7 +20,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
     @Autowired
@@ -58,8 +58,10 @@ public class SecurityConfiguration {
          httpSecurity.cors(cors -> cors.configurationSource(request-> getCorsConfiguration()));
 
          // config authorisation sur requete http
-         httpSecurity.authorizeHttpRequests(authorize -> authorize
+         httpSecurity.authorizeHttpRequests(
+                 authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
+                        //.requestMatchers("/user").hasAnyAuthority("ROLE_ORGANIZATION_MANAGER", "ROLE_PROJECT_OWNER")
                         .anyRequest().authenticated());
 
          // statelasse session policy

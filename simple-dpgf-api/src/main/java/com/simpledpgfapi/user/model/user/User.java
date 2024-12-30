@@ -1,21 +1,25 @@
 package com.simpledpgfapi.user.model.user;
 
 import com.simpledpgfapi.global.model.BaseEntity;
-import com.simpledpgfapi.user.model.role.Role;
+import com.simpledpgfapi.user.model.role.RoleEnum;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Set;
+import java.util.Collection;
 
 @Data
 // génère les annotations equals and hashcode en faisant appel aux parents aussi
 @EqualsAndHashCode(callSuper = true)
 // génère méthode tostring + appel aux parents
 @ToString(callSuper = true)
-public class User extends BaseEntity {
+@Builder
+public class User extends BaseEntity implements UserDetails {
     public static final String ORGANIZATION_ID="organizationId";
 
     @Id
@@ -26,7 +30,36 @@ public class User extends BaseEntity {
     private String password;
     private boolean isAccountActivated;
     private ObjectId organizationId;
-    private Set<Role> roles;
+    private UserStatusEnum status;
+    private RoleEnum role;
 
-    //private ObjectId refreshTokenId;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

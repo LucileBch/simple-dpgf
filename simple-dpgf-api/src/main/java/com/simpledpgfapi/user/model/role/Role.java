@@ -9,5 +9,5 @@ public class Role {
 
     @Id
     private ObjectId id;
-    private RoleTypeEnum roleName;
+    private RoleEnum roleName;
 }
