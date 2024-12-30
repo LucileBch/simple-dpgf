@@ -1,19 +1,30 @@
 package com.simpledpgfapi.configuration.security;
 
+import com.simpledpgfapi.global.exceptions.HttpException;
+import com.simpledpgfapi.user.exceptions.UserErrorCodes;
+import com.simpledpgfapi.user.model.user.User;
+import com.simpledpgfapi.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JwtAuthenticationService {
+    @Autowired
+    private UserRepository userRepository;
+
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.expiration-time}")
@@ -27,21 +38,19 @@ public class JwtAuthenticationService {
         final long currentTime = System.currentTimeMillis();
         final long expirationTime = currentTime + this.durationTime;
 
+        User currentUser = userRepository.findByEmail(email).orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+
         // set custom claims
+        final Map<String, Object> extraClaims = Map.of(
+                "id", currentUser.getId().toString(),
+                "role", currentUser.getRole()
+        );
 
-//        Map<String, Object> claims = Map.of(
-//                "firstName", user.getFirstName(),
-//                "lastName", user.getLastName(),
-//                Claims.EXPIRATION, new Date(expirationTime),
-//                Claims.SUBJECT, user.getEmail(),
-//                "roles", user.getRoles(),
-//        );
-
-
-        return Jwts.builder().setIssuedAt(new Date(currentTime))
+        return Jwts.builder()
+                .setIssuedAt(new Date(currentTime))
                 .setExpiration(new Date(expirationTime))
                 .setSubject(email)
-                // .setClaims(claims)
+                .addClaims(extraClaims)
                 .signWith(extractKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -52,8 +61,13 @@ public class JwtAuthenticationService {
         return Keys.hmacShaKeyFor(decoder);
     }
 
+    public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
+        final String userEmail = extractEmail(jwtToken);
+        return (userEmail.equals(userDetails.getUsername())) && !isTokenExpired(jwtToken);
+    }
+
     //OK
-    public Boolean isTokenExpired(String jwtToken) {
+    private boolean isTokenExpired(String jwtToken) {
         Date expirationDate = extractExpiration(jwtToken);
         return expirationDate.before(new Date());
     }

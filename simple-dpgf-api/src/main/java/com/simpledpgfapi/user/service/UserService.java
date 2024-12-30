@@ -7,7 +7,9 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.role.RoleEnum;
 import com.simpledpgfapi.user.model.user.User;
+import com.simpledpgfapi.user.model.user.UserStatusEnum;
 import com.simpledpgfapi.user.model.user.dto.*;
 import com.simpledpgfapi.user.model.validation.AccountValidationCode;
 import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
@@ -75,6 +77,8 @@ public class UserService {
         User user = userMapper.creationDtoToModel(userCreationDto);
         user.setPassword(cryptedPassword);
         user.setOrganizationId(organization.getId());
+        user.setRole(RoleEnum.ORGANIZATION_MANAGER);
+        user.setStatus(UserStatusEnum.ACTIVE);
 
         userRepository.insert(user);
         accountValidationCodeService.generateAccountValidationCode(user);

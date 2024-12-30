@@ -41,31 +41,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token;
-        String email;
-        boolean isTokenExpired;
+        String jwtToken = null;
+        String userEmail = null;
+        boolean isTokenValid;
 
         try {
-
-            // on récupère le header
             final String headerAuthorization = request.getHeader("Authorization");
 
             if (headerAuthorization == null || !headerAuthorization.startsWith("Bearer ")) {
                 throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
             } else {
-                token = headerAuthorization.substring(7);
-                isTokenExpired = jwtAuthenticationService.isTokenExpired(token);
-                email = jwtAuthenticationService.extractEmail(token);
+                jwtToken = headerAuthorization.substring(7);
+                userEmail = jwtAuthenticationService.extractEmail(jwtToken);
 
-                if(isTokenExpired) {
-                    throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
-                }
+                if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(userEmail);
+                    isTokenValid = jwtAuthenticationService.isTokenValid(jwtToken, userDetails);
 
-                if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailServiceImpl.loadUserByUsername(email);
+                    if(!isTokenValid) {
+                        throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
+                    }
+
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                    System.out.println("Authorities: " + userDetails.getAuthorities());
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }

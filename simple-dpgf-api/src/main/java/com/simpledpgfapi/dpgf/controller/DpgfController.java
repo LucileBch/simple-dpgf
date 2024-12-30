@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -19,6 +20,7 @@ public class DpgfController {
     @Autowired
     private DpgfService dpgfService;
 
+    @PreAuthorize("hasAnyAuthority('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value= {@ApiResponse(responseCode = "201", description = "Dpgf created")})
