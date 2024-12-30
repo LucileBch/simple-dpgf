@@ -7,7 +7,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ObjectIdMapper {
-
     default String objectIdToString(ObjectId dto) {
         return GlobalUtils.objectIdToString(dto);
     }

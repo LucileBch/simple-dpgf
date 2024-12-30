@@ -15,7 +15,6 @@ import java.time.Instant;
 public class AccountValidationCode extends BaseEntity {
     @Id
     private ObjectId id;
-
     private String activationCode;
     private Instant expiration;
     private ObjectId userId;

@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrganizationService {
-
     @Autowired
     private OrganizationRepository organizationRepository;
-
 
     public Organization findByUserId(User user) {
         return organizationRepository.findById(user.getOrganizationId())

@@ -3,7 +3,7 @@ package com.simpledpgfapi.user.controller;
 import com.simpledpgfapi.user.model.user.dto.*;
 import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.service.RefreshTokenService;
-import com.simpledpgfapi.user.service.UserService;
+import com.simpledpgfapi.user.service.UserAuthenticationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "user")
-public class UserController {
+@RequestMapping(value = "auth")
+public class UserAuthenticationController {
     @Autowired
-    private UserService userService;
+    private UserAuthenticationService userAuthenticationService;
     @Autowired
     private RefreshTokenService refreshTokenService;
 
@@ -29,7 +29,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User created"), @ApiResponse(responseCode = "400", description = "[USER_ALREADY_EXISTS]")})
     public UserDto createUserMoa(@RequestBody UserCreationDto userCreationDto) {
         log.info("userCreationDto created");
-        return userService.createUser(userCreationDto);
+        return userAuthenticationService.createUser(userCreationDto);
     }
 
     // ACTIVATE ACCOUNT
@@ -39,7 +39,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "[INVALID_CODE], [CODE_EXPIRED]"),
             @ApiResponse(responseCode = "404", description = "[USER_NOT_FOUND]")})
     public void activateAccount(@RequestBody AccountValidationCodeDto accountValidationCodeDto) {
-        userService.activateUserAccount(accountValidationCodeDto);
+        userAuthenticationService.activateUserAccount(accountValidationCodeDto);
         log.info("User account activated");
     }
 
@@ -48,7 +48,7 @@ public class UserController {
     @PostMapping(path= "/code-request")
 
     public void getNewAccountValidation(@RequestBody UserCodeRequestDto userCodeRequestDto) {
-        userService.generateNewAccountValidationCode(userCodeRequestDto);
+        userAuthenticationService.generateNewAccountValidationCode(userCodeRequestDto);
     }
 
     // SIGNIN
@@ -57,7 +57,7 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "User authenticated"),
         @ApiResponse(responseCode = "400", description = "[USER_ACCOUNT_NOT_ACTIVATED], [USER_NOT_AUTHENTICATED]")})
     public String authenticateUser(@Valid @RequestBody UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
-        return userService.authenticateUser(userAuthenticationDto, httpServletResponse);
+        return userAuthenticationService.authenticateUser(userAuthenticationDto, httpServletResponse);
     }
 
     // REFRESH TOKEN
@@ -77,7 +77,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [REFRESH_TOKEN_NOT_IN_COOKIE]"),
             @ApiResponse(responseCode = "401", description = "[USER_NOT_AUTHENTICATED]")})
     public void signOut(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-        userService.signOutUserAndRevokeRefreshToken(httpServletRequest, httpServletResponse);
+        userAuthenticationService.signOutUserAndRevokeRefreshToken(httpServletRequest, httpServletResponse);
     }
 
     // UPDATE PASSWORD
@@ -86,7 +86,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "[USER_NOT_FOUND]")})
     @PostMapping(path = "/update-password-request")
     public void updatePasswordRequest(@RequestBody UserCodeRequestDto userCodeRequestDto) {
-        userService.sendCodeForPasswordUpdate(userCodeRequestDto);
+        userAuthenticationService.sendCodeForPasswordUpdate(userCodeRequestDto);
     }
 
     @ResponseStatus(value = HttpStatus.ACCEPTED)
@@ -94,8 +94,6 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "[USER_NOT_FOUND], [INVALID_CODE], [CODE_EXPIRED]")})
     @PostMapping(path = "/generate-new-password")
     public void updateUserPassword(@RequestBody UserUpdatePasswordDto userUpdatePasswordDto) {
-        userService.updateUserPassword(userUpdatePasswordDto);
+        userAuthenticationService.updateUserPassword(userUpdatePasswordDto);
     }
-
-
 }

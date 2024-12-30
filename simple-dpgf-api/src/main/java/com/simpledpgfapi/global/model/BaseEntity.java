@@ -9,7 +9,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.Instant;
 
 @Data
-// meaning abstract --> cannot be instanciated, should be extends by other classes
 public abstract class BaseEntity {
     public static final String CREATED_DATE="createdDate";
     public static final String LAST_MODIFIED_DATE="lastModifiedDate";

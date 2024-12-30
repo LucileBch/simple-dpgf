@@ -11,7 +11,6 @@ import org.mapstruct.Mapper;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         uses = ObjectIdMapper.class)
 public interface OrganizationMapper {
-
     Organization creationDtoToModel(OrganizationCreationDto organizationCreationDto);
 
     OrganizationDto modelToDto(Organization organization);

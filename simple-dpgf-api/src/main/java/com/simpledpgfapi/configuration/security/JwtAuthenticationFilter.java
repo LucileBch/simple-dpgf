@@ -21,7 +21,6 @@ import java.io.IOException;
 @Service
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
     @Autowired
@@ -30,13 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getServletPath().contains("/user/signup") ||
-                request.getServletPath().contains("/user/activate-account") ||
-                request.getServletPath().contains("/user/code-request") ||
-                request.getServletPath().contains("/user/signin") ||
-                request.getServletPath().contains("/user/refresh-token") ||
-                request.getServletPath().contains("/user/update-password-request") ||
-                request.getServletPath().contains("/user/generate-new-password") ) {
+        if (request.getServletPath().contains("/auth/signup") ||
+                request.getServletPath().contains("/auth/activate-account") ||
+                request.getServletPath().contains("/auth/code-request") ||
+                request.getServletPath().contains("/auth/signin") ||
+                request.getServletPath().contains("/auth/refresh-token") ||
+                request.getServletPath().contains("/auth/update-password-request") ||
+                request.getServletPath().contains("/auth/generate-new-password") ) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -62,11 +61,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
                     }
 
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
-                // la chaine des filtres peut continuer à filtrer notre requete
+
                 filterChain.doFilter(request, response);
             }
         } catch (JwtException e){

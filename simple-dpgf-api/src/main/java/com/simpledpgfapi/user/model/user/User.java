@@ -14,9 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Data
-// génère les annotations equals and hashcode en faisant appel aux parents aussi
 @EqualsAndHashCode(callSuper = true)
-// génère méthode tostring + appel aux parents
 @ToString(callSuper = true)
 @Builder
 public class User extends BaseEntity implements UserDetails {

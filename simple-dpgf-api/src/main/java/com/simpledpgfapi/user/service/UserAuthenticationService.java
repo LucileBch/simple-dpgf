@@ -35,8 +35,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class UserService {
-
+public class UserAuthenticationService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -67,10 +66,18 @@ public class UserService {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ALREADY_EXISTS);
         }
 
-        Organization organization = organizationMapper.creationDtoToModel(userCreationDto.getOrganization());
-        organization.setOrganizationType(userCreationDto.getOrganization().getOrganizationType());
-        organization.setName(userCreationDto.getOrganization().getName());
-        organizationRepository.save(organization);
+        if(organizationRepository.findByName(userCreationDto.getOrganization().getName()) == null){
+            Organization organization = organizationMapper.creationDtoToModel(userCreationDto.getOrganization());
+            organization.setOrganizationType(userCreationDto.getOrganization().getOrganizationType());
+            organization.setName(userCreationDto.getOrganization().getName());
+            organizationRepository.save(organization);
+        }
+
+        Organization organization = organizationRepository.findByName(userCreationDto.getOrganization().getName());
+//        Organization organization = organizationMapper.creationDtoToModel(userCreationDto.getOrganization());
+//        organization.setOrganizationType(userCreationDto.getOrganization().getOrganizationType());
+//        organization.setName(userCreationDto.getOrganization().getName());
+//        organizationRepository.save(organization);
 
         // TODO: method UTILS for crypte ?
         String cryptedPassword = bCryptPasswordEncoder.encode(userCreationDto.getPassword());
@@ -126,7 +133,7 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
         );
 
-        // si il est authentifié, je génère en JWT + un refresh token
+        //TODO: don't return once front in place we will find it in header (dev tools)
         if(authenticate.isAuthenticated()) {
             String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
             refreshTokenService.createRefreshToken(currentUser.getId(), httpServletResponse);
@@ -144,7 +151,6 @@ public class UserService {
 
         String refreshTokenFromCookie = refreshTokenService.getRefreshTokenFromCookies(httpServletRequest);
         refreshTokenService.revokeRefreshToken(refreshTokenFromCookie);
-
         refreshTokenService.removeRefreshTokenFromCookie(httpServletResponse);
     }
 

@@ -10,7 +10,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<String> handleHttpException(HttpException ex) {
-        // Retourne l'exception avec le code d'état et le message
         String errorMessage = ex.getReason();
         HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
         return new ResponseEntity<>(errorMessage, status);

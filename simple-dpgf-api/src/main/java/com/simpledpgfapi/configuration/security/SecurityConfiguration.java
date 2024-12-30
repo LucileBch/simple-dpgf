@@ -35,13 +35,13 @@ public class SecurityConfiguration {
             "/swagger-ui.html",
             "/swagger-resources/**",
             //"/actuator/health", ???
-            "/user/signup",
-            "/user/activate-account",
-            "user/code-request",
-            "/user/signin",
-            "user/refresh-token",
-            "/user/update-password-request",
-            "/user/generate-new-password"
+            "/auth/signup",
+            "/auth/activate-account",
+            "/auth/code-request",
+            "/auth/signin",
+            "/auth/refresh-token",
+            "/auth/update-password-request",
+            "/auth/generate-new-password"
     };
 
     // construction d'un bean

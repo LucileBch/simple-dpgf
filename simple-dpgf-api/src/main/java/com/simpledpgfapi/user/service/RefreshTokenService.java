@@ -34,10 +34,10 @@ public class RefreshTokenService {
     private JwtAuthenticationService jwtAuthenticationService;
 
     @Value("${jwt.refresh-token-expiration-time}")
-    private long refreshTokenDurationTime;
+    private long refreshTokenExpiry;
     private static final String COOKIE_NAME = "token";
     @Value("${cookie.expiration-time}")
-    private int cookieDurationTime;
+    private int cookieExpiry;
 
     public void createRefreshToken(ObjectId userId, HttpServletResponse response) {
         List<RefreshToken> existingRefreshTokensByUserId = refreshTokenRepository.findByUserId(userId);
@@ -52,21 +52,20 @@ public class RefreshTokenService {
         }
 
         RefreshToken refreshToken = new RefreshToken();
-        String grossRefreshToken = UUID.randomUUID().toString();
+        String initialRefreshToken = UUID.randomUUID().toString();
         refreshToken.setUserId(userId);
-        refreshToken.setToken(bCryptPasswordEncoder.encode(grossRefreshToken));
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationTime));
+        refreshToken.setToken(bCryptPasswordEncoder.encode(initialRefreshToken));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpiry));
         refreshToken.setRevoked(false);
 
         refreshTokenRepository.save(refreshToken);
 
-        Cookie refreshTokenCookie = new Cookie(COOKIE_NAME, grossRefreshToken);
+        Cookie refreshTokenCookie = new Cookie(COOKIE_NAME, initialRefreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(cookieDurationTime);
+        refreshTokenCookie.setMaxAge(cookieExpiry);
         response.addCookie(refreshTokenCookie);
     }
-
 
     public String generateNewAccessToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         String refreshTokenFromCookie = getRefreshTokenFromCookies(httpServletRequest);
@@ -81,7 +80,7 @@ public class RefreshTokenService {
             throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_REVOKED);
         }
 
-        verifyExpiration(storedRefreshToken);
+        verifyExpiryDate(storedRefreshToken);
 
         User currentUser = userRepository.findById(storedRefreshToken.getUserId())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
@@ -90,19 +89,19 @@ public class RefreshTokenService {
 
         String newRefreshToken = UUID.randomUUID().toString();
         storedRefreshToken.setToken(bCryptPasswordEncoder.encode(newRefreshToken));
-        storedRefreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationTime));
+        storedRefreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpiry));
         refreshTokenRepository.save(storedRefreshToken);
 
         Cookie newRefreshTokenCookie = new Cookie(COOKIE_NAME, newRefreshToken);
         newRefreshTokenCookie.setHttpOnly(true);
         newRefreshTokenCookie.setPath("/");
-        newRefreshTokenCookie.setMaxAge(cookieDurationTime);
+        newRefreshTokenCookie.setMaxAge(cookieExpiry);
         httpServletResponse.addCookie(newRefreshTokenCookie);
 
         return newAccessToken;
     }
 
-    public void verifyExpiration(RefreshToken refreshToken) {
+    private void verifyExpiryDate(RefreshToken refreshToken) {
         if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(refreshToken);
             throw new HttpException(HttpStatus.UNAUTHORIZED, RefreshTokenErrorCodes.REFRESH_TOKEN_EXPIRED);

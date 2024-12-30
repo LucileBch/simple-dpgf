@@ -13,7 +13,6 @@ import org.mapstruct.Mapping;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
         uses = {ObjectIdMapper.class,OrganizationMapper.class})
 public interface UserMapper {
-
         User creationDtoToModel(UserCreationDto userCreationDto);
 
         @Mapping(source = "user.id", target = "id")
@@ -22,5 +21,4 @@ public interface UserMapper {
         @Mapping(source = "user.email", target = "email")
         @Mapping(source = "organization", target = "organization")
         UserDto modelToDto(User user, Organization organization);
-
 }

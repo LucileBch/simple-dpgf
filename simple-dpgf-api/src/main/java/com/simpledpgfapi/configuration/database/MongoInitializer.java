@@ -15,7 +15,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class MongoInitializer {
-
     @Autowired
     private MongoClient mongoClient;
 
@@ -35,7 +34,7 @@ public class MongoInitializer {
     @Profile("dev")
     public void initAdminUser() {
         try {
-        // Connecte-toi à la base admin
+        // Admin DB
         MongoDatabase adminDatabase = mongoClient.getDatabase("admin");
 
         // user for Dev Vérifie si l'utilisateur existe déjà

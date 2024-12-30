@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class EmailService {
-
     @Autowired
     private JavaMailSender javaMailSender;
     @Autowired
@@ -27,17 +26,18 @@ public class EmailService {
         try{
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            // de qui vient le mail
+
             mimeMessageHelper.setFrom("no-reply@example.com");
-            // à qui il est envoyé
+
             User user = userRepository.findById(accountValidationCode.getUserId())
                     .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
+
             mimeMessageHelper.setTo(user.getEmail());
-            // le sujet
+
             mimeMessageHelper.setSubject("Votre code d'activation");
 
-            String htmlContent = String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.", user.getFirstName(), user.getLastName(),accountValidationCode.getActivationCode());
-
+            String htmlContent = String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.",
+                                                user.getFirstName(), user.getLastName(),accountValidationCode.getActivationCode());
             mimeMessageHelper.setText(htmlContent, true);
 
             javaMailSender.send(mimeMessage);

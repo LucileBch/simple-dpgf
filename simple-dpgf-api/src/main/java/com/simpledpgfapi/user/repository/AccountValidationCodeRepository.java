@@ -9,7 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface AccountValidationCodeRepository extends MongoRepository<AccountValidationCode, ObjectId> {
-
     Optional<AccountValidationCode> findByActivationCode(String code);
-
 }
