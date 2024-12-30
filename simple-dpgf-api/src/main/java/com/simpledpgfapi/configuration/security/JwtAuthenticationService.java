@@ -14,10 +14,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtAuthenticationService {
-
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.expiration-time}")
     private long durationTime;
 

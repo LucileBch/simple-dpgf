@@ -39,10 +39,10 @@ public class SecurityConfiguration {
             "/user/activate-account",
             "user/code-request",
             "/user/signin",
+            "user/refresh-token",
             "/user/update-password-request",
             "/user/generate-new-password"
     };
-
 
     // construction d'un bean
     // qui est une chaine de sécurité
@@ -65,8 +65,7 @@ public class SecurityConfiguration {
          // statelasse session policy
          httpSecurity.sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                );
+         );
 
         httpSecurity.exceptionHandling(exceptionHandling ->
                 exceptionHandling
