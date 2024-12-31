@@ -2,9 +2,10 @@ package com.simpledpgfapi.user.exceptions;
 
 import com.simpledpgfapi.global.exceptions.ErrorCodes;
 
-public enum OrganizationErrorCodes implements ErrorCodes {
-    ORGANIZATION_NOT_FOUND,
-    NOT_IN_THIS_ORGANIZATION;
+public enum InvitationErrorCodes implements ErrorCodes {
+    INVITATION_NOT_FOUND,
+    INVITATION_CONSUMED,
+    INVITATION_CANCELLED;
 
     @Override
     public String getCode() {

@@ -21,7 +21,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,9 +63,13 @@ public class UserAuthenticationService {
 
     @Transactional
     public UserDto createUser(UserCreationDto userCreationDto) {
+        return createUser(userCreationDto, RoleEnum.ORGANIZATION_MANAGER);
+    }
+
+    public UserDto createUser(UserCreationDto userCreationDto, RoleEnum role) {
         Optional<User> existingUser = userRepository.findByEmail(userCreationDto.getEmail());
         if (existingUser.isPresent()) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ALREADY_EXISTS);
+               throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ALREADY_EXISTS);
         }
 
         if(organizationRepository.findByName(userCreationDto.getOrganization().getName()) == null){
@@ -74,18 +80,14 @@ public class UserAuthenticationService {
         }
 
         Organization organization = organizationRepository.findByName(userCreationDto.getOrganization().getName());
-//        Organization organization = organizationMapper.creationDtoToModel(userCreationDto.getOrganization());
-//        organization.setOrganizationType(userCreationDto.getOrganization().getOrganizationType());
-//        organization.setName(userCreationDto.getOrganization().getName());
-//        organizationRepository.save(organization);
 
         // TODO: method UTILS for crypte ?
         String cryptedPassword = bCryptPasswordEncoder.encode(userCreationDto.getPassword());
         User user = userMapper.creationDtoToModel(userCreationDto);
         user.setPassword(cryptedPassword);
         user.setOrganizationId(organization.getId());
-        user.setRole(RoleEnum.ORGANIZATION_MANAGER);
-        user.setStatus(UserStatusEnum.ACTIVE);
+        user.setRole(role);
+        user.setUserStatus(UserStatusEnum.ACTIVE);
 
         userRepository.insert(user);
         accountValidationCodeService.generateAccountValidationCode(user);
@@ -121,7 +123,7 @@ public class UserAuthenticationService {
         accountValidationCodeService.generateAccountValidationCode(currentUser);
     }
 
-    public String authenticateUser(UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<Void> authenticateUser(UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
@@ -133,11 +135,12 @@ public class UserAuthenticationService {
                 new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
         );
 
-        //TODO: don't return once front in place we will find it in header (dev tools)
         if(authenticate.isAuthenticated()) {
             String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
             refreshTokenService.createRefreshToken(currentUser.getId(), httpServletResponse);
-            return accessToken;
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .build();
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
         }

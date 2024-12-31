@@ -16,6 +16,8 @@ import MoaDashboard from "../pages/(authenticated)/MoaDashboard";
 import RequestCode from "../pages/(authentication)/RequestCode";
 import Error from "../pages/Error";
 import ForgotPassord from "../pages/(authentication)/ForgotPassword";
+import MoaManagerDashboard from "../pages/(authenticated)/(moamanager)/MoaManagerDashboard";
+import MoaManagerTeam from "../pages/(authenticated)/(moamanager)/MoaManagerTeam";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -34,8 +36,18 @@ export default function AppRouter(): JSX.Element {
         <Route path={pagesUrl.FORGOT_PASSWORD} element={<ForgotPassord />} />
 
         {/* Authenticated */}
+        <Route
+          path={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}
+          element={<MoaManagerDashboard />}
+        />
+        <Route
+          path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
+          element={<MoaManagerTeam />}
+        />
+
         <Route path={pagesUrl.MOA_DASHBOARD_PAGE} element={<MoaDashboard />} />
 
+        {/* 404 */}
         <Route path={pagesUrl.ERROR_404} element={<Error />} />
       </Routes>
       <Footer />

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+import java.util.Random;
 
 @Service
 public class AccountValidationCodeService {
@@ -23,7 +23,9 @@ public class AccountValidationCodeService {
         accountValidationCode.setCreatedDate(Instant.now());
         accountValidationCode.setExpiration(accountValidationCode.getCreatedDate().plus(5, ChronoUnit.MINUTES));
 
-        String code = UUID.randomUUID().toString();
+        Random random = new Random();
+        int randomInteger = random.nextInt(999999);
+        String code = String.format("%06d", randomInteger);
         accountValidationCode.setActivationCode(code);
 
         accountValidationCodeRepository.save(accountValidationCode);

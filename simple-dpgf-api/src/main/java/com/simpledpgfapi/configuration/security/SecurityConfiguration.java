@@ -26,7 +26,6 @@ public class SecurityConfiguration {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-
     // allowed path without authentication
     private static final String[] AUTH_WHITELIST = {
             "/v3/api-docs",   // OpenAPI docs
@@ -41,7 +40,8 @@ public class SecurityConfiguration {
             "/auth/signin",
             "/auth/refresh-token",
             "/auth/update-password-request",
-            "/auth/generate-new-password"
+            "/auth/generate-new-password",
+            "/invite/accept"
     };
 
     // construction d'un bean

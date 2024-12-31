@@ -4,6 +4,7 @@ import com.simpledpgfapi.global.mapper.ObjectIdMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
+import com.simpledpgfapi.user.model.user.dto.UserDetailsDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -21,4 +22,9 @@ public interface UserMapper {
         @Mapping(source = "user.email", target = "email")
         @Mapping(source = "organization", target = "organization")
         UserDto modelToDto(User user, Organization organization);
+
+        @Mapping(source = "user.firstName", target = "firstName")
+        @Mapping(source = "user.lastName", target = "lastName")
+        @Mapping(source = "user.email", target = "email")
+        UserDetailsDto modelToDetailsDto(User user);
 }

@@ -32,7 +32,7 @@ export default function SignIn() {
     e.preventDefault();
     try {
       await axios.post(apiEndpoints.SIGN_IN, formData);
-      navigate(pagesUrl.MOA_DASHBOARD_PAGE);
+      navigate(pagesUrl.MOA_MANAGER_DASHBOARD_PAGE);
     } catch (error) {
       console.log(error);
 

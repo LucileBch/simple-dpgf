@@ -26,6 +26,14 @@ export function getErrorMessage(errorMessage: string): string {
     case "REFRESH_TOKEN_REVOKED":
       return "Authentification révoquée. Veuillez vous reconnecter.";
 
+    // Invitation Errors
+    case "INVITATION_NOT_FOUND":
+      return "Vous n'avez pas reçu d'invitation.";
+    case "INVITATION_CANCELLED":
+      return "L'invitation n'est plus valide.";
+    case "INVITATION_CONSUMED":
+      return "Vous avez déjà accepté l'invitation. Veuillez vous connecter.";
+
     default:
       return "Une erreur est survenue";
   }

@@ -35,7 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 request.getServletPath().contains("/auth/signin") ||
                 request.getServletPath().contains("/auth/refresh-token") ||
                 request.getServletPath().contains("/auth/update-password-request") ||
-                request.getServletPath().contains("/auth/generate-new-password") ) {
+                request.getServletPath().contains("/auth/generate-new-password") ||
+                request.getServletPath().contains("/invite/accept")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -28,7 +28,7 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
     private boolean isAccountActivated;
     private ObjectId organizationId;
-    private UserStatusEnum status;
+    private UserStatusEnum userStatus;
     private RoleEnum role;
 
     @Override
