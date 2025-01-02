@@ -66,6 +66,7 @@ public class UserAuthenticationService {
         return createUser(userCreationDto, RoleEnum.ORGANIZATION_MANAGER);
     }
 
+    //TODO - LICENSE UTILISATEUR : incrémenter SI organization manageur
     public UserDto createUser(UserCreationDto userCreationDto, RoleEnum role) {
         Optional<User> existingUser = userRepository.findByEmail(userCreationDto.getEmail());
         if (existingUser.isPresent()) {

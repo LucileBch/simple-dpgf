@@ -28,10 +28,12 @@ export function getErrorMessage(errorMessage: string): string {
 
     // Invitation Errors
     case "INVITATION_NOT_FOUND":
-      return "Vous n'avez pas reçu d'invitation.";
+      return "Il n'y a pas d'invitation valide.";
     case "INVITATION_CANCELLED":
-      return "L'invitation n'est plus valide.";
+      return "L'invitation a été annulée";
     case "INVITATION_CONSUMED":
+      return "L'invitation a été acceptée. Vous ne pouvez la renvoyer ou la supprimer";
+    case "INVITATION_ALREADY_ACCEPTED":
       return "Vous avez déjà accepté l'invitation. Veuillez vous connecter.";
 
     default:

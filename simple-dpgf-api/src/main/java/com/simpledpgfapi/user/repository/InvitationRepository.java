@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface InvitationRepository extends MongoRepository<Invitation, ObjectId> {
     Optional<Invitation> findByInvitationToken(String invitationToken);
 
+    void deleteAllByEmail(String email);
+
     Optional<Invitation> findFirstByEmailAndInvitationStatusNot(String email, InvitationStatusEnum invitationStatus);
 }
