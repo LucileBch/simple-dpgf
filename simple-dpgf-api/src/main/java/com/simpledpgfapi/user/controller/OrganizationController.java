@@ -1,6 +1,6 @@
 package com.simpledpgfapi.user.controller;
 
-import com.simpledpgfapi.user.model.user.dto.UserDetailsDto;
+import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -20,7 +20,7 @@ public class OrganizationController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_ORGANIZATION_MANAGER')")
     @GetMapping("/{organizationId}/members")
-    public List<UserDetailsDto> getAllUsersByOrganization(@PathVariable ObjectId organizationId) {
+    public List<InvitationDto> getAllUsersByOrganization(@PathVariable ObjectId organizationId) {
         return organizationService.getAllUsersByOrganizationId(organizationId);
     }
 

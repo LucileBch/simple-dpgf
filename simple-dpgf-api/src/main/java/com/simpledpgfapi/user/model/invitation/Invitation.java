@@ -15,7 +15,10 @@ public class Invitation extends BaseEntity {
 
     @Id
     private ObjectId id;
-    private String email;
+    private String emailSender;
+    private String firstName;
+    private String lastName;
+    private String emailReceiver;
     private String invitationToken;
     private RoleEnum role;
     private ObjectId organizationId;

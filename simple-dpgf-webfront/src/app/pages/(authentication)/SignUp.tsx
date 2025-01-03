@@ -102,6 +102,7 @@ export default function SignIn() {
             p: 1,
           }}
         >
+          {/* // FAIRE UN SELECT */}
           <TextInput
             id="organizationType"
             name="organizationType"

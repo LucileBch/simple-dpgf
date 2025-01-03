@@ -41,7 +41,7 @@ public class SecurityConfiguration {
             "/auth/refresh-token",
             "/auth/update-password-request",
             "/auth/generate-new-password",
-            "/invite/accept"
+            "/invitation/accept"
     };
 
     // construction d'un bean
@@ -93,7 +93,7 @@ public class SecurityConfiguration {
         // headers
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         // origins (qui à le droit d'appeller quels host
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080"));
+        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080"));
         // methodes authoriées
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         // si app securisée avec authorisation header

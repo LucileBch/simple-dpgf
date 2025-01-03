@@ -6,7 +6,7 @@ import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.model.invitation.Invitation;
 import com.simpledpgfapi.user.model.invitation.InvitationStatusEnum;
-import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
+import com.simpledpgfapi.user.model.invitation.dto.InvitationCreationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.organization.dto.OrganizationCreationDto;
 import com.simpledpgfapi.user.model.role.RoleEnum;
@@ -38,80 +38,42 @@ public class InvitationService {
     @Autowired
     private OrganizationMapper organizationMapper;
 
-    private Invitation createProjectOwnerInvitation(String senderEmail, ObjectId organizationId) {
-        Invitation invitation = new Invitation();
-        invitation.setRole(RoleEnum.PROJECT_OWNER);
-        invitation.setEmail(senderEmail);
-
-        String invitationToken = UUID.randomUUID().toString();
-        invitation.setInvitationToken(invitationToken);
-        invitation.setOrganizationId(organizationId);
-        invitationRepository.save(invitation);
-
-        return invitation;
-    }
-
-    private String generateInvitationLink(String invitationToken) {
-        return "http://localhost:5173/invitation-link?invitationToken=" + invitationToken;
-    }
-
     //TODO - LICENSE UTILISATEUR : incrémenter la license nombre utilisateurs
-    public void sendProjectOwnerInvitation(InvitationDto invitationDto) {
+    // WARNING si invit existante ne pas incrémenter
+    public void sendProjectOwnerInvitation(InvitationCreationDto invitationCreationDto) {
         User currentUser = userService.getCurrentAuthenticatedUser();
 
-        Invitation invitation = createProjectOwnerInvitation(currentUser.getEmail(), currentUser.getOrganizationId());
-
-        String invitationLink = generateInvitationLink(invitation.getInvitationToken());
-
-        emailService.sendInvitationMessage(invitationDto, currentUser.getEmail(), currentUser.getFirstName(), currentUser.getLastName(), invitationLink);
-    }
-
-    // resend invit, dont re increment organization user license
-    public void resendProjectOwnerInvitation(InvitationDto invitationDto) {
-        Invitation pendingInvitation = invitationRepository.findFirstByEmailAndInvitationStatusNot(invitationDto.getEmail(), InvitationStatusEnum.CANCELLED)
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
-
-        if(pendingInvitation.getInvitationStatus() == InvitationStatusEnum.CONSUMED) {
+        Invitation existingInvitation = invitationRepository.findByEmailReceiver(invitationCreationDto.getEmailReceiver());
+        if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.CONSUMED) {
             throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CONSUMED);
         }
 
-        pendingInvitation.setInvitationStatus(InvitationStatusEnum.CANCELLED);
-        invitationRepository.save(pendingInvitation);
+        if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.PENDING) {
+            invitationRepository.delete(existingInvitation);
+        }
 
-        User currentUser = userService.getCurrentAuthenticatedUser();
+        Invitation invitation = createProjectOwnerInvitation(currentUser.getEmail(), invitationCreationDto, currentUser.getOrganizationId());
 
-        Invitation invitation = createProjectOwnerInvitation(currentUser.getEmail(), currentUser.getOrganizationId());
         String invitationLink = generateInvitationLink(invitation.getInvitationToken());
 
-        emailService.sendInvitationMessage(invitationDto, currentUser.getEmail(), currentUser.getFirstName(), currentUser.getLastName(), invitationLink);
+        emailService.sendInvitationMessage(invitationCreationDto, currentUser.getEmail(), currentUser.getFirstName(), currentUser.getLastName(), invitationLink);
     }
 
     public void deleteInvitation(ObjectId invitationId) {
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
 
-        String invitationStatus = invitation.getInvitationStatus().name();
-
-        if(invitationStatus.equals(InvitationStatusEnum.CONSUMED.name())) {
+        if(invitation.getInvitationStatus().name().equals(InvitationStatusEnum.CONSUMED.name())) {
             throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CONSUMED);
         }
 
-        if(invitationStatus.equals(InvitationStatusEnum.CANCELLED.name())) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CANCELLED);
-        }
-
-        invitation.setInvitationStatus(InvitationStatusEnum.CANCELLED);
-        invitationRepository.save(invitation);
+        invitationRepository.delete(invitation);
     }
 
     @Transactional
     public UserDto acceptInvitation(String invitationToken, UserCreationDto userCreationDto) {
         Invitation invitation = invitationRepository.findByInvitationToken(invitationToken)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
-
-        if(invitation.getInvitationStatus() == InvitationStatusEnum.CANCELLED) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CANCELLED);
-        }
 
         if(invitation.getInvitationStatus() == InvitationStatusEnum.CONSUMED) {
             throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_ALREADY_ACCEPTED);
@@ -128,8 +90,23 @@ public class InvitationService {
         return userAuthenticationService.createUser(userCreationDto, invitation.getRole());
     }
 
-    public Invitation getValidInvitationByEmail(String email) {
-        return invitationRepository.findFirstByEmailAndInvitationStatusNot(email, InvitationStatusEnum.CANCELLED)
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
+    private Invitation createProjectOwnerInvitation(String emailSender, InvitationCreationDto invitationCreationDto, ObjectId organizationId) {
+        Invitation invitation = new Invitation();
+        invitation.setRole(RoleEnum.PROJECT_OWNER);
+        invitation.setEmailSender(emailSender);
+        invitation.setFirstName(invitationCreationDto.getFirstName());
+        invitation.setLastName(invitationCreationDto.getLastName());
+        invitation.setEmailReceiver(invitationCreationDto.getEmailReceiver());
+
+        String invitationToken = UUID.randomUUID().toString();
+        invitation.setInvitationToken(invitationToken);
+        invitation.setOrganizationId(organizationId);
+        invitationRepository.save(invitation);
+
+        return invitation;
+    }
+
+    private String generateInvitationLink(String invitationToken) {
+        return "http://localhost:5173/invitation-link?invitationToken=" + invitationToken;
     }
 }

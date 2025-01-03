@@ -3,24 +3,20 @@ package com.simpledpgfapi.user.service;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
-import com.simpledpgfapi.user.mapper.UserMapper;
-import com.simpledpgfapi.user.model.invitation.Invitation;
+import com.simpledpgfapi.user.mapper.InvitationMapper;
+import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.user.User;
-import com.simpledpgfapi.user.model.user.dto.UserDetailsDto;
 import com.simpledpgfapi.user.repository.InvitationRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrganizationService {
@@ -29,11 +25,9 @@ public class OrganizationService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private InvitationService invitationService;
-    @Autowired
     private InvitationRepository invitationRepository;
+    @Autowired
+    private InvitationMapper invitationMapper;
 
     public Organization findByUserId(User user) {
         return organizationRepository.findById(user.getOrganizationId())
@@ -43,23 +37,11 @@ public class OrganizationService {
                 );
     }
 
-    public List<UserDetailsDto> getAllUsersByOrganizationId(ObjectId organizationId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
-
-        User currentUser = userRepository.findByEmail(currentUserEmail)
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
-
-        return userRepository.findByOrganizationId(organizationId).stream()
-                .filter(user -> !user.getId().equals(currentUser.getId()))
-                .map(user -> {
-                    UserDetailsDto userDetailsDto = userMapper.modelToDetailsDto(user);
-
-                    Invitation invitation = invitationService.getValidInvitationByEmail(user.getEmail());
-                    userDetailsDto.setInvitationStatus(invitation.getInvitationStatus());
-                    return userDetailsDto;
-                })
-                .collect(Collectors.toList());
+    public List<InvitationDto> getAllUsersByOrganizationId(ObjectId organizationId) {
+        return invitationRepository.findByOrganizationId(organizationId)
+                .stream()
+                .map(invitationMapper::modelToDto)
+                .toList();
     }
 
     // TODO - GESTION PROJETS : si il a des projets non delete, il faudra attribuer un nouveau userId
@@ -73,7 +55,7 @@ public class OrganizationService {
             throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.NOT_IN_THIS_ORGANIZATION);
         }
 
-        invitationRepository.deleteAllByEmail(userToRemove.getEmail());
+        invitationRepository.deleteByEmailReceiver(userToRemove.getEmail());
 
         userRepository.delete(userToRemove);
     }

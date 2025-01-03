@@ -2,7 +2,7 @@ package com.simpledpgfapi.user.service;
 
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
-import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
+import com.simpledpgfapi.user.model.invitation.dto.InvitationCreationDto;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.validation.AccountValidationCode;
 import com.simpledpgfapi.user.repository.UserRepository;
@@ -47,17 +47,18 @@ public class EmailService {
         }
     }
 
-    public void sendInvitationMessage(InvitationDto invitationDto, String email, String firstName, String lastName,String invitationLink) {
+    public void sendInvitationMessage(InvitationCreationDto invitationCreationDto, String emailSender, String firstName, String lastName, String invitationLink) {
         try{
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-            mimeMessageHelper.setFrom(email);
-            mimeMessageHelper.setTo(invitationDto.getEmail());
+            mimeMessageHelper.setFrom(emailSender);
+            mimeMessageHelper.setTo(invitationCreationDto.getEmailReceiver());
             mimeMessageHelper.setSubject("Votre lien d'invitation à rejoindre Simple DPGF");
 
-            String htmlContent = String.format("Bonjour,<br/> %s %s vous invite à rejoindre son organization." +
+            String htmlContent = String.format("Bonjour %s %s,<br/> %s %s vous invite à rejoindre son organization." +
                             "<br/> Veuillez cliquer sur <a href='%s'>ce lien</a>  pour créer votre compte.",
+                    invitationCreationDto.getFirstName(), invitationCreationDto.getLastName(),
                     firstName, lastName, invitationLink);
             mimeMessageHelper.setText(htmlContent, true);
 

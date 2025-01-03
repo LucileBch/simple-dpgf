@@ -18,6 +18,7 @@ import Error from "../pages/Error";
 import ForgotPassord from "../pages/(authentication)/ForgotPassword";
 import MoaManagerDashboard from "../pages/(authenticated)/(moamanager)/MoaManagerDashboard";
 import MoaManagerTeam from "../pages/(authenticated)/(moamanager)/MoaManagerTeam";
+import InviteProjectOwner from "../pages/(authenticated)/(moamanager)/InviteProjectOwner";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -43,6 +44,10 @@ export default function AppRouter(): JSX.Element {
         <Route
           path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
           element={<MoaManagerTeam />}
+        />
+        <Route
+          path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
+          element={<InviteProjectOwner />}
         />
 
         <Route path={pagesUrl.MOA_DASHBOARD_PAGE} element={<MoaDashboard />} />
