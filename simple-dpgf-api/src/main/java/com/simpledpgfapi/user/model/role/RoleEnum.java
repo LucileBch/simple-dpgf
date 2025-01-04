@@ -1,47 +1,24 @@
 package com.simpledpgfapi.user.model.role;
 
-import com.simpledpgfapi.user.model.privilege.PrivilegeEnum;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 public enum RoleEnum {
-    ADMIN(
-            Set.of(PrivilegeEnum.READ_PRIVILEGE,
-                    PrivilegeEnum.WRITE_PRIVILEGE,
-                    PrivilegeEnum.UPDATE_PRIVILEGE,
-                    PrivilegeEnum.DELETE_PRIVILEGE)
-    ),
-    ORGANIZATION_MANAGER(
-            Set.of(PrivilegeEnum.READ_PRIVILEGE,
-                    PrivilegeEnum.WRITE_PRIVILEGE,
-                    PrivilegeEnum.UPDATE_PRIVILEGE,
-                    PrivilegeEnum.DELETE_PRIVILEGE)
-    ),
-    PROJECT_OWNER(
-            Set.of(
-                    PrivilegeEnum.READ_PRIVILEGE,
-                    PrivilegeEnum.WRITE_PRIVILEGE,
-                    PrivilegeEnum.UPDATE_PRIVILEGE,
-                    PrivilegeEnum.DELETE_PRIVILEGE)
-    ),
-    DISABLED(Set.of());
-
-    @Getter
-    private final Set<PrivilegeEnum> privileges;
+    ADMIN,
+    ORGANIZATION_MANAGER,
+    PROJECT_OWNER,
+    DISABLED;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = getPrivileges()
-                .stream()
-                .map(privilege -> new SimpleGrantedAuthority(privilege.name()))
-                .collect(Collectors.toList());
-
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        authorities.forEach(authority -> log.info("Authority: " + authority.getAuthority()));
         return authorities;
     }
 }

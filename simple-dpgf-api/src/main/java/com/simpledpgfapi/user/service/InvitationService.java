@@ -44,12 +44,15 @@ public class InvitationService {
         User currentUser = userService.getCurrentAuthenticatedUser();
 
         Invitation existingInvitation = invitationRepository.findByEmailReceiver(invitationCreationDto.getEmailReceiver());
-        if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.CONSUMED) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CONSUMED);
-        }
 
-        if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.PENDING) {
-            invitationRepository.delete(existingInvitation);
+        if(existingInvitation != null) {
+            if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.CONSUMED) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CONSUMED);
+            }
+
+            if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.PENDING) {
+                invitationRepository.delete(existingInvitation);
+            }
         }
 
         Invitation invitation = createProjectOwnerInvitation(currentUser.getEmail(), invitationCreationDto, currentUser.getOrganizationId());

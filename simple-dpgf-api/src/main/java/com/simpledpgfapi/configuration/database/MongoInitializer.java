@@ -1,84 +1,46 @@
 package com.simpledpgfapi.configuration.database;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.simpledpgfapi.admin.service.AdminUserService;
+import com.simpledpgfapi.user.model.user.User;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j
 @Component
 public class MongoInitializer {
     @Autowired
-    private MongoClient mongoClient;
+    private AdminUserService adminService;
 
-    @Value("${spring.data.mongodb.database}")
-    private String database;
-    @Value("${mongo.admin.username}")
-    private String adminUser;
+    @Value("${mongo.admin.firstname}")
+    private String adminFirstName;
+    @Value("${mongo.admin.lastname}")
+    private String adminLastName;
+    @Value("${mongo.admin.email}")
+    private String adminEmail;
     @Value("${mongo.admin.password}")
     private String adminPassword;
-    @Value("${mongo.app.username}")
-    private String appUser;
-    @Value("${mongo.app.password}")
-    private String appPassword;
-
 
     @PostConstruct
-    @Profile("dev")
-    public void initAdminUser() {
-        try {
-        // Admin DB
-        MongoDatabase adminDatabase = mongoClient.getDatabase("admin");
+    public void initializeAdminUser() {
+        String adminUserFirstName = adminFirstName;
+        String adminUserLastName = adminLastName;
+        String adminUserEmail = adminEmail;
+        String adminUserPassword = adminPassword;
 
-        // user for Dev Vérifie si l'utilisateur existe déjà
-        Document existingAdminUser = adminDatabase.runCommand(new Document("usersInfo", adminUser));
-        if (existingAdminUser.getList("users", Document.class).isEmpty()) {
-            // Si l'utilisateur n'existe pas, crée-le
-            adminDatabase.runCommand(new Document("createUser", adminUser)
-                    .append("pwd", adminPassword)
-                    .append("roles", List.of(
-                            new Document("role", "dbOwner").append("db", database)
-                    ))
-            );
-            log.info("Admin user created succesfully");
+        User adminUser = adminService.createAdminUser(
+                adminUserFirstName,
+                adminUserLastName,
+                adminUserEmail,
+                adminUserPassword
+        );
+
+        if(adminUser != null) {
+            log.info("Admin User Created.");
         } else {
-            log.info("Admin user already exists");
-        }
-    } catch (Exception e) {
-            log.error("Error during MongoDB initialization for admin user: {}", e.getMessage());
-        }
-    }
-
-    @PostConstruct
-    @Profile("prod")
-    public void initAppUser() {
-        try {
-            // Connecte-toi à la base admin
-            MongoDatabase adminDatabase = mongoClient.getDatabase("admin");
-
-            // user for prod
-            Document existingAppUser = adminDatabase.runCommand(new Document("usersInfo", appUser));
-            if (existingAppUser.getList("users", Document.class).isEmpty()) {
-                // Si l'utilisateur n'existe pas, crée-le
-                adminDatabase.runCommand(new Document("createUser", appUser)
-                        .append("pwd", appPassword)
-                        .append("roles", List.of(
-                                new Document("role", "readWrite").append("db", database)
-                        ))
-                );
-                log.info("App user created succesfully");
-            } else {
-                log.info("App user already exists");
-            }
-        } catch (Exception e) {
-            log.error("Error during MongoDB initialization for app user : {}", e.getMessage());
+            log.info("Admin User already exists.");
         }
     }
 }

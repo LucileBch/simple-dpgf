@@ -61,8 +61,9 @@ public class SecurityConfiguration {
          httpSecurity.authorizeHttpRequests(
                  authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        //.requestMatchers("/user").hasAnyAuthority("ROLE_ORGANIZATION_MANAGER", "ROLE_PROJECT_OWNER")
-                        .anyRequest().authenticated());
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
+         );
 
          // statelasse session policy
          httpSecurity.sessionManagement(httpSecuritySessionManagementConfigurer ->
@@ -93,7 +94,9 @@ public class SecurityConfiguration {
         // headers
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         // origins (qui à le droit d'appeller quels host
-        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080"));
+        corsConfiguration.setAllowedOriginPatterns(
+                List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080")
+        );
         // methodes authoriées
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         // si app securisée avec authorisation header

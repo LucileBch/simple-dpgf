@@ -61,10 +61,8 @@ public class RefreshTokenService {
         refreshTokenRepository.save(refreshToken);
 
         Cookie refreshTokenCookie = new Cookie(COOKIE_NAME, initialRefreshToken);
-        //refreshTokenCookie.setHttpOnly(true);
-        //refreshTokenCookie.setSecure(false);
+        refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-       // refreshTokenCookie.setDomain("localhost");
         refreshTokenCookie.setMaxAge(cookieExpiry);
         response.addCookie(refreshTokenCookie);
     }
@@ -95,9 +93,8 @@ public class RefreshTokenService {
         refreshTokenRepository.save(storedRefreshToken);
 
         Cookie newRefreshTokenCookie = new Cookie(COOKIE_NAME, newRefreshToken);
-        //newRefreshTokenCookie.setHttpOnly(true);
+        newRefreshTokenCookie.setHttpOnly(true);
         newRefreshTokenCookie.setPath("/");
-        //newRefreshTokenCookie.setDomain("localhost");
         newRefreshTokenCookie.setMaxAge(cookieExpiry);
         httpServletResponse.addCookie(newRefreshTokenCookie);
 

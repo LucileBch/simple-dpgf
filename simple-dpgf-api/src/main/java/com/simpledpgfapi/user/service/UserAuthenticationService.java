@@ -1,5 +1,6 @@
 package com.simpledpgfapi.user.service;
 
+import com.simpledpgfapi.admin.AdminUserErrorCodes;
 import com.simpledpgfapi.configuration.security.JwtAuthenticationService;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.AccountValidationErrorCodes;
@@ -15,7 +16,6 @@ import com.simpledpgfapi.user.model.validation.AccountValidationCode;
 import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.repository.AccountValidationCodeRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
-import com.simpledpgfapi.user.repository.RefreshTokenRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,8 +58,6 @@ public class UserAuthenticationService {
     private AccountValidationCodeRepository accountValidationCodeRepository;
     @Autowired
     private RefreshTokenService refreshTokenService;
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public UserDto createUser(UserCreationDto userCreationDto) {
@@ -126,17 +124,13 @@ public class UserAuthenticationService {
 
     public ResponseEntity<Void> authenticateUser(UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, AdminUserErrorCodes.ADMIN_USER_NOT_FOUND));
 
-        if(!currentUser.isAccountActivated()) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_ACCOUNT_NOT_ACTIVATED);
-        }
-
-        final Authentication authenticate = authenticationManager.authenticate(
+        final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
         );
 
-        if(authenticate.isAuthenticated()) {
+        if(authentication.isAuthenticated()) {
             String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
             refreshTokenService.createRefreshToken(currentUser.getId(), httpServletResponse);
             return ResponseEntity.ok()

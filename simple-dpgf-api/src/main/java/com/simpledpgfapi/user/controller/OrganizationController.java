@@ -18,13 +18,13 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @GetMapping("/{organizationId}/members")
     public List<InvitationDto> getAllUsersByOrganization(@PathVariable ObjectId organizationId) {
         return organizationService.getAllUsersByOrganizationId(organizationId);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @DeleteMapping("/{organizationId}/member/{userId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void removeMemberFromOrganization(@PathVariable ObjectId organizationId, @PathVariable ObjectId userId) {

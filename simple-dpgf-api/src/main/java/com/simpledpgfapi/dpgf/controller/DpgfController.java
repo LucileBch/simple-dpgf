@@ -19,7 +19,7 @@ public class DpgfController {
     @Autowired
     private DpgfService dpgfService;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value= {@ApiResponse(responseCode = "201", description = "Dpgf created")})
