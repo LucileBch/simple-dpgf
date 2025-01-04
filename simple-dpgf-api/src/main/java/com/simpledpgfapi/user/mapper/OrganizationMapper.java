@@ -13,5 +13,7 @@ import org.mapstruct.Mapper;
 public interface OrganizationMapper {
     Organization creationDtoToModel(OrganizationCreationDto organizationCreationDto);
 
+    OrganizationCreationDto modelToCreationDto(Organization organization);
+
     OrganizationDto modelToDto(Organization organization);
 }

@@ -8,6 +8,7 @@ import axios from "axios";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import AlertSnack from "../../components/alert/AlertSnack";
+import apiClient from "../../core/utils/apiClient";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<UserAuthenticationDto>({
@@ -31,8 +32,23 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(apiEndpoints.SIGN_IN, formData);
-      navigate(pagesUrl.MOA_DASHBOARD_PAGE);
+      const response = await axios.post(apiEndpoints.SIGN_IN, formData);
+
+      // Intercepter et stocker l'Access Token depuis les en-têtes
+      const accessToken = response.headers["authorization"]?.split(" ")[1];
+      console.log("accessToken login", accessToken);
+
+      if (accessToken) {
+        apiClient.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${accessToken}`;
+
+        navigate(pagesUrl.MOA_MANAGER_DASHBOARD_PAGE);
+      } else {
+        throw new Error("Access Token not found in response headers");
+      }
+
+      // await axios.post(apiEndpoints.SIGN_IN, formData);
     } catch (error) {
       console.log(error);
 

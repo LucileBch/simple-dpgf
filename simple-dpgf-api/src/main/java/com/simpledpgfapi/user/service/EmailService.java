@@ -2,6 +2,7 @@ package com.simpledpgfapi.user.service;
 
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
+import com.simpledpgfapi.user.model.invitation.dto.InvitationCreationDto;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.validation.AccountValidationCode;
 import com.simpledpgfapi.user.repository.UserRepository;
@@ -38,6 +39,27 @@ public class EmailService {
 
             String htmlContent = String.format("Bonjour %s %s, <br/> Votre code d'activation est %s. Il sera actif pendant 5mn.",
                                                 user.getFirstName(), user.getLastName(),accountValidationCode.getActivationCode());
+            mimeMessageHelper.setText(htmlContent, true);
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            log.error("Un problème est survenu : {}", e.getMessage());
+        }
+    }
+
+    public void sendInvitationMessage(InvitationCreationDto invitationCreationDto, String emailSender, String firstName, String lastName, String invitationLink) {
+        try{
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(emailSender);
+            mimeMessageHelper.setTo(invitationCreationDto.getEmailReceiver());
+            mimeMessageHelper.setSubject("Votre lien d'invitation à rejoindre Simple DPGF");
+
+            String htmlContent = String.format("Bonjour %s %s,<br/> %s %s vous invite à rejoindre son organization." +
+                            "<br/> Veuillez cliquer sur <a href='%s'>ce lien</a>  pour créer votre compte.",
+                    invitationCreationDto.getFirstName(), invitationCreationDto.getLastName(),
+                    firstName, lastName, invitationLink);
             mimeMessageHelper.setText(htmlContent, true);
 
             javaMailSender.send(mimeMessage);

@@ -12,14 +12,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public enum RoleEnum {
     ADMIN(
-            Set.of(PrivilegeEnum.READ_PRIVILEGE, PrivilegeEnum.WRITE_PRIVILEGE, PrivilegeEnum.UPDATE_PRIVILEGE, PrivilegeEnum.DELETE_PRIVILEGE)
+            Set.of(PrivilegeEnum.READ_PRIVILEGE,
+                    PrivilegeEnum.WRITE_PRIVILEGE,
+                    PrivilegeEnum.UPDATE_PRIVILEGE,
+                    PrivilegeEnum.DELETE_PRIVILEGE)
     ),
     ORGANIZATION_MANAGER(
-            Set.of(PrivilegeEnum.READ_PRIVILEGE, PrivilegeEnum.WRITE_PRIVILEGE, PrivilegeEnum.UPDATE_PRIVILEGE, PrivilegeEnum.DELETE_PRIVILEGE)
+            Set.of(PrivilegeEnum.READ_PRIVILEGE,
+                    PrivilegeEnum.WRITE_PRIVILEGE,
+                    PrivilegeEnum.UPDATE_PRIVILEGE,
+                    PrivilegeEnum.DELETE_PRIVILEGE)
     ),
     PROJECT_OWNER(
-            Set.of(PrivilegeEnum.READ_PRIVILEGE, PrivilegeEnum.WRITE_PRIVILEGE, PrivilegeEnum.UPDATE_PRIVILEGE, PrivilegeEnum.DELETE_PRIVILEGE)
-    ),;
+            Set.of(
+                    PrivilegeEnum.READ_PRIVILEGE,
+                    PrivilegeEnum.WRITE_PRIVILEGE,
+                    PrivilegeEnum.UPDATE_PRIVILEGE,
+                    PrivilegeEnum.DELETE_PRIVILEGE)
+    ),
+    DISABLED(Set.of());
 
     @Getter
     private final Set<PrivilegeEnum> privileges;
