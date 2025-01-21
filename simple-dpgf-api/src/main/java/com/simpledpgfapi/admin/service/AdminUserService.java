@@ -7,6 +7,7 @@ import com.simpledpgfapi.user.model.role.RoleEnum;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class AdminUserService {
             String adminUserFirstName,
             String adminUserLastName,
             String adminUserEmail,
-            String adminUserPassword) {
+            String adminUserPassword, ObjectId adminOrganizationId) {
         if(userRepository.findByEmail(adminUserEmail).isPresent()) {
             return null;
         }
@@ -40,7 +41,9 @@ public class AdminUserService {
                 .lastName(adminUserLastName)
                 .email(adminUserEmail)
                 .password(cryptedPassword)
+                .isAccountActivated(true)
                 .role(RoleEnum.ADMIN)
+                .organizationId(adminOrganizationId)
                 .build();
 
         userRepository.save(adminUser);

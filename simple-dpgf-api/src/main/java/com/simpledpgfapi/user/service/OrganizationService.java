@@ -6,6 +6,7 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.InvitationMapper;
 import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.repository.InvitationRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
@@ -28,6 +29,20 @@ public class OrganizationService {
     private InvitationRepository invitationRepository;
     @Autowired
     private InvitationMapper invitationMapper;
+
+    public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
+        if(organizationRepository.findByName(adminOrganizationName) != null) {
+            return null;
+        }
+
+        Organization adminOrganization = Organization.builder()
+                .name(adminOrganizationName)
+                .organizationType(adminOrganizationType)
+                .build();
+
+        organizationRepository.save(adminOrganization);
+        return adminOrganization;
+    }
 
     public Organization findByUserId(User user) {
         return organizationRepository.findById(user.getOrganizationId())

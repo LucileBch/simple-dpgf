@@ -1,7 +1,10 @@
 package com.simpledpgfapi.configuration.database;
 
 import com.simpledpgfapi.admin.service.AdminUserService;
+import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
 import com.simpledpgfapi.user.model.user.User;
+import com.simpledpgfapi.user.service.OrganizationService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class MongoInitializer {
     @Autowired
     private AdminUserService adminService;
+    @Autowired
+    private OrganizationService organizationService;
 
     @Value("${mongo.admin.firstname}")
     private String adminFirstName;
@@ -24,23 +29,34 @@ public class MongoInitializer {
     private String adminPassword;
 
     @PostConstruct
-    public void initializeAdminUser() {
+    public void initializaAdminOrganizationAndUser() {
+        // Initialize Admin Organization
+        Organization adminOrganization = organizationService.createAdminOrganization(
+                "adminOrganization",
+                OrganizationTypeEnum.ADMIN
+        );
+
+        log.info("Admin Organization: {}", adminOrganization != null
+                ? "Created with Id" + adminOrganization.getId()
+                : "Already exists.");
+
+        // Initialize Admin User
         String adminUserFirstName = adminFirstName;
         String adminUserLastName = adminLastName;
         String adminUserEmail = adminEmail;
         String adminUserPassword = adminPassword;
 
+        assert adminOrganization != null;
         User adminUser = adminService.createAdminUser(
                 adminUserFirstName,
                 adminUserLastName,
                 adminUserEmail,
-                adminUserPassword
+                adminUserPassword,
+                adminOrganization.getId()
         );
 
-        if(adminUser != null) {
-            log.info("Admin User Created.");
-        } else {
-            log.info("Admin User already exists.");
-        }
+        log.info("Admin User: {}", adminUser != null
+                ? "Created with Id" + adminUser.getId()
+                : "Already exists.");
     }
 }
