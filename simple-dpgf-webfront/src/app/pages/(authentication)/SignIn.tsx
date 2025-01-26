@@ -8,7 +8,7 @@ import axios from "axios";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import AlertSnack from "../../components/alert/AlertSnack";
-import apiClient from "../../core/utils/apiClient";
+import Cookies from "js-cookie";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<UserAuthenticationDto>({
@@ -32,22 +32,25 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(apiEndpoints.SIGN_IN, formData);
+      const { data } = await axios.post(apiEndpoints.SIGN_IN, formData);
 
-      // Intercepter et stocker l'Access Token depuis les en-têtes
-      const accessToken = response.headers["authorization"]?.split(" ")[1];
-      console.log("accessToken login", accessToken);
+      console.log("connexion reussi");
+      console.log("response", data);
 
-      if (accessToken) {
-        apiClient.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${accessToken}`;
+      const { accessToken, refreshToken } = data;
 
-        navigate(pagesUrl.MOA_MANAGER_DASHBOARD_PAGE);
-      } else {
-        throw new Error("Access Token not found in response headers");
-      }
+      // Gestion du refresh token dans les cookies
+      Cookies.set("accessToken", accessToken, {
+        expires: 0.2,
+      });
+      Cookies.set("refreshToken", refreshToken, {
+        expires: 7,
+      });
 
+      // Stockage du token dans le header
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
+      navigate(pagesUrl.MOA_MANAGER_DASHBOARD_PAGE);
       // await axios.post(apiEndpoints.SIGN_IN, formData);
     } catch (error) {
       console.log(error);

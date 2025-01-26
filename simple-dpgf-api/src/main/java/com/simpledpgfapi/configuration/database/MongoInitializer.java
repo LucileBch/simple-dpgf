@@ -40,23 +40,24 @@ public class MongoInitializer {
                 ? "Created with Id" + adminOrganization.getId()
                 : "Already exists.");
 
-        // Initialize Admin User
-        String adminUserFirstName = adminFirstName;
-        String adminUserLastName = adminLastName;
-        String adminUserEmail = adminEmail;
-        String adminUserPassword = adminPassword;
+        if(adminOrganization != null) {
+            // Initialize Admin User
+            String adminUserFirstName = adminFirstName;
+            String adminUserLastName = adminLastName;
+            String adminUserEmail = adminEmail;
+            String adminUserPassword = adminPassword;
 
-        assert adminOrganization != null;
-        User adminUser = adminService.createAdminUser(
-                adminUserFirstName,
-                adminUserLastName,
-                adminUserEmail,
-                adminUserPassword,
-                adminOrganization.getId()
-        );
+            User adminUser = adminService.createAdminUser(
+                    adminUserFirstName,
+                    adminUserLastName,
+                    adminUserEmail,
+                    adminUserPassword,
+                    adminOrganization.getId()
+            );
 
-        log.info("Admin User: {}", adminUser != null
-                ? "Created with Id" + adminUser.getId()
-                : "Already exists.");
+            log.info("Admin User: {}", adminUser != null
+                    ? "Created with Id" + adminUser.getId()
+                    : "Already exists.");
+        }
     }
 }

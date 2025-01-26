@@ -7,13 +7,14 @@ import com.simpledpgfapi.user.service.UserAuthenticationService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -57,8 +58,8 @@ public class UserAuthenticationController {
     @PostMapping("/signin")
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "User authenticated"),
         @ApiResponse(responseCode = "400", description = "[USER_ACCOUNT_NOT_ACTIVATED], [USER_NOT_AUTHENTICATED]")})
-    public ResponseEntity<Void> authenticateUser(@Valid @RequestBody UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
-        return userAuthenticationService.authenticateUser(userAuthenticationDto, httpServletResponse);
+    public ResponseEntity<Map<String, String>> authenticateUser(@Valid @RequestBody UserAuthenticationDto userAuthenticationDto) {
+        return userAuthenticationService.authenticateUser(userAuthenticationDto);
     }
 
     // REFRESH TOKEN
@@ -67,8 +68,8 @@ public class UserAuthenticationController {
     @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "New access token generated"),
             @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [USER_NOT_FOUND]"),
             @ApiResponse(responseCode = "401", description = "REFRESH_TOKEN_EXPIRED")})
-    public String refreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-        return refreshTokenService.generateNewAccessToken(httpServletRequest, httpServletResponse);
+    public Map<String, String> refreshToken(HttpServletRequest httpServletRequest){
+        return refreshTokenService.generateNewAccessToken(httpServletRequest);
     }
 
     // SIGNOUT
@@ -77,8 +78,8 @@ public class UserAuthenticationController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "User successfully signed out"),
             @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [REFRESH_TOKEN_NOT_IN_COOKIE]"),
             @ApiResponse(responseCode = "401", description = "[USER_NOT_AUTHENTICATED]")})
-    public void signOut(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-        userAuthenticationService.signOutUserAndRevokeRefreshToken(httpServletRequest, httpServletResponse);
+    public void signOut(HttpServletRequest httpServletRequest){
+        userAuthenticationService.signOutUserAndRevokeRefreshToken(httpServletRequest);
     }
 
     // UPDATE PASSWORD

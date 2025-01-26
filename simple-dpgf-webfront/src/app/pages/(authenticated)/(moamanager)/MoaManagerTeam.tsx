@@ -16,7 +16,7 @@ export default function MoaManagerTeam(): JSX.Element {
   const fetchData = async () => {
     try {
       const { data } = await apiClient.get(
-        "http://localhost:8080/organization/67796e9d68110c23b71c3260/members"
+        "http://localhost:8080/api/organization/67796e9d68110c23b71c3260/members"
       );
       console.log("response", data);
 

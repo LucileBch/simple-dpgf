@@ -24,4 +24,27 @@ public class UserService {
         return userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
     }
+//
+//    public UserDto getUserInfos() {
+//        UserDto userDto = new UserDto();
+//        userDto.setEmail();
+//    }
+//
+//    public UserDto getUserInfos() {
+//        if (cognitoService.isUltimateUser()) {
+//            UserDto userDto = new UserDto();
+//            userDto.setCognitoUserId(cognitoService.getCognitoUserId());
+//            userDto.setRole(OrganizationRoleEnum.ULTIMATE_USER);
+//            userDto.setGivenName("Time to Beem");
+//            userDto.setFamilyName("");
+//            return userDto;
+//        } else {
+//            String cognitoUserId = cognitoService.getCognitoUserId();
+//            User user = userRepository.findById(cognitoUserId).orElseThrow(() -> new HttpException(
+//                    HttpStatus.NOT_FOUND,
+//                    UserErrorCodes.USER_NOT_FOUND
+//            ));
+//            return userMapper.modelToDto(user);
+//        }
+//    }
 }

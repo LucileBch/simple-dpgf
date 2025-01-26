@@ -18,10 +18,8 @@ import com.simpledpgfapi.user.repository.AccountValidationCodeRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +31,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -58,6 +58,9 @@ public class UserAuthenticationService {
     private AccountValidationCodeRepository accountValidationCodeRepository;
     @Autowired
     private RefreshTokenService refreshTokenService;
+
+    private static final String JWT_TOKEN = "accessToken";
+    private static final String COOKIE_NAME = "refreshToken";
 
     @Transactional
     public UserDto createUser(UserCreationDto userCreationDto) {
@@ -122,7 +125,8 @@ public class UserAuthenticationService {
         accountValidationCodeService.generateAccountValidationCode(currentUser);
     }
 
-    public ResponseEntity<Void> authenticateUser(UserAuthenticationDto userAuthenticationDto, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<Map<String, String>> authenticateUser(UserAuthenticationDto userAuthenticationDto) {
+        //TODO: Gérer Error !
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, AdminUserErrorCodes.ADMIN_USER_NOT_FOUND));
 
@@ -131,17 +135,20 @@ public class UserAuthenticationService {
         );
 
         if(authentication.isAuthenticated()) {
-            String accessToken =  jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
-            refreshTokenService.createRefreshToken(currentUser.getId(), httpServletResponse);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                    .build();
+            String accessToken = jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
+            String refreshToken = refreshTokenService.createRefreshToken(currentUser.getId());
+
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put(JWT_TOKEN, accessToken);
+            tokens.put(COOKIE_NAME, refreshToken);
+
+            return ResponseEntity.ok(tokens);
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
         }
     }
 
-    public void signOutUserAndRevokeRefreshToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public void signOutUserAndRevokeRefreshToken(HttpServletRequest httpServletRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null || !authentication.isAuthenticated()) {
            throw new HttpException(HttpStatus.UNAUTHORIZED, UserErrorCodes.USER_NOT_AUTHENTICATED);
@@ -149,7 +156,6 @@ public class UserAuthenticationService {
 
         String refreshTokenFromCookie = refreshTokenService.getRefreshTokenFromCookies(httpServletRequest);
         refreshTokenService.revokeRefreshToken(refreshTokenFromCookie);
-        refreshTokenService.removeRefreshTokenFromCookie(httpServletResponse);
     }
 
     public void sendCodeForPasswordUpdate(UserCodeRequestDto userCodeRequestDto){

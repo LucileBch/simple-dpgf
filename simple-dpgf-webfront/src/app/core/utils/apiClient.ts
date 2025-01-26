@@ -1,62 +1,80 @@
 import axios from "axios";
 import { apiEndpoints } from "../appConstants";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
-// conserver temporairement accessToken
-let accesToken: string | null;
-
+// Création de l'instance axios avec des cookies
 const apiClient = axios.create({
+  baseURL: "http://localhost:8080/api",
   withCredentials: true,
 });
 
-// ajouter l'accessToken dans les requêtes
-apiClient.interceptors.request.use((config) => {
-  if (accesToken && config.headers) {
-    config.headers.Authorization = `Bearer ${accesToken}`;
+// Intercepteur pour ajouter l'Access Token depuis la réponse du backend
+apiClient.interceptors.request.use(
+  (config) => {
+    const accessToken = Cookies.get("accessToken");
+    if (!accessToken) {
+      console.log("API Client : No accessToken in cookies");
+    } else {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+    console.log("apiClient error", error);
   }
-  console.log("accessToken header", accesToken);
-  console.log("authorization header", config.headers.Authorization);
-  console.log("config", config);
+);
 
-  return config;
-});
-
+// Intercepteur pour gérer les erreurs 401 et rafraîchir le token
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Si la réponse est réussie, simplement la retourner
+    console.log("response", response);
+    return response;
+  },
   async (error) => {
-    if (
-      axios.isAxiosError(error) &&
-      error.response?.status === 401 &&
-      error.config
-      //&&
-      //!error.config._retry // Éviter une boucle infinie
-    ) {
-      //error.config._retry = true;
+    const navigate = useNavigate();
+    const originalRequest = error.config;
+    console.log("originalrequest", error.config);
 
+    if (error.response?.status === 401) {
+      // Si l'erreur est 401, cela signifie que le token est expiré
       try {
+        const refreshToken = Cookies.get("refreshToken");
+        if (!refreshToken) {
+          throw new Error("Refresh token not found in cookies");
+        }
         const response = await axios.post(
           apiEndpoints.REFRESH_TOKEN,
           {},
           { withCredentials: true }
         );
-        const newAccesToken = response.headers["Authorization"]?.split(" ")[1];
 
-        if (newAccesToken) {
-          accesToken = newAccesToken;
+        // Stockage des nouveaux tokens dans les cookies
+        Cookies.set("accessToken", response.data.accessToken, {
+          expires: 0.02,
+          path: "/",
+        }); // 30 minutes
+        Cookies.set("refreshToken", response.data.resfreshToken, {
+          expires: 7,
+          path: "/",
+        }); // 7 jours
 
-          console.log("header refreshToken", newAccesToken);
+        // Mettre à jour le header Authorization global
+        originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
 
-          // Réessayer la requête avec le nouvel Access Token
-          error.config.headers.Authorization = `Bearer ${newAccesToken}`;
-          return apiClient.request(error.config);
-        } else {
-          console.log("aucun acecs token dans le header");
-        }
-      } catch (refreshError) {
-        console.error("Refresh token failed", refreshError);
+        // Réessayer la requête d'origine avec le nouveau accessToken
+        return apiClient(originalRequest);
+      } catch (err) {
+        console.error("Error refreshing token:", err);
 
-        // NAVIGUER TO LOGIN PAGE
+        navigate(apiEndpoints.SIGN_IN);
+        return Promise.reject(err);
       }
     }
+
+    return Promise.reject(error); // Si ce n'est pas une erreur 401, retourner l'erreur
   }
 );
 

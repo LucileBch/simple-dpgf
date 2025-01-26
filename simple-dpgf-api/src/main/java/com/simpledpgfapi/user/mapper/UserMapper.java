@@ -20,5 +20,6 @@ public interface UserMapper {
         @Mapping(source = "user.lastName", target = "lastName")
         @Mapping(source = "user.email", target = "email")
         @Mapping(source = "organization", target = "organization")
+        @Mapping(source = "user.role", target = "role")
         UserDto modelToDto(User user, Organization organization);
 }

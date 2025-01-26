@@ -31,7 +31,8 @@ public class OrganizationService {
     private InvitationMapper invitationMapper;
 
     public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
-        if(organizationRepository.findByName(adminOrganizationName) != null) {
+        //Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
+        if( organizationRepository.findByName(adminOrganizationName) != null) {
             return null;
         }
 
