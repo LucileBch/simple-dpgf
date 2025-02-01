@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { TextInput } from "../../components/inputs/TextInput";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { UserUpdatePasswordDto } from "../../core/dtos/user/UserUpdatePasswordDt
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
+import PageContainer from "../../components/containers/PageContainer";
 
 //TODO: l'email reste affiché alors qu'il est vide
 
@@ -82,7 +83,7 @@ export default function ForgotPassord(): JSX.Element {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 4 }}>
+    <PageContainer>
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">
           {!isEmailSent
@@ -165,6 +166,6 @@ export default function ForgotPassord(): JSX.Element {
         severity="error"
         errorMessage={errorMessage}
       />
-    </Container>
+    </PageContainer>
   );
 }

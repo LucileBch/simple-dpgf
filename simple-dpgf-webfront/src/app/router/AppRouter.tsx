@@ -1,6 +1,11 @@
 // ---------- APP Routing Logic ----------
 // Packages imports
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 
 // Utils imports
 import { pagesUrl } from "../core/appConstants";
@@ -19,6 +24,11 @@ import ForgotPassord from "../pages/(authentication)/ForgotPassword";
 import MoaManagerDashboard from "../pages/(authenticated)/(moamanager)/MoaManagerDashboard";
 import MoaManagerTeam from "../pages/(authenticated)/(moamanager)/MoaManagerTeam";
 import InviteProjectOwner from "../pages/(authenticated)/(moamanager)/InviteProjectOwner";
+import UserDashboard from "../pages/(authenticated)/UserDashboard";
+import { OrganizationContextProvider } from "../core/contexts/organization-context";
+import AdminOrganizations from "../pages/(authenticated)/(admin)/AdminOrganizations";
+import AdminOrganizationId from "../pages/(authenticated)/(admin)/AdminOrganizationId";
+import UserProfile from "../pages/(authenticated)/UserProfile";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -37,6 +47,30 @@ export default function AppRouter(): JSX.Element {
         <Route path={pagesUrl.FORGOT_PASSWORD} element={<ForgotPassord />} />
 
         {/* Authenticated */}
+        <Route path={pagesUrl.DASHBOARD_PAGE} element={<UserDashboard />} />
+        <Route path={pagesUrl.USER_PROFILE_PAGE} element={<UserProfile />} />
+
+        {/* ADMIN */}
+        <Route
+          path={pagesUrl.ADMIN}
+          element={
+            <OrganizationContextProvider>
+              <Outlet />
+            </OrganizationContextProvider>
+          }
+        >
+          <Route
+            path={pagesUrl.ADMIN_ORGANIZATIONS_PAGE}
+            element={<AdminOrganizations />}
+          />
+          <Route
+            path={pagesUrl.ADMIN_ORGANIZATION_PAGE}
+            element={<AdminOrganizationId />}
+          />
+        </Route>
+
+        {/* Authenticated */}
+        {/* MOA */}
         <Route
           path={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}
           element={<MoaManagerDashboard />}

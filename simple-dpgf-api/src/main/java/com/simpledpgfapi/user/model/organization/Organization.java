@@ -18,4 +18,8 @@ public class Organization extends BaseEntity {
     private ObjectId id;
     private String name;
     private OrganizationTypeEnum organizationType;
+    private Double memberLicenseCounter;
+    private Double maxMemberLicenseCounter;
+    private Double projectLicenseCounter;
+    private Double maxProjectLicenseCounter;
 }

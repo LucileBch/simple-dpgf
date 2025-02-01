@@ -11,7 +11,7 @@ export default function SubmitButton({
   label,
   disabled = false,
   ...rest
-}: ISubmitButtonProps): JSX.Element {
+}: Readonly<ISubmitButtonProps>): JSX.Element {
   return (
     <Box
       sx={{

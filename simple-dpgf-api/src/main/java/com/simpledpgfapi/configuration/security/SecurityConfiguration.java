@@ -94,7 +94,7 @@ public class SecurityConfiguration {
         // headers
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Cookies"));
         // origins (qui à le droit d'appeller quels host
-        corsConfiguration.setAllowedOriginPatterns(
+        corsConfiguration.setAllowedOrigins(
                 List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080")
         );
         // methodes authoriées

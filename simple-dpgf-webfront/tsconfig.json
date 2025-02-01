@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6", // Utilise ES6 comme cible de compilation
+    "target": "es2018", // Utilise ES6 comme cible de compilation
     "module": "esnext", // Utilisation de modules ES pour React
     "jsx": "react-jsx", // Nécessaire pour React 17+ et JSX transform
     "strict": true, // Active toutes les vérifications strictes

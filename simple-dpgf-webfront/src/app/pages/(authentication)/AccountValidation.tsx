@@ -5,10 +5,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "../../components/inputs/TextInput";
 import SubmitButton from "../../components/buttons/SubmitButton";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import AlertSnack from "../../components/alert/AlertSnack";
 import NavigationButton from "../../components/buttons/NavigationButton";
+import PageContainer from "../../components/containers/PageContainer";
 
 export default function AccountValidation(): JSX.Element {
   const [activationCode, setActivationCode] = useState<AccountValidationDto>({
@@ -47,7 +48,7 @@ export default function AccountValidation(): JSX.Element {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 4 }}>
+    <PageContainer>
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Entrez votre code d'activation.</Typography>
       </Box>
@@ -88,6 +89,6 @@ export default function AccountValidation(): JSX.Element {
         severity="error"
         errorMessage={errorMessage}
       />
-    </Container>
+    </PageContainer>
   );
 }

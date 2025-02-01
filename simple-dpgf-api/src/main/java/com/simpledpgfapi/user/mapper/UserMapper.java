@@ -4,10 +4,13 @@ import com.simpledpgfapi.global.mapper.ObjectIdMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
+import com.simpledpgfapi.user.model.user.dto.UserDetailsDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
@@ -22,4 +25,9 @@ public interface UserMapper {
         @Mapping(source = "organization", target = "organization")
         @Mapping(source = "user.role", target = "role")
         UserDto modelToDto(User user, Organization organization);
+
+        @Mapping(source = "organization", target = "organization", ignore = true)
+        List<UserDto> modelsToDtos(List<User> userList);
+
+        UserDetailsDto modelToUserDetailsDto(User user);
 }

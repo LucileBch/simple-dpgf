@@ -4,13 +4,16 @@ import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.InvitationMapper;
+import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
 import com.simpledpgfapi.user.model.user.User;
+import com.simpledpgfapi.user.model.user.dto.UserDto;
 import com.simpledpgfapi.user.repository.InvitationRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class OrganizationService {
     @Autowired
@@ -29,19 +33,25 @@ public class OrganizationService {
     private InvitationRepository invitationRepository;
     @Autowired
     private InvitationMapper invitationMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
-        //Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
-        if( organizationRepository.findByName(adminOrganizationName) != null) {
-            return null;
+        Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
+        if(existingAdminOrganization != null) {
+            log.info("Admin Organization already exists : {}", existingAdminOrganization.getId());
+            return existingAdminOrganization;
         }
 
         Organization adminOrganization = Organization.builder()
                 .name(adminOrganizationName)
                 .organizationType(adminOrganizationType)
+                .maxMemberLicenseCounter(1.)
+                .memberLicenseCounter(1.)
                 .build();
 
         organizationRepository.save(adminOrganization);
+        log.info("Admin Organization created with Id : {}", adminOrganization.getId());
         return adminOrganization;
     }
 
@@ -53,7 +63,12 @@ public class OrganizationService {
                 );
     }
 
-    public List<InvitationDto> getAllUsersByOrganizationId(ObjectId organizationId) {
+    public List<UserDto> getUserListByOrganizationId(ObjectId organizationId) {
+        List<User> userList = userRepository.findByOrganizationId(organizationId);
+        return userMapper.modelsToDtos(userList);
+    }
+
+    public List<InvitationDto> getInvitationListByOrganizationId(ObjectId organizationId) {
         return invitationRepository.findByOrganizationId(organizationId)
                 .stream()
                 .map(invitationMapper::modelToDto)

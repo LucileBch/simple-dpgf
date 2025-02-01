@@ -12,13 +12,18 @@ export const theme = createTheme({
     },
     h2: {
       fontFamily: "'PT Serif',Roboto, sans-serif",
-      fontWeight: 400,
-      fontSize: "14px",
+      fontWeight: 600,
+      fontSize: "20px",
+    },
+    h3: {
+      fontFamily: "'PT Serif',Roboto, sans-serif",
+      fontWeight: "bold",
+      fontSize: "16px",
     },
     body1: {
       fontFamily: "'Roboto Condensed', Arial, sans-serif",
       fontWeight: 400,
-      fontSize: "12px",
+      fontSize: "13px",
     },
   },
 

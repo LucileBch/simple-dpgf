@@ -56,6 +56,7 @@ export function TokenContextProvider({
       refreshToken,
       setRefreshToken,
       isAuthenticated,
+      setIsAuthenticated,
     }),
     [
       accessToken,
@@ -63,6 +64,7 @@ export function TokenContextProvider({
       refreshToken,
       setRefreshToken,
       isAuthenticated,
+      setIsAuthenticated,
     ]
   );
 
@@ -77,4 +79,5 @@ export type TokenStore = {
   refreshToken: string | undefined;
   setRefreshToken: Dispatch<SetStateAction<string | undefined>>;
   isAuthenticated: boolean;
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
 };

@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useContext, useMemo } from "react";
 import { addRequestParams, RequestParam } from "../services/http-service";
 import { TokenContext } from "../contexts/token-context";
-import { useNavigate } from "react-router-dom";
-import { apiEndpoints, pagesUrl } from "../appConstants";
+import { apiEndpoints } from "../appConstants";
 import {
   setTokensInCookies,
   removeCookies,
@@ -11,13 +11,22 @@ import {
 
 type HttpHook = {
   get(url: string, requestParams?: RequestParam[]): Promise<Response>;
+  post(
+    url: string,
+    payload: any,
+    requestParams?: RequestParam[]
+  ): Promise<Response>;
+  put(
+    url: string,
+    payload: any,
+    requestParams?: RequestParam[]
+  ): Promise<Response>;
+  delete(url: string, requestParams?: RequestParam[]): Promise<Response>;
 };
 
 export function useHttp(): HttpHook {
   const { accessToken, setAccessToken, setRefreshToken } =
     useContext(TokenContext);
-
-  const navigate = useNavigate();
 
   const handleRetryWithRefreshToken = useCallback(
     async (
@@ -55,14 +64,13 @@ export function useHttp(): HttpHook {
           removeCookies();
           removeUserFromLocalStorage();
 
-          navigate(pagesUrl.SIGN_IN_PAGE);
           console.log("erreor refresh", error);
           throw new Error("Failed to refresh access token");
         }
       }
       throw response;
     },
-    [setAccessToken, setRefreshToken, navigate]
+    [setAccessToken, setRefreshToken]
   );
 
   return useMemo<HttpHook>(
@@ -96,6 +104,103 @@ export function useHttp(): HttpHook {
           );
         } catch (error) {
           console.error("Erreur lors de la requête GET", error);
+          throw error;
+        }
+      },
+      async post(
+        url: string,
+        payload: any,
+        requestParams?: RequestParam[]
+      ): Promise<Response> {
+        const { finalUrl, headers } = addRequestParams(
+          url,
+          accessToken,
+          requestParams
+        );
+        headers.set("Content-Type", "application/json");
+        const options: RequestInit = {
+          method: "POST",
+          headers,
+          body: JSON.stringify(payload),
+        };
+
+        try {
+          const response = await fetch(finalUrl, options);
+          if (response.ok) {
+            return response;
+          }
+
+          return handleRetryWithRefreshToken(
+            response,
+            finalUrl,
+            headers,
+            options
+          );
+        } catch (error) {
+          console.error("Erreur lors de la requête POST", error);
+          throw error;
+        }
+      },
+      async put(
+        url: string,
+        payload: any,
+        requestParams?: RequestParam[]
+      ): Promise<Response> {
+        const { finalUrl, headers } = addRequestParams(
+          url,
+          accessToken,
+          requestParams
+        );
+        headers.set("Content-Type", "application/json");
+        const options: RequestInit = {
+          method: "PUT",
+          headers,
+          body: JSON.stringify(payload),
+        };
+        try {
+          const response = await fetch(finalUrl, options);
+          if (response.ok) {
+            return response;
+          }
+          return handleRetryWithRefreshToken(
+            response,
+            finalUrl,
+            headers,
+            options
+          );
+        } catch (error) {
+          console.log("erreur lors de la requete PUT", error);
+          throw error;
+        }
+      },
+      async delete(
+        url: string,
+        requestParams?: RequestParam[]
+      ): Promise<Response> {
+        const { finalUrl, headers } = addRequestParams(
+          url,
+          accessToken,
+          requestParams
+        );
+        headers.set("Content-Type", "application/json");
+        const options: RequestInit = {
+          method: "DELETE",
+          headers,
+        };
+        try {
+          const response = await fetch(finalUrl, options);
+          if (response.ok) {
+            return response;
+          }
+
+          return handleRetryWithRefreshToken(
+            response,
+            finalUrl,
+            headers,
+            options
+          );
+        } catch (error) {
+          console.log("error DELETE method", error);
           throw error;
         }
       },

@@ -4,10 +4,11 @@ import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import axios from "axios";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import AlertSnack from "../../components/alert/AlertSnack";
 import { useState } from "react";
 import SubmitButton from "../../components/buttons/SubmitButton";
+import PageContainer from "../../components/containers/PageContainer";
 
 export default function RequestCode(): JSX.Element {
   const [email, setEmail] = useState<UserCodeRequestDto>({
@@ -46,7 +47,7 @@ export default function RequestCode(): JSX.Element {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 4 }}>
+    <PageContainer>
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">
           Entrez votre email pour recevoir un nouveau code.
@@ -80,6 +81,6 @@ export default function RequestCode(): JSX.Element {
         severity="error"
         errorMessage={errorMessage}
       />
-    </Container>
+    </PageContainer>
   );
 }

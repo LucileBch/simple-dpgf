@@ -13,4 +13,6 @@ public interface UserRepository extends MongoRepository<User, ObjectId> {
     Optional<User> findByEmail(String email);
 
     List<User> findByOrganizationId(ObjectId organizationId);
+
+    double countByOrganizationId(ObjectId organizationId);
 }

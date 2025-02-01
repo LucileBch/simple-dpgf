@@ -5,6 +5,10 @@ export type RequestParam = {
   value: string;
 };
 
+export type QueryParam = {
+  [key: string]: string | number | boolean | undefined | null;
+};
+
 export function addRequestParams(
   url: string,
   token: string | undefined,
@@ -26,4 +30,41 @@ export function addRequestParams(
   }
 
   return { finalUrl, headers };
+}
+
+// encodeURIComponent: to avoid errors with specials characters
+export function resolveUrl(
+  urlTemplate: string,
+  params: (string | undefined)[],
+  queryParams?: QueryParam
+): string {
+  let url = urlTemplate;
+  const placeholders = urlTemplate.match(/:[a-z]+/gi) ?? [];
+
+  placeholders.forEach((placeholder, index) => {
+    const pathVariable = params[index];
+    if (pathVariable !== null && pathVariable !== undefined) {
+      url = url.replace(placeholder, pathVariable.toString());
+    }
+  });
+
+  if (queryParams && Object.keys(queryParams).length > 0) {
+    const queryToString = Object.keys(queryParams)
+      .filter(
+        (key) => queryParams[key] !== null && queryParams[key] !== undefined
+      )
+      .map(
+        (key) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(
+            queryParams[key]!.toString()
+          )}`
+      )
+      .join("&");
+
+    if (queryToString) {
+      url += `?${queryToString}`;
+    }
+  }
+
+  return url;
 }

@@ -36,10 +36,6 @@ public class MongoInitializer {
                 OrganizationTypeEnum.ADMIN
         );
 
-        log.info("Admin Organization: {}", adminOrganization != null
-                ? "Created with Id" + adminOrganization.getId()
-                : "Already exists.");
-
         if(adminOrganization != null) {
             // Initialize Admin User
             String adminUserFirstName = adminFirstName;
@@ -54,10 +50,6 @@ public class MongoInitializer {
                     adminUserPassword,
                     adminOrganization.getId()
             );
-
-            log.info("Admin User: {}", adminUser != null
-                    ? "Created with Id" + adminUser.getId()
-                    : "Already exists.");
         }
     }
 }

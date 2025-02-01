@@ -1,4 +1,4 @@
-import { OrganizationCreationDto } from "../OrganizationCreationDto";
+import { OrganizationCreationDto } from "../organization/OrganizationCreationDto";
 
 export interface UserCreationDto {
   firstName: string;

@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 import { UserCreationDto } from "../../core/dtos/user/UserCreationDto";
 import axios from "axios";
@@ -9,6 +9,7 @@ import { TextInput } from "../../components/inputs/TextInput";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import AlertSnack from "../../components/alert/AlertSnack";
 import { getErrorMessage } from "../../core/utils/error-handler";
+import PageContainer from "../../components/containers/PageContainer";
 
 export default function SignIn() {
   const [formData, setFormData] = useState<UserCreationDto>({
@@ -62,7 +63,7 @@ export default function SignIn() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 4 }}>
+    <PageContainer>
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Créer votre compte</Typography>
       </Box>
@@ -155,6 +156,6 @@ export default function SignIn() {
         severity="error"
         errorMessage={errorMessage}
       />
-    </Container>
+    </PageContainer>
   );
 }

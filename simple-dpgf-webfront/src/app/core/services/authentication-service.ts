@@ -1,12 +1,17 @@
 import { UserDetailsDto } from "../dtos/user/UserDetailsDto";
 import Cookies from "js-cookie";
 
+// variables name
+const ACCESS_TOKEN = "accessToken";
+const REFRESH_TOKEN = "refreshToken";
+const USER = "user";
+
 export function setUserInLocalStorage(user: UserDetailsDto) {
-  localStorage.setItem("user", JSON.stringify(user));
+  localStorage.setItem(USER, JSON.stringify(user));
 }
 
 export function getUserFromLocalStorage(): UserDetailsDto | undefined {
-  const user = getFromLocalStorage("user");
+  const user = getFromLocalStorage(USER);
   return user ? JSON.parse(user) : undefined;
 }
 
@@ -16,26 +21,26 @@ export function getFromLocalStorage(key: string): string | undefined {
 }
 
 export function removeUserFromLocalStorage(): void {
-  localStorage.removeItem("user");
+  localStorage.removeItem(USER);
 }
 
 export function setTokensInCookies(accessToken: string, refreshToken: string) {
-  Cookies.set("accessToken", accessToken, { expires: 0.2 });
-  Cookies.set("accessToken", refreshToken, { expires: 7 });
+  Cookies.set(ACCESS_TOKEN, accessToken, { expires: 0.2 });
+  Cookies.set(REFRESH_TOKEN, refreshToken, { expires: 7 });
 }
 
 export function getAccessTokenFromCookies() {
-  return Cookies.get("accessToken");
+  return Cookies.get(ACCESS_TOKEN);
 }
 
 export function getRefreshTokenFromCookies() {
-  return Cookies.get("refreshToken");
+  return Cookies.get(REFRESH_TOKEN);
 }
 
 export function removeCookies() {
-  Cookies.remove("accessToken");
-  Cookies.remove("refreshToken");
+  Cookies.remove(ACCESS_TOKEN);
+  Cookies.remove(REFRESH_TOKEN);
 }
 
 // delete cookies au logout
-export function deleteCookies() {}
+//export function deleteCookies() {}
