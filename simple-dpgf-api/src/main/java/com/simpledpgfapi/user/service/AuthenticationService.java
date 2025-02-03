@@ -8,6 +8,7 @@ import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.organization.OrganizationStatusEnum;
 import com.simpledpgfapi.user.model.role.RoleEnum;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.UserStatusEnum;
@@ -37,7 +38,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class UserAuthenticationService {
+public class AuthenticationService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -78,6 +79,11 @@ public class UserAuthenticationService {
             Organization organization = organizationMapper.creationDtoToModel(userCreationDto.getOrganization());
             organization.setOrganizationType(userCreationDto.getOrganization().getOrganizationType());
             organization.setName(userCreationDto.getOrganization().getName());
+            organization.setOrganizationStatus(OrganizationStatusEnum.ACTIVE);
+            organization.setMemberLicenseCounter(1.);
+            organization.setMaxMemberLicenseCounter(3.);
+            organization.setProjectLicenseCounter(0.);
+            organization.setMaxProjectLicenseCounter(3.);
             organizationRepository.save(organization);
         }
 
@@ -125,10 +131,14 @@ public class UserAuthenticationService {
         accountValidationCodeService.generateAccountValidationCode(currentUser);
     }
 
-    public ResponseEntity<Map<String, String>> authenticateUser(UserAuthenticationDto userAuthenticationDto) {
+    public ResponseEntity<Map<String, Object>> authenticateUser(UserAuthenticationDto userAuthenticationDto) {
         //TODO: Gérer Error !
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, AdminUserErrorCodes.ADMIN_USER_NOT_FOUND));
+
+        if(currentUser.getUserStatus() == UserStatusEnum.DELETED) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_DELETED);
+        }
 
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
@@ -138,11 +148,12 @@ public class UserAuthenticationService {
             String accessToken = jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
             String refreshToken = refreshTokenService.createRefreshToken(currentUser.getId());
 
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put(JWT_TOKEN, accessToken);
-            tokens.put(COOKIE_NAME, refreshToken);
+            Map<String, Object> response = new HashMap<>();
+            response.put(JWT_TOKEN, accessToken);
+            response.put(COOKIE_NAME, refreshToken);
+            response.put("user", userMapper.modelToUserDetailsDto(currentUser));
 
-            return ResponseEntity.ok(tokens);
+            return ResponseEntity.ok(response);
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_AUTHENTICATED);
         }
@@ -156,6 +167,8 @@ public class UserAuthenticationService {
 
         String refreshTokenFromCookie = refreshTokenService.getRefreshTokenFromCookies(httpServletRequest);
         refreshTokenService.revokeRefreshToken(refreshTokenFromCookie);
+
+        SecurityContextHolder.clearContext();
     }
 
     public void sendCodeForPasswordUpdate(UserCodeRequestDto userCodeRequestDto){

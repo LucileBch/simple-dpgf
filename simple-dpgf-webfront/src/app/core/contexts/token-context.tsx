@@ -1,4 +1,4 @@
-import Cookies from "js-cookie";
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   Dispatch,
   SetStateAction,
@@ -9,6 +9,8 @@ import React, {
 import {
   getAccessTokenFromCookies,
   getRefreshTokenFromCookies,
+  removeCookies,
+  removeUserFromLocalStorage,
 } from "../services/authentication-service";
 
 export const TokenContext = React.createContext<TokenStore>({} as TokenStore);
@@ -35,19 +37,11 @@ export function TokenContextProvider({
   );
 
   useEffect(() => {
-    const storedAccessToken = Cookies.get("accessToken");
-    const storedRefreshToken = Cookies.get("refreshToken");
-    if (accessToken) {
-      setAccessToken(storedAccessToken);
-      setIsAuthenticated(!!accessToken);
+    if (!isAuthenticated) {
+      removeCookies();
+      removeUserFromLocalStorage();
     }
-    if (refreshToken) {
-      setRefreshToken(storedRefreshToken);
-    }
-  }, [accessToken, refreshToken]);
-
-  // fonction de refresh-token
-  //  const refreshToken:() =>
+  });
 
   const tokenStore: TokenStore = useMemo(
     () => ({

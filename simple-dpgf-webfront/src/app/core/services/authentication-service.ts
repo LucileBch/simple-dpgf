@@ -15,9 +15,8 @@ export function getUserFromLocalStorage(): UserDetailsDto | undefined {
   return user ? JSON.parse(user) : undefined;
 }
 
-export function getFromLocalStorage(key: string): string | undefined {
-  const elementFromStorage: string | null = localStorage.getItem(key);
-  return elementFromStorage ?? undefined;
+export function getFromLocalStorage(key: string): string | null {
+  return localStorage.getItem(key);
 }
 
 export function removeUserFromLocalStorage(): void {
@@ -25,7 +24,7 @@ export function removeUserFromLocalStorage(): void {
 }
 
 export function setTokensInCookies(accessToken: string, refreshToken: string) {
-  Cookies.set(ACCESS_TOKEN, accessToken, { expires: 0.2 });
+  Cookies.set(ACCESS_TOKEN, accessToken, { expires: 1 / 24 });
   Cookies.set(REFRESH_TOKEN, refreshToken, { expires: 7 });
 }
 
@@ -38,8 +37,8 @@ export function getRefreshTokenFromCookies() {
 }
 
 export function removeCookies() {
-  Cookies.remove(ACCESS_TOKEN);
-  Cookies.remove(REFRESH_TOKEN);
+  Cookies.remove(ACCESS_TOKEN, { path: "/" });
+  Cookies.remove(REFRESH_TOKEN, { path: "/" });
 }
 
 // delete cookies au logout

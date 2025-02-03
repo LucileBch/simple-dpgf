@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   Dispatch,
   SetStateAction,
@@ -55,6 +56,7 @@ export function OrganizationContextProvider({
   const organizationStore: OrganizationStore = useMemo(
     () => ({
       organizationList,
+      setOrganizationList,
       isOrganizationListLoading,
       organization,
       setOrganization,
@@ -62,6 +64,7 @@ export function OrganizationContextProvider({
     }),
     [
       organizationList,
+      setOrganizationList,
       isOrganizationListLoading,
       organization,
       setOrganization,
@@ -78,6 +81,7 @@ export function OrganizationContextProvider({
 
 export type OrganizationStore = {
   organizationList: OrganizationDto[];
+  setOrganizationList: Dispatch<SetStateAction<OrganizationDto[]>>;
   isOrganizationListLoading: boolean;
   organization: OrganizationDto | undefined;
   setOrganization: Dispatch<SetStateAction<OrganizationDto | undefined>>;

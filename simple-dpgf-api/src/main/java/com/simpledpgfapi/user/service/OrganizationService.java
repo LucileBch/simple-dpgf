@@ -7,11 +7,15 @@ import com.simpledpgfapi.user.mapper.InvitationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.organization.OrganizationStatusEnum;
 import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
+import com.simpledpgfapi.user.model.refreshtoken.RefreshToken;
 import com.simpledpgfapi.user.model.user.User;
+import com.simpledpgfapi.user.model.user.UserStatusEnum;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
 import com.simpledpgfapi.user.repository.InvitationRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
+import com.simpledpgfapi.user.repository.RefreshTokenRepository;
 import com.simpledpgfapi.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -35,6 +39,8 @@ public class OrganizationService {
     private InvitationMapper invitationMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
         Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
@@ -87,7 +93,35 @@ public class OrganizationService {
         }
 
         invitationRepository.deleteByEmailReceiver(userToRemove.getEmail());
-
         userRepository.delete(userToRemove);
+    }
+
+    //TODO: mettre transactionnal
+    // chercher les users + les dpgf ET CE QUI s'enssuit pour le futur (??? lot / resultat ?)
+    // delete invit ?
+    @Transactional
+    public void deleteOrganizationById(ObjectId organizationId) {
+        // organization status to deleted
+        Organization organizationToDelete = organizationRepository.findById(organizationId).orElseThrow(() ->
+            new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
+
+        if(organizationToDelete.getOrganizationStatus() == OrganizationStatusEnum.DELETED) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_ALREADY_DELETED);
+        } else {
+            organizationToDelete.setOrganizationStatus(OrganizationStatusEnum.DELETED);
+            organizationRepository.save(organizationToDelete);
+        }
+
+        // user status to deleted
+        List<User> userToDelete = userRepository.findByOrganizationId(organizationToDelete.getId());
+        userToDelete.forEach(user -> user.setUserStatus(UserStatusEnum.DELETED));
+        userRepository.saveAll(userToDelete);
+
+        // delete refreshTokens
+        List<ObjectId> userIds = userToDelete.stream().map(User::getId).toList();
+        userIds.forEach(userId -> {
+                    List<RefreshToken> refreshTokenList = refreshTokenRepository.findByUserId(userId);
+                    refreshTokenRepository.deleteAll(refreshTokenList);
+        });
     }
 }

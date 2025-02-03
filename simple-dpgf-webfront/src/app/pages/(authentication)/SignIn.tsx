@@ -9,12 +9,16 @@ import SubmitButton from "../../components/buttons/SubmitButton";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import AlertSnack from "../../components/alert/AlertSnack";
 import { UserContext } from "../../core/contexts/user-context";
-import { setTokensInCookies } from "../../core/services/authentication-service";
+
 import { TokenContext } from "../../core/contexts/token-context";
 import PageContainer from "../../components/containers/PageContainer";
+import {
+  setTokensInCookies,
+  setUserInLocalStorage,
+} from "../../core/services/authentication-service";
 
 export default function SignIn() {
-  const { user, getCurrentUserConnexion } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { setIsAuthenticated } = useContext(TokenContext);
 
   const [formData, setFormData] = useState<UserAuthenticationDto>({
@@ -35,19 +39,22 @@ export default function SignIn() {
     });
   };
 
+  console.log("user form context", user);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { data } = await axios.post(apiEndpoints.SIGN_IN, formData);
-      console.log("connexion reussi");
-      console.log("response", data);
+      const { accessToken, refreshToken, user } = data;
 
-      const { accessToken, refreshToken } = data;
-      setTokensInCookies(accessToken, refreshToken);
+      if (user) {
+        setUserInLocalStorage(user);
+        setTokensInCookies(accessToken, refreshToken);
+        setIsAuthenticated(true);
+        setUser(user);
+      }
 
-      getCurrentUserConnexion();
-      setIsAuthenticated(true);
-      console.log("user form context", user);
+      console.log("connexion réussie");
 
       navigate(pagesUrl.DASHBOARD_PAGE);
     } catch (error) {
@@ -116,7 +123,7 @@ export default function SignIn() {
         open={openAlert}
         onClose={handleCloseAlert}
         severity="error"
-        errorMessage={errorMessage}
+        message={errorMessage}
       />
     </PageContainer>
   );

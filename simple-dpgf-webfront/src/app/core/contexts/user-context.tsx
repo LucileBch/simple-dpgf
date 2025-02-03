@@ -1,4 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
+  Dispatch,
+  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -10,16 +13,10 @@ import {
   getUserFromLocalStorage,
   removeCookies,
   removeUserFromLocalStorage,
-  setUserInLocalStorage,
 } from "../services/authentication-service";
-import { useUser } from "../hooks/use-user";
 import { useHttp } from "../hooks/use-http";
 import { apiEndpoints } from "../appConstants";
 import { TokenContext } from "./token-context";
-
-// type AuthResponse = {
-//   [key: string]: string;
-// };
 
 export const UserContext = React.createContext<UserStore>({} as UserStore);
 
@@ -27,9 +24,8 @@ export function UserContextProvider({
   children,
 }: React.PropsWithChildren): React.JSX.Element {
   const { post } = useHttp();
-  const { getCurrentUser } = useUser();
 
-  const { setIsAuthenticated } = useContext(TokenContext);
+  const { isAuthenticated, setIsAuthenticated } = useContext(TokenContext);
 
   const initialUser: UserDetailsDto | undefined = useMemo(
     () => getUserFromLocalStorage(),
@@ -37,70 +33,43 @@ export function UserContextProvider({
   );
   const [user, setUser] = useState<UserDetailsDto | undefined>(initialUser);
 
-  // set user in local storage
+  // Ajouter ce useEffect pour observer l'état de l'utilisateur
   useEffect(() => {
-    if (user === undefined) {
-      removeUserFromLocalStorage();
-    } else {
-      setUserInLocalStorage(user);
-    }
-  }, [user]);
+    console.log("L'état de l'utilisateur a changé : ", user);
+  }, [user]); // Cela va logguer chaque changement de user
 
   // if not authenticated, setUser => undefined
-  //   useEffect(() => {
-  //     if (!isAuthenticated) {
-  //       setUser(undefined);
-  //     }
-  //   }, [isAuthenticated]);
-
-  const getCurrentUserConnexion = useCallback(async () => {
-    getCurrentUser().then((newUser) => {
-      setUser(newUser);
-    });
-  }, [getCurrentUser]);
+  useEffect(() => {
+    console.log("isAuthenticated changé : ", isAuthenticated);
+    if (!isAuthenticated) {
+      setUser(undefined);
+    }
+  }, [isAuthenticated, setUser]);
 
   const logoutUser = useCallback(async () => {
     try {
-      await post(apiEndpoints.SIGN_OUT, []);
-    } catch (error) {
-      console.log("logout problème", error);
-    } finally {
+      await post(apiEndpoints.SIGN_OUT, [], undefined, {
+        credentials: "include",
+      });
       removeCookies();
       removeUserFromLocalStorage();
       setIsAuthenticated(false);
       setUser(undefined);
-    }
-  }, [post, setIsAuthenticated]);
 
-  //   const loginUser = useCallback(
-  //     async (
-  //       userAuthenticationDto: UserAuthenticationDto
-  //     ): Promise<AuthResponse | null> => {
-  //       try {
-  //         const response = await post(
-  //           apiEndpoints.SIGN_IN,
-  //           userAuthenticationDto,
-  //           []
-  //         );
-  //         const data: AuthResponse = await response.json(); // Attendre la conversion JSON
-  //         setIsAuthenticated(true);
-  //         return data;
-  //       } catch (error) {
-  //         console.log("login error", error);
-  //         setIsAuthenticated(false);
-  //         return null;
-  //       }
-  //     },
-  //     [post, setIsAuthenticated]
-  //   );
+      console.log("user after deco", user);
+      console.log("LocalStorage après logout : ", localStorage.getItem("user"));
+    } catch (error) {
+      console.log("logout problème", error);
+    }
+  }, [post, setIsAuthenticated, user]);
 
   const userStore: UserStore = useMemo(
     () => ({
       user,
-      getCurrentUserConnexion,
+      setUser,
       logoutUser,
     }),
-    [user, getCurrentUserConnexion, logoutUser]
+    [user, setUser, logoutUser]
   );
 
   return (
@@ -110,9 +79,6 @@ export function UserContextProvider({
 
 export type UserStore = {
   user: UserDetailsDto | undefined;
-  getCurrentUserConnexion(): void;
+  setUser: Dispatch<SetStateAction<UserDetailsDto | undefined>>;
   logoutUser(): Promise<void>;
-  //loginUser(
-  //     userAuthenticationDto: UserAuthenticationDto
-  //   ): Promise<AuthResponse | null>;
 };

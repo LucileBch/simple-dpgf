@@ -71,5 +71,35 @@ export const theme = createTheme({
         },
       },
     },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontFamily: "'PT Serif',Roboto, sans-serif",
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          color: "#0d5c63", // Change la couleur du texte sélectionné
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#424242", // Change la couleur de la bordure
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#0d5c63", // Couleur de bordure au hover
+          },
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          color: "#424242", // Couleur des options dans le menu déroulant
+          "&:hover": {
+            backgroundColor: "#44a1a0", // Couleur de fond au hover
+          },
+        },
+      },
+    },
   },
 });

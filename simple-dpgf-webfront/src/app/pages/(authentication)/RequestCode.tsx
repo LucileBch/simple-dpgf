@@ -79,7 +79,7 @@ export default function RequestCode(): JSX.Element {
         open={openAlert}
         onClose={handleCloseAlert}
         severity="error"
-        errorMessage={errorMessage}
+        message={errorMessage}
       />
     </PageContainer>
   );

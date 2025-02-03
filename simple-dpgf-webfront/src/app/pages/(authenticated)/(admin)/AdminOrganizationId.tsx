@@ -10,12 +10,17 @@ import { useOrganization } from "../../../core/hooks/use-organization";
 import { RoleEnum } from "../../../core/enums/RoleEnum";
 import OutlinedButton from "../../../components/buttons/OutlinedButton";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
+import ConfirmDialog from "../../../components/modals/ConfirmDeleteOrgaDialog";
+import { ConfirmDialogContext } from "../../../core/contexts/confirm-delete-orga-dialog-context";
 
 export default function AdminOrganizationId(): JSX.Element {
   const { organization, isOrganizationLoading } =
     useContext(OrganizationContext);
+  const { setIsConfirmDialogOpen, setOrganizationId } =
+    useContext(ConfirmDialogContext);
 
   const { fetchMembersByOrganizationId } = useOrganization();
+
   const [organizationMemberList, setOrganizationMemberList] =
     useState<UserDto[]>();
 
@@ -32,9 +37,14 @@ export default function AdminOrganizationId(): JSX.Element {
     getMembersFromOrganization();
   }, [getMembersFromOrganization]);
 
-  const notAdminMembers = organizationMemberList?.filter(
-    (member) => member.role !== RoleEnum.ADMIN
+  const notManagerMembers = organizationMemberList?.filter(
+    (member) => member.role !== RoleEnum.ORGANIZATION_MANAGER
   );
+
+  const handleOpenConfirmDialog = useCallback(() => {
+    setOrganizationId(organization?.id);
+    setIsConfirmDialogOpen(true);
+  }, [organization?.id, setIsConfirmDialogOpen, setOrganizationId]);
 
   return (
     <PageContainer>
@@ -87,7 +97,9 @@ export default function AdminOrganizationId(): JSX.Element {
           <Box sx={{ pb: 3 }}>
             <TitleH3>Informations sur le manager de l'organisation :</TitleH3>
             {organizationMemberList
-              ?.filter((member) => member.role === RoleEnum.ADMIN)
+              ?.filter(
+                (member) => member.role === RoleEnum.ORGANIZATION_MANAGER
+              )
               .map((member) => {
                 return (
                   <div key={member.id}>
@@ -118,8 +130,8 @@ export default function AdminOrganizationId(): JSX.Element {
 
           <Box sx={{ pb: 3 }}>
             <TitleH3>Informations sur les membres de l'organisation :</TitleH3>
-            {notAdminMembers !== undefined && notAdminMembers.length > 0 ? (
-              notAdminMembers?.map((member) => {
+            {notManagerMembers !== undefined && notManagerMembers.length > 0 ? (
+              notManagerMembers?.map((member) => {
                 return (
                   <div key={member.id}>
                     <Typography>
@@ -145,7 +157,14 @@ export default function AdminOrganizationId(): JSX.Element {
               justifyContent: "end",
             }}
           >
-            <OutlinedButton label="Supprimer l'organisation" />
+            <OutlinedButton
+              label="Supprimer l'organisation"
+              onClick={handleOpenConfirmDialog}
+            />
+            <ConfirmDialog
+              dialogTitle="Etes-vous sur de vouloir supprimer cette organisation ?"
+              organizationId={organization?.id}
+            />
           </Box>
         </>
       )}

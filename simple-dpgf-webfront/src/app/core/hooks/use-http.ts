@@ -14,14 +14,15 @@ type HttpHook = {
   post(
     url: string,
     payload: any,
-    requestParams?: RequestParam[]
+    requestParams?: RequestParam[],
+    customOptions?: RequestInit
   ): Promise<Response>;
   put(
     url: string,
     payload: any,
     requestParams?: RequestParam[]
   ): Promise<Response>;
-  delete(url: string, requestParams?: RequestParam[]): Promise<Response>;
+  deleteRequest(url: string, requestParams?: RequestParam[]): Promise<Response>;
 };
 
 export function useHttp(): HttpHook {
@@ -110,7 +111,8 @@ export function useHttp(): HttpHook {
       async post(
         url: string,
         payload: any,
-        requestParams?: RequestParam[]
+        requestParams?: RequestParam[],
+        customOptions?: RequestInit
       ): Promise<Response> {
         const { finalUrl, headers } = addRequestParams(
           url,
@@ -122,6 +124,7 @@ export function useHttp(): HttpHook {
           method: "POST",
           headers,
           body: JSON.stringify(payload),
+          ...customOptions,
         };
 
         try {
@@ -173,7 +176,7 @@ export function useHttp(): HttpHook {
           throw error;
         }
       },
-      async delete(
+      async deleteRequest(
         url: string,
         requestParams?: RequestParam[]
       ): Promise<Response> {

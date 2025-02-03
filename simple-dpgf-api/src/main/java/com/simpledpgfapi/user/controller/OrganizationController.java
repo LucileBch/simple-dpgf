@@ -25,6 +25,12 @@ public class OrganizationController {
         return organizationService.getUserListByOrganizationId(organizationId);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @DeleteMapping("/{organizationId}")
+    public void deleteOrganizationById(@PathVariable ObjectId organizationId) {
+        organizationService.deleteOrganizationById(organizationId);
+    }
+
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @GetMapping("/{organizationId}/invitation-list")
     public List<InvitationDto> getUserInvitationByOrganizationId(@PathVariable ObjectId organizationId) {

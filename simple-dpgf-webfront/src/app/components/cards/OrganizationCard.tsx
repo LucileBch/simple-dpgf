@@ -28,7 +28,12 @@ export default function OrganizationCard({
   }
 
   return (
-    <Card sx={{ maxWidth: 240, minHeight: 200 }}>
+    <Card
+      sx={{
+        maxWidth: 275,
+        minHeight: 200,
+      }}
+    >
       <CardContent onClick={navigateToOrganization} sx={{ cursor: "pointer" }}>
         <TitleH3>{organization.name}</TitleH3>
         <Typography>

@@ -40,13 +40,11 @@ export const apiEndpoints = {
   // authenticated endpoints (use-http)
   SIGN_OUT: "/auth/signout",
 
-  // user
-  USER: "/user",
-
   // adminUser
   GET_ALL_ORGANIZATIONS: "/admin/organizations",
   ORGANIZATION: "/admin/organization",
   GET_MEMBERS: "/organization",
+  DELETE_ORGANIZAION: "/organization",
 
   // organization manager
   SEND_PROJECT_OWNER_INVITATION: "http://localhost:8080/api/invitation",

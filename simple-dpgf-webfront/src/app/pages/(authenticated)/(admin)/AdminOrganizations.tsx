@@ -1,6 +1,6 @@
 import { OrganizationContext } from "../../../core/contexts/organization-context";
 import OrganizationCard from "../../../components/cards/OrganizationCard";
-import { Typography } from "@mui/material";
+import { Grid2, Typography } from "@mui/material";
 import { useContext } from "react";
 import NavBar from "../../../components/NavBar";
 import PageContainer from "../../../components/containers/PageContainer";
@@ -11,6 +11,8 @@ export default function AdminOrganizations(): JSX.Element {
   const { organizationList, isOrganizationListLoading } =
     useContext(OrganizationContext);
 
+  console.log("oraganization", organizationList);
+
   return (
     <PageContainer>
       <NavBar />
@@ -18,20 +20,19 @@ export default function AdminOrganizations(): JSX.Element {
       {isOrganizationListLoading ? (
         <CircularLoadingPage />
       ) : (
-        <>
-          {organizationList.length === 0 || organizationList === undefined ? (
+        <Grid2 container spacing={2}>
+          {organizationList.length === 0 ? (
             <Typography>Il n'y a pas encore d'organisation</Typography>
           ) : (
             organizationList.map((organization) => {
               return (
-                <OrganizationCard
-                  key={organization.id}
-                  organization={organization}
-                />
+                <Grid2 size={4} key={organization.id}>
+                  <OrganizationCard organization={organization} />
+                </Grid2>
               );
             })
           )}
-        </>
+        </Grid2>
       )}
     </PageContainer>
   );

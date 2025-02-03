@@ -112,7 +112,7 @@ export default function InviteProjectOwner() {
           open={openAlert}
           onClose={handleCloseAlert}
           severity="error"
-          errorMessage={errorMessage}
+          message={errorMessage}
         />
       </Container>
     </>

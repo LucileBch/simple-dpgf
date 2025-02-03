@@ -32,7 +32,7 @@ public class InvitationService {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserAuthenticationService userAuthenticationService;
+    private AuthenticationService authenticationService;
     @Autowired
     private OrganizationRepository organizationRepository;
     @Autowired
@@ -90,7 +90,7 @@ public class InvitationService {
         invitationRepository.save(invitation);
 
         userCreationDto.setOrganization(organizationCreationDto);
-        return userAuthenticationService.createUser(userCreationDto, invitation.getRole());
+        return authenticationService.createUser(userCreationDto, invitation.getRole());
     }
 
     private Invitation createProjectOwnerInvitation(String emailSender, InvitationCreationDto invitationCreationDto, ObjectId organizationId) {

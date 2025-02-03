@@ -8,10 +8,11 @@ type OrganizationHook = {
   fetchOrganizationList(): Promise<OrganizationDto[]>;
   fetchOrganizationById(organizationId: string): Promise<OrganizationDto>;
   fetchMembersByOrganizationId(organizationId: string): Promise<UserDto[]>;
+  deleteOrganizationById(organizationId: string): Promise<Response>;
 };
 
 export function useOrganization(): OrganizationHook {
-  const { get } = useHttp();
+  const { get, deleteRequest } = useHttp();
 
   return useMemo(
     () => ({
@@ -30,7 +31,12 @@ export function useOrganization(): OrganizationHook {
           `${apiEndpoints.GET_MEMBERS}/${organizationId}/member-list`
         ).then((response) => response.json());
       },
+      deleteOrganizationById(organizationId: string): Promise<Response> {
+        return deleteRequest(
+          `${apiEndpoints.DELETE_ORGANIZAION}/${organizationId}`
+        );
+      },
     }),
-    [get]
+    [get, deleteRequest]
   );
 }

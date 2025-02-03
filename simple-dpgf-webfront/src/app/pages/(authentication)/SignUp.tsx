@@ -1,4 +1,12 @@
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { UserCreationDto } from "../../core/dtos/user/UserCreationDto";
 import axios from "axios";
@@ -11,7 +19,7 @@ import AlertSnack from "../../components/alert/AlertSnack";
 import { getErrorMessage } from "../../core/utils/error-handler";
 import PageContainer from "../../components/containers/PageContainer";
 
-export default function SignIn() {
+export default function SignUp() {
   const [formData, setFormData] = useState<UserCreationDto>({
     firstName: "",
     lastName: "",
@@ -41,6 +49,16 @@ export default function SignIn() {
         [name]: value,
       });
     }
+  };
+
+  const handleSelect = (e: SelectChangeEvent) => {
+    setFormData({
+      ...formData,
+      organization: {
+        ...formData.organization,
+        organizationType: e.target.value as OrganizationTypeEnum,
+      },
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,15 +121,27 @@ export default function SignIn() {
             p: 1,
           }}
         >
-          {/* // FAIRE UN SELECT */}
-          <TextInput
-            id="organizationType"
-            name="organizationType"
-            type="text"
-            label="Type d'organisation"
-            required
-            onChange={handleChange}
-          />
+          <FormControl sx={{ minWidth: "398px" }}>
+            <InputLabel id="organizationType-label">
+              Type d'organisation
+            </InputLabel>
+            <Select
+              id="organizationType"
+              name="organizationType"
+              label="Type d'organisation"
+              value={formData.organization.organizationType || ""}
+              onChange={handleSelect}
+              displayEmpty
+            >
+              <MenuItem value="" disabled>
+                Sélectionnez un type
+              </MenuItem>
+              <MenuItem value={OrganizationTypeEnum.MOA}>
+                {OrganizationTypeEnum.MOA}
+              </MenuItem>
+            </Select>
+          </FormControl>
+
           <TextInput
             id="name"
             name="name"
@@ -154,7 +184,7 @@ export default function SignIn() {
         open={openAlert}
         onClose={handleCloseAlert}
         severity="error"
-        errorMessage={errorMessage}
+        message={errorMessage}
       />
     </PageContainer>
   );

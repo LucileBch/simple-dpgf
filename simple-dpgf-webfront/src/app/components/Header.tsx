@@ -17,8 +17,8 @@ export default function Header() {
   const { logoutUser } = useContext(UserContext);
   console.log("authen header", isAuthenticated);
 
-  const handleLogout = useCallback(async () => {
-    await logoutUser();
+  const handleLogout = useCallback(() => {
+    logoutUser();
     navigate(pagesUrl.HOME_PAGE);
   }, [logoutUser, navigate]);
 

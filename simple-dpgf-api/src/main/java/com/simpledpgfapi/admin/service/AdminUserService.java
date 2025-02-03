@@ -5,6 +5,8 @@ import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.model.organization.Organization;
+import com.simpledpgfapi.user.model.organization.OrganizationStatusEnum;
+import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
 import com.simpledpgfapi.user.model.organization.dto.OrganizationDto;
 import com.simpledpgfapi.user.model.role.RoleEnum;
 import com.simpledpgfapi.user.model.user.User;
@@ -62,7 +64,9 @@ public class AdminUserService {
     }
 
     public List<OrganizationDto> getAllOrganizations() {
-         List<Organization> organizationList = organizationRepository.findAll();
+         List<Organization> organizationList = organizationRepository.findByOrganizationStatusNotAndOrganizationTypeNot(
+                 OrganizationStatusEnum.DELETED,
+                 OrganizationTypeEnum.ADMIN);
 
         return organizationList.stream()
                  .map(organizationMapper::modelToDto)

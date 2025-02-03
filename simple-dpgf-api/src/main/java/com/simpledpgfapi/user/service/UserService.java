@@ -4,7 +4,6 @@ import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.user.User;
-import com.simpledpgfapi.user.model.user.dto.UserDetailsDto;
 import com.simpledpgfapi.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +26,5 @@ public class UserService {
 
         return userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
-    }
-
-    public UserDetailsDto getUserInfos() {
-        User currentUser = getCurrentAuthenticatedUser();
-        return userMapper.modelToUserDetailsDto(currentUser);
     }
 }
