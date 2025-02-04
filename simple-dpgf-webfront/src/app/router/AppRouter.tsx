@@ -29,7 +29,8 @@ import { OrganizationContextProvider } from "../core/contexts/organization-conte
 import AdminOrganizations from "../pages/(authenticated)/(admin)/AdminOrganizations";
 import AdminOrganizationId from "../pages/(authenticated)/(admin)/AdminOrganizationId";
 import UserProfile from "../pages/(authenticated)/UserProfile";
-import { ConfirmDialogContextProvider } from "../core/contexts/confirm-delete-orga-dialog-context";
+import { ConfirmDialogContextProvider } from "../core/contexts/delete-orga-dialog-context";
+import { DialogContextProvider } from "../core/contexts/dialog-context";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -67,9 +68,11 @@ export default function AppRouter(): JSX.Element {
           <Route
             path={pagesUrl.ADMIN_ORGANIZATION_PAGE}
             element={
-              <ConfirmDialogContextProvider>
-                <AdminOrganizationId />
-              </ConfirmDialogContextProvider>
+              <DialogContextProvider>
+                <ConfirmDialogContextProvider>
+                  <AdminOrganizationId />
+                </ConfirmDialogContextProvider>
+              </DialogContextProvider>
             }
           />
         </Route>

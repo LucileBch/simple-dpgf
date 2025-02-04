@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { useContext } from "react";
-import { ConfirmDialogContext } from "../../core/contexts/confirm-delete-orga-dialog-context";
+import { DeleteOrgaDialogContext } from "../../core/contexts/delete-orga-dialog-context";
 
 interface IProps {
   dialogTitle: string;
@@ -14,16 +14,16 @@ interface IProps {
   organizationId?: string;
 }
 
-export default function ConfirmDialog({
+export default function DeleteOrgaDialog({
   dialogTitle,
   dialogContent,
 }: Readonly<IProps>): JSX.Element {
-  const { isConfirmDialogOpen, handleCancelAndClose, handleSubmitAndClose } =
-    useContext(ConfirmDialogContext);
+  const { isDeleteOrgaDialogOpen, handleCancelAndClose, handleSubmitAndClose } =
+    useContext(DeleteOrgaDialogContext);
 
   return (
     <Dialog
-      open={isConfirmDialogOpen}
+      open={isDeleteOrgaDialogOpen}
       onClose={handleCancelAndClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

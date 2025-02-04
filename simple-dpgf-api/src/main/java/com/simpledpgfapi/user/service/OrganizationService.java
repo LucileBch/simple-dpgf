@@ -4,11 +4,14 @@ import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.InvitationMapper;
+import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.organization.OrganizationStatusEnum;
 import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
+import com.simpledpgfapi.user.model.organization.dto.OrganizationDto;
+import com.simpledpgfapi.user.model.organization.dto.OrganizationLicenseUpdateDto;
 import com.simpledpgfapi.user.model.refreshtoken.RefreshToken;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.UserStatusEnum;
@@ -41,6 +44,8 @@ public class OrganizationService {
     private UserMapper userMapper;
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+    @Autowired
+    private OrganizationMapper organizationMapper;
 
     public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
         Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
@@ -105,12 +110,10 @@ public class OrganizationService {
         Organization organizationToDelete = organizationRepository.findById(organizationId).orElseThrow(() ->
             new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
 
-        if(organizationToDelete.getOrganizationStatus() == OrganizationStatusEnum.DELETED) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_ALREADY_DELETED);
-        } else {
-            organizationToDelete.setOrganizationStatus(OrganizationStatusEnum.DELETED);
-            organizationRepository.save(organizationToDelete);
-        }
+        throwIfOrganizationDeleted(organizationToDelete);
+
+        organizationToDelete.setOrganizationStatus(OrganizationStatusEnum.DELETED);
+        organizationRepository.save(organizationToDelete);
 
         // user status to deleted
         List<User> userToDelete = userRepository.findByOrganizationId(organizationToDelete.getId());
@@ -123,5 +126,27 @@ public class OrganizationService {
                     List<RefreshToken> refreshTokenList = refreshTokenRepository.findByUserId(userId);
                     refreshTokenRepository.deleteAll(refreshTokenList);
         });
+    }
+
+    public OrganizationDto updateOrganizationLicenses(ObjectId organizationId, OrganizationLicenseUpdateDto organizationLicenseUpdateDto) {
+        Organization organizationToUpdate = organizationRepository.findById(organizationId).orElseThrow(() ->
+                new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
+
+        throwIfOrganizationDeleted(organizationToUpdate);
+
+        organizationToUpdate.setMemberLicenseCounter(organizationLicenseUpdateDto.getMemberLicenseCounter());
+        organizationToUpdate.setMaxMemberLicenseCounter(organizationLicenseUpdateDto.getMaxMemberLicenseCounter());
+        organizationToUpdate.setProjectLicenseCounter(organizationLicenseUpdateDto.getProjectLicenseCounter());
+        organizationToUpdate.setMaxProjectLicenseCounter(organizationLicenseUpdateDto.getMaxProjectLicenseCounter());
+        organizationRepository.save(organizationToUpdate);
+
+        return organizationMapper.modelToDto(organizationToUpdate);
+    }
+
+    // utils
+    private void throwIfOrganizationDeleted(Organization organization) {
+        if(organization.getOrganizationStatus() == OrganizationStatusEnum.DELETED) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_ALREADY_DELETED);
+        }
     }
 }

@@ -13,9 +13,8 @@ import { pagesUrl } from "../appConstants";
 import { useOrganization } from "../hooks/use-organization";
 import { OrganizationContext } from "./organization-context";
 
-export const ConfirmDialogContext = React.createContext<ConfirmDialogStore>(
-  {} as ConfirmDialogStore
-);
+export const DeleteOrgaDialogContext =
+  React.createContext<DeleteOrgaDialogStore>({} as DeleteOrgaDialogStore);
 
 export function ConfirmDialogContextProvider({
   children,
@@ -26,7 +25,7 @@ export function ConfirmDialogContextProvider({
 
   const { setOrganizationList } = useContext(OrganizationContext);
 
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] =
+  const [isDeleteOrgaDialogOpen, setIsDeleteOrgaDialogOpen] =
     useState<boolean>(false);
   const [organizationId, setOrganizationId] = useState<string | undefined>(
     undefined
@@ -35,12 +34,12 @@ export function ConfirmDialogContextProvider({
   const [message, setMessage] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
 
-  const handleCloseAlert = () => {
+  const handleCloseAlert = useCallback(() => {
     setOpenAlert(false);
-  };
+  }, []);
 
   const handleCancelAndClose = useCallback(() => {
-    setIsConfirmDialogOpen(false);
+    setIsDeleteOrgaDialogOpen(false);
   }, []);
 
   const handleSubmitAndClose = useCallback(async () => {
@@ -68,7 +67,7 @@ export function ConfirmDialogContextProvider({
       setMessage("Une erreur est survenue");
       setOpenAlert(true);
     }
-    setIsConfirmDialogOpen(false);
+    setIsDeleteOrgaDialogOpen(false);
     setIsSubmitting(false);
   }, [
     deleteOrganizationById,
@@ -78,25 +77,25 @@ export function ConfirmDialogContextProvider({
     setOrganizationList,
   ]);
 
-  const confirmDialogStore: ConfirmDialogStore = useMemo(
+  const deleteOrgaDialogStore: DeleteOrgaDialogStore = useMemo(
     () => ({
-      isConfirmDialogOpen,
-      setIsConfirmDialogOpen,
+      isDeleteOrgaDialogOpen,
+      setIsDeleteOrgaDialogOpen,
+      setOrganizationId,
       handleCancelAndClose,
       handleSubmitAndClose,
-      setOrganizationId,
     }),
     [
-      isConfirmDialogOpen,
-      setIsConfirmDialogOpen,
+      isDeleteOrgaDialogOpen,
+      setIsDeleteOrgaDialogOpen,
+      setOrganizationId,
       handleCancelAndClose,
       handleSubmitAndClose,
-      setOrganizationId,
     ]
   );
 
   return (
-    <ConfirmDialogContext.Provider value={confirmDialogStore}>
+    <DeleteOrgaDialogContext.Provider value={deleteOrgaDialogStore}>
       {children}
       <AlertSnack
         open={openAlert}
@@ -104,14 +103,14 @@ export function ConfirmDialogContextProvider({
         severity={message?.startsWith("Une erreur") ? "error" : "success"}
         message={message}
       />
-    </ConfirmDialogContext.Provider>
+    </DeleteOrgaDialogContext.Provider>
   );
 }
 
-export type ConfirmDialogStore = {
-  isConfirmDialogOpen: boolean;
-  setIsConfirmDialogOpen: Dispatch<SetStateAction<boolean>>;
+export type DeleteOrgaDialogStore = {
+  isDeleteOrgaDialogOpen: boolean;
+  setIsDeleteOrgaDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setOrganizationId: Dispatch<SetStateAction<string | undefined>>;
   handleCancelAndClose(): void;
   handleSubmitAndClose(): void;
-  setOrganizationId: Dispatch<SetStateAction<string | undefined>>;
 };

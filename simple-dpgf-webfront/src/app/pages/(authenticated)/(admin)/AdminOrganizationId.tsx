@@ -10,14 +10,18 @@ import { useOrganization } from "../../../core/hooks/use-organization";
 import { RoleEnum } from "../../../core/enums/RoleEnum";
 import OutlinedButton from "../../../components/buttons/OutlinedButton";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
-import ConfirmDialog from "../../../components/modals/ConfirmDeleteOrgaDialog";
-import { ConfirmDialogContext } from "../../../core/contexts/confirm-delete-orga-dialog-context";
+import DeleteOrgaDialog from "../../../components/modals/DeleteOrgaDialog";
+import { DeleteOrgaDialogContext } from "../../../core/contexts/delete-orga-dialog-context";
+import UpdateLicenseDialog from "../../../components/modals/UpdateLicenseDialog";
+import { DialogContext } from "../../../core/contexts/dialog-context";
 
 export default function AdminOrganizationId(): JSX.Element {
   const { organization, isOrganizationLoading } =
     useContext(OrganizationContext);
-  const { setIsConfirmDialogOpen, setOrganizationId } =
-    useContext(ConfirmDialogContext);
+  const { setIsDeleteOrgaDialogOpen, setOrganizationId } = useContext(
+    DeleteOrgaDialogContext
+  );
+  const { setIsDialogOpen } = useContext(DialogContext);
 
   const { fetchMembersByOrganizationId } = useOrganization();
 
@@ -43,8 +47,12 @@ export default function AdminOrganizationId(): JSX.Element {
 
   const handleOpenConfirmDialog = useCallback(() => {
     setOrganizationId(organization?.id);
-    setIsConfirmDialogOpen(true);
-  }, [organization?.id, setIsConfirmDialogOpen, setOrganizationId]);
+    setIsDeleteOrgaDialogOpen(true);
+  }, [organization?.id, setIsDeleteOrgaDialogOpen, setOrganizationId]);
+
+  const handleOpenDialog = useCallback(() => {
+    setIsDialogOpen(true);
+  }, [setIsDialogOpen]);
 
   return (
     <PageContainer>
@@ -79,18 +87,26 @@ export default function AdminOrganizationId(): JSX.Element {
               {organization?.maxMemberLicenseCounter}
             </Typography>
             <Typography>
-              Nombre de licenses utilisateurs :{" "}
-              {organization?.projectLicenseCounter} /{" "}
-              {organization?.maxProjectLicenseCounter}
+              Nombre de licenses projets : {organization?.projectLicenseCounter}{" "}
+              / {organization?.maxProjectLicenseCounter}
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
-              <OutlinedButton label="Mettre à jour les licenses" />
-            </Box>
+            {organization?.id && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                }}
+              >
+                <OutlinedButton
+                  label="Mettre à jour les licenses"
+                  onClick={handleOpenDialog}
+                />
+                <UpdateLicenseDialog
+                  dialogTitle="Modifier les licenses de l'organisation."
+                  organization={organization}
+                />
+              </Box>
+            )}
           </Box>
           <Divider />
 
@@ -148,24 +164,26 @@ export default function AdminOrganizationId(): JSX.Element {
               </Typography>
             )}
           </Box>
-          {/* Mettre à jour les licenses*/}
 
-          {/* Ajouter possibilités de supprimer une orga et donc les utilisateurs les projets */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "end",
-            }}
-          >
-            <OutlinedButton
-              label="Supprimer l'organisation"
-              onClick={handleOpenConfirmDialog}
-            />
-            <ConfirmDialog
-              dialogTitle="Etes-vous sur de vouloir supprimer cette organisation ?"
-              organizationId={organization?.id}
-            />
-          </Box>
+          {/* TODO */}
+          {/* Penser à delete les projets une fois créés*/}
+          {organization?.id && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <OutlinedButton
+                label="Supprimer l'organisation"
+                onClick={handleOpenConfirmDialog}
+              />
+              <DeleteOrgaDialog
+                dialogTitle="Etes-vous sur de vouloir supprimer cette organisation ?"
+                organizationId={organization.id}
+              />
+            </Box>
+          )}
         </>
       )}
     </PageContainer>

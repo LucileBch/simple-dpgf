@@ -1,8 +1,11 @@
 package com.simpledpgfapi.user.controller;
 
 import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
+import com.simpledpgfapi.user.model.organization.dto.OrganizationDto;
+import com.simpledpgfapi.user.model.organization.dto.OrganizationLicenseUpdateDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
 import com.simpledpgfapi.user.service.OrganizationService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
 
+    // Role ADMIN
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{organizationId}/member-list")
     public List<UserDto> getAllUsersByOrganizationId(@PathVariable ObjectId organizationId) {
@@ -31,6 +35,14 @@ public class OrganizationController {
         organizationService.deleteOrganizationById(organizationId);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PutMapping("/{organizationId}/update-license")
+    public OrganizationDto updateOrganizationLicense(@PathVariable ObjectId organizationId,
+                                                     @RequestBody @Valid OrganizationLicenseUpdateDto organizationLicenseUpdateDto) {
+        return organizationService.updateOrganizationLicenses(organizationId, organizationLicenseUpdateDto);
+    }
+
+    // Role ORGANIZATION_MANAGER
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @GetMapping("/{organizationId}/invitation-list")
     public List<InvitationDto> getUserInvitationByOrganizationId(@PathVariable ObjectId organizationId) {

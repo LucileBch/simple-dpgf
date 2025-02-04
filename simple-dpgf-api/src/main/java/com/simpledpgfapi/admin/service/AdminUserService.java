@@ -78,10 +78,6 @@ public class AdminUserService {
                 HttpStatus.BAD_REQUEST,
                 OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
 
-        OrganizationDto organizationDto = organizationMapper.modelToDto(currentOrganization);
-        organizationDto.setMemberLicenseCounter(userRepository.countByOrganizationId(organizationId));
-        organizationDto.setProjectLicenseCounter(dpgfRepository.countByOrganizationId(organizationId));
-
-        return organizationDto;
+       return organizationMapper.modelToDto(currentOrganization);
     }
 }

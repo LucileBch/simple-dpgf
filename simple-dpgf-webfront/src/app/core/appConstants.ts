@@ -41,10 +41,11 @@ export const apiEndpoints = {
   SIGN_OUT: "/auth/signout",
 
   // adminUser
-  GET_ALL_ORGANIZATIONS: "/admin/organizations",
-  ORGANIZATION: "/admin/organization",
-  GET_MEMBERS: "/organization",
-  DELETE_ORGANIZAION: "/organization",
+  ORGANIZATION_GELL_ALL: "/admin/organizations",
+  ORGANIZATION_BY_ID: "/admin/organization",
+  ORGANIZATION_GET_MEMBERS: "/organization",
+  ORGANIZATION_UPDATE_LICENSE: "/organization",
+  ORGANIZATION_DELETE_BY_ID: "/organization",
 
   // organization manager
   SEND_PROJECT_OWNER_INVITATION: "http://localhost:8080/api/invitation",
