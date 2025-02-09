@@ -3,24 +3,36 @@ import { pagesUrl } from "../core/appConstants";
 import ContainedButton from "./buttons/NavigationButton";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../assets/images/logo.webp";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { TokenContext } from "../core/contexts/token-context";
 import { UserContext } from "../core/contexts/user-context";
+import {
+  getAccessTokenFromCookies,
+  getRefreshTokenFromCookies,
+  getUserFromLocalStorage,
+} from "../core/services/authentication-service";
 
-{
-  /* TODO: temporary header */
-}
 export default function Header() {
   const navigate = useNavigate();
 
-  const { isAuthenticated } = useContext(TokenContext);
-  const { logoutUser } = useContext(UserContext);
+  const { isAuthenticated, accessToken, refreshToken } =
+    useContext(TokenContext);
+  const { logoutUser, user } = useContext(UserContext);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   console.log("authen header", isAuthenticated);
 
-  const handleLogout = useCallback(() => {
-    logoutUser();
+  const handleLogout = useCallback(async () => {
+    setIsLoading(true);
+    await logoutUser();
+    setIsLoading(false);
     navigate(pagesUrl.HOME_PAGE);
   }, [logoutUser, navigate]);
+
+  console.log("logout", user, accessToken, refreshToken, isAuthenticated);
+  console.log("getlocalstorage", getUserFromLocalStorage());
+  console.log("getcookie access", getAccessTokenFromCookies());
+  console.log("getcookie refresh", getRefreshTokenFromCookies());
 
   return (
     <Container
@@ -49,7 +61,11 @@ export default function Header() {
 
       {isAuthenticated ? (
         <Grid2 size={6}>
-          <ContainedButton label="Déconnexion" onClick={handleLogout} />
+          <ContainedButton
+            label="Déconnexion"
+            onClick={handleLogout}
+            loading={isLoading}
+          />
         </Grid2>
       ) : (
         <Grid2 container spacing={2}>

@@ -1,6 +1,5 @@
 package com.simpledpgfapi.user.service;
 
-import com.simpledpgfapi.admin.AdminUserErrorCodes;
 import com.simpledpgfapi.configuration.security.JwtAuthenticationService;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.AccountValidationErrorCodes;
@@ -89,7 +88,6 @@ public class AuthenticationService {
 
         Organization organization = organizationRepository.findByName(userCreationDto.getOrganization().getName());
 
-        // TODO: method UTILS for crypte ?
         String cryptedPassword = bCryptPasswordEncoder.encode(userCreationDto.getPassword());
         User user = userMapper.creationDtoToModel(userCreationDto);
         user.setPassword(cryptedPassword);
@@ -132,9 +130,8 @@ public class AuthenticationService {
     }
 
     public ResponseEntity<Map<String, Object>> authenticateUser(UserAuthenticationDto userAuthenticationDto) {
-        //TODO: Gérer Error !
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, AdminUserErrorCodes.ADMIN_USER_NOT_FOUND));
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
         if(currentUser.getUserStatus() == UserStatusEnum.DELETED) {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_DELETED);
@@ -171,7 +168,7 @@ public class AuthenticationService {
         SecurityContextHolder.clearContext();
     }
 
-    public void sendCodeForPasswordUpdate(UserCodeRequestDto userCodeRequestDto){
+    public void sendCodeNewPasswordRequest(UserCodeRequestDto userCodeRequestDto){
         User currentUser = userRepository.findByEmail(userCodeRequestDto.getEmail())
                 .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
@@ -179,11 +176,11 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public void updateUserPassword(UserUpdatePasswordDto userUpdatePasswordDto) {
-        User currentUser = userRepository.findByEmail(userUpdatePasswordDto.getEmail())
+    public void updateUserNewPassword(UserPasswordResetDto userPasswordResetDto) {
+        User currentUser = userRepository.findByEmail(userPasswordResetDto.getEmail())
                 .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
-        AccountValidationCode accountValidationCode = accountValidationCodeRepository.findByActivationCode(userUpdatePasswordDto.getActivationCode())
+        AccountValidationCode accountValidationCode = accountValidationCodeRepository.findByActivationCode(userPasswordResetDto.getActivationCode())
                 .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, AccountValidationErrorCodes.INVALID_CODE));
 
         if(Instant.now().isAfter(accountValidationCode.getExpiration())) {
@@ -192,7 +189,7 @@ public class AuthenticationService {
         }
 
         if(accountValidationCode.getUserId().equals(currentUser.getId())) {
-            String cryptedPassword = bCryptPasswordEncoder.encode(userUpdatePasswordDto.getPassword());
+            String cryptedPassword = bCryptPasswordEncoder.encode(userPasswordResetDto.getPassword());
             currentUser.setPassword(cryptedPassword);
             userRepository.save(currentUser);
         }

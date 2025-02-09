@@ -24,9 +24,18 @@ export default function UpdateLicenseDialog({
   dialogContent,
   organization,
 }: Readonly<IProps>): JSX.Element {
-  const { setOrganization } = useContext(OrganizationContext);
-
   const { updateOrganizationLicense } = useOrganization();
+
+  const { setOrganization } = useContext(OrganizationContext);
+  const {
+    isUpdateDialogOpen,
+    isSubmitting,
+    setIsSubmitting,
+    setAlertMessage,
+    setIsUpdateDialogOpen,
+    setOpenAlert,
+    handleCancelAndClose,
+  } = useContext(DialogContext);
 
   const [formData, setFormData] = useState<OrganizationLicenseUpdateDto>({
     memberLicenseCounter: organization.memberLicenseCounter,
@@ -35,18 +44,8 @@ export default function UpdateLicenseDialog({
     maxProjectLicenseCounter: organization.maxProjectLicenseCounter,
   });
 
-  const {
-    isDialogOpen,
-    isSubmitting,
-    setIsSubmitting,
-    setAlertMessage,
-    setIsDialogOpen,
-    setOpenAlert,
-    handleCancelAndClose,
-  } = useContext(DialogContext);
-
   useEffect(() => {
-    if (isDialogOpen) {
+    if (isUpdateDialogOpen) {
       setFormData({
         memberLicenseCounter: organization.memberLicenseCounter,
         maxMemberLicenseCounter: organization.maxMemberLicenseCounter,
@@ -54,7 +53,7 @@ export default function UpdateLicenseDialog({
         maxProjectLicenseCounter: organization.maxProjectLicenseCounter,
       });
     }
-  }, [isDialogOpen, organization]);
+  }, [isUpdateDialogOpen, organization]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -90,7 +89,7 @@ export default function UpdateLicenseDialog({
       setOpenAlert(true);
 
       setTimeout(() => {
-        setIsDialogOpen(false);
+        setIsUpdateDialogOpen(false);
       }, 2000);
     } catch (error) {
       console.log("update license error", error);
@@ -102,7 +101,7 @@ export default function UpdateLicenseDialog({
     isSubmitting,
     organization.id,
     setAlertMessage,
-    setIsDialogOpen,
+    setIsUpdateDialogOpen,
     setIsSubmitting,
     setOpenAlert,
     setOrganization,
@@ -111,7 +110,7 @@ export default function UpdateLicenseDialog({
 
   return (
     <Dialog
-      open={isDialogOpen}
+      open={isUpdateDialogOpen}
       onClose={handleCancelAndClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"

@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, CircularProgress, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
 import { Link, useLocation } from "react-router-dom";
 
@@ -6,6 +6,7 @@ interface IProps {
   label: string;
   path?: string;
   disabled?: boolean;
+  loading?: boolean;
   onClick?(): void;
 }
 
@@ -13,6 +14,7 @@ export default function NavigationButton({
   label,
   path,
   disabled = false,
+  loading,
   onClick,
 }: Readonly<IProps>): JSX.Element {
   const theme = useTheme();
@@ -30,7 +32,7 @@ export default function NavigationButton({
           : theme.palette.primary.main,
       }}
     >
-      {label}
+      {loading ? <CircularProgress size={24} color="inherit" /> : label}
     </Button>
   );
 

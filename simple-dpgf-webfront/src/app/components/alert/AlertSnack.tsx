@@ -1,4 +1,10 @@
-import { Alert, Snackbar } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  AlertPropsColorOverrides,
+  Snackbar,
+} from "@mui/material";
+import { OverridableStringUnion } from "@mui/types";
 
 interface IAlertSnackProps {
   anchorOrigin?: {
@@ -8,7 +14,7 @@ interface IAlertSnackProps {
   open: boolean;
   autoHideDuration?: number;
   onClose: () => void;
-  severity: "error" | "warning" | "info" | "success";
+  severity: OverridableStringUnion<AlertColor, AlertPropsColorOverrides>;
   message: string | null;
 }
 

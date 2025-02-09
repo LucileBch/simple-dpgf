@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { pagesUrl } from "../../../core/appConstants";
 
-export default function MoaManagerDashboard(): JSX.Element {
+export default function ManagerDashboard(): JSX.Element {
   return (
     <div>
       {/* Orgnization manager */}

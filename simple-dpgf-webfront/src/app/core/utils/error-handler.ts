@@ -1,7 +1,10 @@
-//import { ApiErrorMessage } from "../types/ApiErrorMessage";
-
 export function getErrorMessage(errorMessage: string): string {
   switch (errorMessage) {
+    // Global Errors
+    case "ENDPOINT_DOES_NOT_EXISTS":
+      return "L'url demandée n'existe pas.";
+    case "UNAUTHORIZED":
+      return "Vous n'avez pas l'autorisation.";
     // User Errors
     case "USER_NOT_FOUND":
       return "Utilisateur non reconnu.";

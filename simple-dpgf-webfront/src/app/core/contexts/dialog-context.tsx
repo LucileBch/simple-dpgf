@@ -15,7 +15,8 @@ export const DialogContext = React.createContext<DialogStore>(
 export function DialogContextProvider({
   children,
 }: React.PropsWithChildren): React.JSX.Element {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState<boolean>(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
   // ?????
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -26,24 +27,29 @@ export function DialogContextProvider({
   }, []);
 
   const handleCancelAndClose = useCallback(() => {
-    setIsDialogOpen(false);
+    setIsUpdateDialogOpen(false);
+    setIsDeleteDialogOpen(false);
   }, []);
 
   const dialogStore: DialogStore = useMemo(
     () => ({
-      isDialogOpen,
+      isUpdateDialogOpen,
+      isDeleteDialogOpen,
       isSubmitting,
       setIsSubmitting,
-      setIsDialogOpen,
+      setIsDeleteDialogOpen,
+      setIsUpdateDialogOpen,
       setAlertMessage,
       setOpenAlert,
       handleCancelAndClose,
     }),
     [
-      isDialogOpen,
+      isUpdateDialogOpen,
+      isDeleteDialogOpen,
       isSubmitting,
       setIsSubmitting,
-      setIsDialogOpen,
+      setIsDeleteDialogOpen,
+      setIsUpdateDialogOpen,
       setAlertMessage,
       setOpenAlert,
       handleCancelAndClose,
@@ -64,10 +70,12 @@ export function DialogContextProvider({
 }
 
 export type DialogStore = {
-  isDialogOpen: boolean;
+  isUpdateDialogOpen: boolean;
+  isDeleteDialogOpen: boolean;
   isSubmitting: boolean;
   setIsSubmitting: Dispatch<SetStateAction<boolean>>;
-  setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setIsDeleteDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setIsUpdateDialogOpen: Dispatch<SetStateAction<boolean>>;
   setAlertMessage: Dispatch<SetStateAction<string | null>>;
   setOpenAlert: Dispatch<SetStateAction<boolean>>;
   handleCancelAndClose(): void;

@@ -6,6 +6,7 @@ import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserDetailsDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
+import com.simpledpgfapi.user.model.user.dto.UserTokenUpdateDto;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -30,4 +31,8 @@ public interface UserMapper {
         List<UserDto> modelsToDtos(List<User> userList);
 
         UserDetailsDto modelToUserDetailsDto(User user);
+
+        @Mapping(source = "accessToken", target = "accessToken")
+        @Mapping(source = "refreshToken", target = "refreshToken")
+        UserTokenUpdateDto modelAndTokenToDto(User user, String accessToken, String refreshToken);
 }

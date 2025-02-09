@@ -1,61 +1,59 @@
 import { useContext, useEffect } from "react";
-import NavBar from "../../components/NavBar";
 import { UserContext } from "../../core/contexts/user-context";
 import { RoleEnum } from "../../core/enums/RoleEnum";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { pagesUrl } from "../../core/appConstants";
 import {
   removeCookies,
   removeUserFromLocalStorage,
 } from "../../core/services/authentication-service";
-import { CircularProgress, Container } from "@mui/material";
+import { TokenContext } from "../../core/contexts/token-context";
 
-export default function UserDashboard(): JSX.Element {
+export default function UserDashboard(): JSX.Element | null {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const { setAccessToken, setRefreshToken, setIsAuthenticated } =
+    useContext(TokenContext);
 
   useEffect(() => {
     if (!user) {
+      navigate(pagesUrl.SIGN_IN_PAGE);
       return;
     }
 
-    let targetPage = null;
+    const roleBaseRedirection: Record<RoleEnum, string> = {
+      [RoleEnum.ADMIN]: pagesUrl.ADMIN_ORGANIZATIONS_PAGE,
+      [RoleEnum.ORGANIZATION_MANAGER]: pagesUrl.MOA_MANAGER_DASHBOARD_PAGE,
+      [RoleEnum.PROJECT_OWNER]: pagesUrl.MOA_DASHBOARD_PAGE,
+    };
 
-    switch (user.role) {
-      case RoleEnum.ADMIN:
-        targetPage = pagesUrl.ADMIN_ORGANIZATIONS_PAGE;
-        break;
-      case RoleEnum.ORGANIZATION_MANAGER:
-        targetPage = pagesUrl.MOA_MANAGER_DASHBOARD_PAGE;
-        break;
-      case RoleEnum.PROJECT_OWNER:
-        targetPage = pagesUrl.MOA_DASHBOARD_PAGE;
-        break;
-      default:
-        removeCookies();
-        removeUserFromLocalStorage();
-        targetPage = pagesUrl.SIGN_IN_PAGE;
+    const targetPage = roleBaseRedirection[user.role] ?? pagesUrl.SIGN_IN_PAGE;
+
+    if (!roleBaseRedirection[user.role]) {
+      removeCookies();
+      removeUserFromLocalStorage();
+      setAccessToken(undefined);
+      setRefreshToken(undefined);
+      setUser(undefined);
+      setIsAuthenticated(false);
     }
 
-    if (targetPage && window.location.pathname !== targetPage) {
-      navigate(targetPage);
+    if (location.pathname === targetPage) {
+      return;
     }
-  }, [navigate, user]);
 
-  return (
-    <Container
-      maxWidth="lg"
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        p: 1,
-        backgroundColor: "cyan",
-      }}
-    >
-      <NavBar />
-      <CircularProgress />
-    </Container>
-  );
+    navigate(targetPage, { replace: true });
+  }, [
+    location.pathname,
+    navigate,
+    setAccessToken,
+    setIsAuthenticated,
+    setRefreshToken,
+    setUser,
+    user,
+  ]);
+
+  return null;
 }

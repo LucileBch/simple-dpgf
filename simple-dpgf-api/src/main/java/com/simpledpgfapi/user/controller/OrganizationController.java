@@ -38,7 +38,7 @@ public class OrganizationController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{organizationId}/update-license")
     public OrganizationDto updateOrganizationLicense(@PathVariable ObjectId organizationId,
-                                                     @RequestBody @Valid OrganizationLicenseUpdateDto organizationLicenseUpdateDto) {
+                                                     @Valid @RequestBody OrganizationLicenseUpdateDto organizationLicenseUpdateDto) {
         return organizationService.updateOrganizationLicenses(organizationId, organizationLicenseUpdateDto);
     }
 

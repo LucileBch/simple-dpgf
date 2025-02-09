@@ -11,17 +11,14 @@ import { RoleEnum } from "../../../core/enums/RoleEnum";
 import OutlinedButton from "../../../components/buttons/OutlinedButton";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
 import DeleteOrgaDialog from "../../../components/modals/DeleteOrgaDialog";
-import { DeleteOrgaDialogContext } from "../../../core/contexts/delete-orga-dialog-context";
 import UpdateLicenseDialog from "../../../components/modals/UpdateLicenseDialog";
 import { DialogContext } from "../../../core/contexts/dialog-context";
 
 export default function AdminOrganizationId(): JSX.Element {
   const { organization, isOrganizationLoading } =
     useContext(OrganizationContext);
-  const { setIsDeleteOrgaDialogOpen, setOrganizationId } = useContext(
-    DeleteOrgaDialogContext
-  );
-  const { setIsDialogOpen } = useContext(DialogContext);
+  const { setIsUpdateDialogOpen, setIsDeleteDialogOpen } =
+    useContext(DialogContext);
 
   const { fetchMembersByOrganizationId } = useOrganization();
 
@@ -45,14 +42,13 @@ export default function AdminOrganizationId(): JSX.Element {
     (member) => member.role !== RoleEnum.ORGANIZATION_MANAGER
   );
 
-  const handleOpenConfirmDialog = useCallback(() => {
-    setOrganizationId(organization?.id);
-    setIsDeleteOrgaDialogOpen(true);
-  }, [organization?.id, setIsDeleteOrgaDialogOpen, setOrganizationId]);
+  const handleOpenUpdateDialog = useCallback(() => {
+    setIsUpdateDialogOpen(true);
+  }, [setIsUpdateDialogOpen]);
 
-  const handleOpenDialog = useCallback(() => {
-    setIsDialogOpen(true);
-  }, [setIsDialogOpen]);
+  const handleOpenDeleteDialog = useCallback(() => {
+    setIsDeleteDialogOpen(true);
+  }, [setIsDeleteDialogOpen]);
 
   return (
     <PageContainer>
@@ -99,7 +95,7 @@ export default function AdminOrganizationId(): JSX.Element {
               >
                 <OutlinedButton
                   label="Mettre à jour les licenses"
-                  onClick={handleOpenDialog}
+                  onClick={handleOpenUpdateDialog}
                 />
                 <UpdateLicenseDialog
                   dialogTitle="Modifier les licenses de l'organisation."
@@ -176,7 +172,7 @@ export default function AdminOrganizationId(): JSX.Element {
             >
               <OutlinedButton
                 label="Supprimer l'organisation"
-                onClick={handleOpenConfirmDialog}
+                onClick={handleOpenDeleteDialog}
               />
               <DeleteOrgaDialog
                 dialogTitle="Etes-vous sur de vouloir supprimer cette organisation ?"

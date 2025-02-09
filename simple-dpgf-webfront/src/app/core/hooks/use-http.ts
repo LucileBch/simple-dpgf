@@ -28,6 +28,43 @@ type HttpHook = {
 export function useHttp(): HttpHook {
   const { accessToken, setAccessToken, setRefreshToken } =
     useContext(TokenContext);
+  // const { setAlertMessage, setSeverity, setOpenAlert } =
+  //   useContext(AlertContext);
+
+  // const handleError = useCallback(
+  //   async (response: Response): Promise<Response> => {
+  //     // allow to read the error message severall times
+  //     const clonedResponse = response.clone();
+  //     const error = await clonedResponse.json().catch(() => null);
+  //       if (response.status === 401) {
+  //         console.error("Echec refresh token");
+  //         throw new Error("UNAUTHORIZED");
+  //       }
+
+  //       if (response.status === 404) {
+  //         if (
+  //           error.message === "No message available" &&
+  //           error.error === "Not Found"
+  //         ) {
+  //           throw new Error("ENDPOINT_DOES_NOT_EXISTS");
+  //         } else {
+  //           console.info("404 : no ressource");
+  //           // Nothing to do: 404 with error message means endpoint exists
+  //           // but resource does not in db. So needs to be handle at component level
+  //         }
+  //       }
+  //     } catch (error) {
+  //       if (error instanceof Error) {
+  //         console.log("handleError", error.message);
+  //         setOpenAlert(true);
+  //         setAlertMessage(getErrorMessage(error.message));
+  //         setSeverity("error");
+  //       }
+  //       throw error;
+  //     }
+  //   },
+  //   [setAlertMessage, setOpenAlert, setSeverity]
+  // );
 
   const handleRetryWithRefreshToken = useCallback(
     async (
@@ -69,6 +106,7 @@ export function useHttp(): HttpHook {
           throw new Error("Failed to refresh access token");
         }
       }
+
       throw response;
     },
     [setAccessToken, setRefreshToken]

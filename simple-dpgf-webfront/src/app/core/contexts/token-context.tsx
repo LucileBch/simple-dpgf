@@ -41,7 +41,7 @@ export function TokenContextProvider({
       removeCookies();
       removeUserFromLocalStorage();
     }
-  });
+  }, [isAuthenticated]);
 
   const tokenStore: TokenStore = useMemo(
     () => ({

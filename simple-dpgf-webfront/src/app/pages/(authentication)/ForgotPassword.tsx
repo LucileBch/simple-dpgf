@@ -1,86 +1,129 @@
 import { Box, Typography } from "@mui/material";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { TextInput } from "../../components/inputs/TextInput";
-import axios from "axios";
-import { getErrorMessage } from "../../core/utils/error-handler";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
-import AlertSnack from "../../components/alert/AlertSnack";
-import { UserUpdatePasswordDto } from "../../core/dtos/user/UserUpdatePasswordDto";
-import { useState } from "react";
+import { UserPasswordResetDto } from "../../core/dtos/user/UserPasswordResetDto";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
 import PageContainer from "../../components/containers/PageContainer";
-
-//TODO: l'email reste affiché alors qu'il est vide
+import { AlertContext } from "../../core/contexts/alert-context";
+import { FormValues, useForm } from "../../core/hooks/use-form";
 
 export default function ForgotPassord(): JSX.Element {
-  const [email, setEmail] = useState<UserCodeRequestDto>({
-    email: "",
-  });
+  const navigate = useNavigate();
+
+  const { handleErrorAlert } = useContext(AlertContext);
 
   const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
 
-  const [formData, setFormData] = useState<UserUpdatePasswordDto>({
+  // useForm confirm email before enable reset password
+  const initialFormValuesEmail: FormValues<UserCodeRequestDto> = {
+    email: "",
+  };
+
+  const validateEmail = (formData: FormValues<UserCodeRequestDto>) => {
+    const errors: Partial<UserCodeRequestDto> = {};
+    if (!formData.email) {
+      errors.email = "L'email est requis";
+    }
+
+    return errors;
+  };
+
+  const onSubmitEmail = async (formData: FormValues<UserCodeRequestDto>) => {
+    try {
+      const response = await fetch(apiEndpoints.REQUEST_NEW_PASSWORD_CODE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+
+      setIsEmailSent(!isEmailSent);
+    } catch (error) {
+      console.log("requestCode error", error);
+      if (error instanceof Error) {
+        handleErrorAlert(error);
+      }
+    }
+  };
+
+  const {
+    formData: formDataEmail,
+    errors: errorsEmail,
+    isSubmitting: isSubmittingEmail,
+    handleChange: handleChangeEmail,
+    handleSubmit: handleSubmitEmail,
+  } = useForm({
+    initialFormValues: initialFormValuesEmail,
+    validate: validateEmail,
+    onSubmit: onSubmitEmail,
+  });
+
+  // useForm for reset password
+  const initialFormValuesReset: FormValues<UserPasswordResetDto> = {
     email: "",
     activationCode: "",
     password: "",
-  });
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openAlert, setOpenAlert] = useState(false);
-
-  const navigate = useNavigate();
-
-  const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEmail({
-      ...email,
-      [name]: value,
-    });
   };
 
-  const handleSubmitEmail = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await axios.post(apiEndpoints.REQUEST_NEW_PASSWORD_CODE, email);
-      setIsEmailSent(!isEmailSent);
-    } catch (error) {
-      console.log(error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(getErrorMessage(error.response.data));
-        setOpenAlert(true);
-      }
+  const validateReset = (formData: FormValues<UserPasswordResetDto>) => {
+    const errors: Partial<UserPasswordResetDto> = {};
+    if (!formData.email) {
+      errors.email = "L'email est requis";
     }
+    if (!formData.activationCode) {
+      errors.activationCode = "Le code est requis";
+    }
+    if (!formData.password) {
+      errors.password = "Le nouveau mot de passe est requis";
+    }
+
+    return errors;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmitReset = async (formData: FormValues<UserPasswordResetDto>) => {
     try {
-      await axios.post(apiEndpoints.FORGOT_PASSWORD, formData);
+      const response = await fetch(apiEndpoints.FORGOT_PASSWORD, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+
       navigate(pagesUrl.SIGN_IN_PAGE);
-      setIsEmailSent(!isEmailSent);
     } catch (error) {
-      console.log(error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(getErrorMessage(error.response.data));
-        setOpenAlert(true);
+      console.log("requestCode error", error);
+      if (error instanceof Error) {
+        handleErrorAlert(error);
       }
     }
   };
 
-  const handleCloseAlert = () => {
-    setOpenAlert(false);
-  };
+  const {
+    formData: formDataReset,
+    errors: errorsReset,
+    isSubmitting: isSubmittingReset,
+    handleChange: handleChangeReset,
+    handleSubmit: handleSubmitReset,
+  } = useForm({
+    initialFormValues: initialFormValuesReset,
+    validate: validateReset,
+    onSubmit: onSubmitReset,
+  });
 
   return (
     <PageContainer>
@@ -108,15 +151,17 @@ export default function ForgotPassord(): JSX.Element {
               name="email"
               type="email"
               label="Email"
-              required
+              value={formDataEmail.email}
               onChange={handleChangeEmail}
+              error={!!errorsEmail.email}
+              helperText={errorsEmail.email}
             />
           </Box>
 
-          <SubmitButton label="Valider" />
+          <SubmitButton label="Valider" disabled={isSubmittingEmail} />
         </form>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitReset}>
           <Box
             sx={{
               display: "flex",
@@ -131,41 +176,36 @@ export default function ForgotPassord(): JSX.Element {
               name="email"
               type="email"
               label="Email"
-              required
-              onChange={handleChange}
+              value={formDataReset.email}
+              onChange={handleChangeReset}
+              error={!!errorsReset.email}
+              helperText={errorsReset.email}
             />
             <TextInput
               id="activationCode"
               name="activationCode"
               type="text"
               label="Code d'activation"
-              required
-              onChange={handleChange}
+              value={formDataReset.activationCode}
+              onChange={handleChangeReset}
+              error={!!errorsReset.activationCode}
+              helperText={errorsReset.activationCode}
             />
             <TextInput
               id="password"
               name="password"
               type="password"
               label="Mot de passe"
-              required
-              onChange={handleChange}
+              value={formDataReset.password}
+              onChange={handleChangeReset}
+              error={!!errorsReset.password}
+              helperText={errorsReset.password}
             />
           </Box>
 
-          <SubmitButton label="Valider" />
+          <SubmitButton label="Valider" disabled={isSubmittingReset} />
         </form>
       )}
-
-      {/* <Box sx={{ textAlign: "center", p: 4 }}>
-        <Typography variant="h1">Créez votre nouveau mot de passe.</Typography>
-      </Box> */}
-
-      <AlertSnack
-        open={openAlert}
-        onClose={handleCloseAlert}
-        severity="error"
-        message={errorMessage}
-      />
     </PageContainer>
   );
 }

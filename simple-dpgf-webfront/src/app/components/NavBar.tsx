@@ -1,13 +1,25 @@
 import { Box, Container, Grid2 } from "@mui/material";
 import NavigationButton from "./buttons/NavigationButton";
 import { pagesUrl } from "../core/appConstants";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { UserContext } from "../core/contexts/user-context";
 import { RoleEnum } from "../core/enums/RoleEnum";
 import TitleH1 from "./typographies/TitleH1";
+import { useNavigate } from "react-router-dom";
+import { resolveUrl } from "../core/services/http-service";
 
 export default function NavBar(): JSX.Element {
+  const navigate = useNavigate();
+
   const { user } = useContext(UserContext);
+
+  const navigateToProfilePage = useCallback(() => {
+    if (user !== undefined) {
+      navigate(resolveUrl(pagesUrl.USER_PROFILE_PAGE, [user.id]));
+    } else {
+      console.log("aucun user");
+    }
+  }, [navigate, user]);
 
   return (
     <Container
@@ -34,13 +46,13 @@ export default function NavBar(): JSX.Element {
           <Grid2>
             <NavigationButton
               label="Organisations"
-              path={pagesUrl.ADMIN_ORGANIZATIONS_PAGE}
+              path={pagesUrl.DASHBOARD_PAGE}
             />
           </Grid2>
           <Grid2>
             <NavigationButton
               label="Mon profil"
-              path={pagesUrl.USER_PROFILE_PAGE}
+              onClick={navigateToProfilePage}
             />
           </Grid2>
         </Grid2>
@@ -53,7 +65,7 @@ export default function NavBar(): JSX.Element {
           <Grid2>
             <NavigationButton
               label="Mon profil"
-              path={pagesUrl.DASHBOARD_PAGE}
+              path={pagesUrl.USER_PROFILE_PAGE}
             />
           </Grid2>
         </Grid2>
@@ -69,7 +81,7 @@ export default function NavBar(): JSX.Element {
           <Grid2>
             <NavigationButton
               label="Mon profil"
-              path={pagesUrl.DASHBOARD_PAGE}
+              path={pagesUrl.USER_PROFILE_PAGE}
             />
           </Grid2>
         </Grid2>

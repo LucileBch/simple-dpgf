@@ -9,7 +9,9 @@ public enum UserErrorCodes implements ErrorCodes {
     USER_ACCOUNT_NOT_ACTIVATED,
     USER_NOT_AUTHENTICATED,
     USER_NOT_AUTHORIZED,
-    USER_DELETED;
+    USER_DELETED,
+    USER_WRONG_PASSWORD,
+    USER_NEW_PASSWORD_EQUALS_OLD;
 
     @Override
     public String getCode() {

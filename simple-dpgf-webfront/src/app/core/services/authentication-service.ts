@@ -1,7 +1,7 @@
 import { UserDetailsDto } from "../dtos/user/UserDetailsDto";
 import Cookies from "js-cookie";
 
-// variables name
+// variables names
 const ACCESS_TOKEN = "accessToken";
 const REFRESH_TOKEN = "refreshToken";
 const USER = "user";
@@ -40,6 +40,3 @@ export function removeCookies() {
   Cookies.remove(ACCESS_TOKEN, { path: "/" });
   Cookies.remove(REFRESH_TOKEN, { path: "/" });
 }
-
-// delete cookies au logout
-//export function deleteCookies() {}

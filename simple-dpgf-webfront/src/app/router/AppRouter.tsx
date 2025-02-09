@@ -17,27 +17,29 @@ import SignUp from "../pages/(authentication)/SignUp";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AccountValidation from "../pages/(authentication)/AccountValidation";
-import MoaDashboard from "../pages/(authenticated)/MoaDashboard";
+import MoaDashboard from "../pages/(authenticated)/(projectowner)/MoaDashboard";
 import RequestCode from "../pages/(authentication)/RequestCode";
 import Error from "../pages/Error";
 import ForgotPassord from "../pages/(authentication)/ForgotPassword";
-import MoaManagerDashboard from "../pages/(authenticated)/(moamanager)/MoaManagerDashboard";
-import MoaManagerTeam from "../pages/(authenticated)/(moamanager)/MoaManagerTeam";
+import ManagerDashboard from "../pages/(authenticated)/(moamanager)/ManagerDashboard";
+import ManagerTeam from "../pages/(authenticated)/(moamanager)/ManagerTeam";
 import InviteProjectOwner from "../pages/(authenticated)/(moamanager)/InviteProjectOwner";
 import UserDashboard from "../pages/(authenticated)/UserDashboard";
 import { OrganizationContextProvider } from "../core/contexts/organization-context";
 import AdminOrganizations from "../pages/(authenticated)/(admin)/AdminOrganizations";
 import AdminOrganizationId from "../pages/(authenticated)/(admin)/AdminOrganizationId";
 import UserProfile from "../pages/(authenticated)/UserProfile";
-import { ConfirmDialogContextProvider } from "../core/contexts/delete-orga-dialog-context";
 import { DialogContextProvider } from "../core/contexts/dialog-context";
+import RequireAuth from "../components/rights/RequireAuth";
+import RequireRole from "../components/rights/RequireRole";
+import { RoleEnum } from "../core/enums/RoleEnum";
 
 export default function AppRouter(): JSX.Element {
   return (
     <Router>
       <Header />
       <Routes>
-        {/* Authentication */}
+        {/* Not Authenticated */}
         <Route path={pagesUrl.HOME_PAGE} element={<Home />} />
         <Route path={pagesUrl.SIGN_UP_PAGE} element={<SignUp />} />
         <Route
@@ -49,16 +51,36 @@ export default function AppRouter(): JSX.Element {
         <Route path={pagesUrl.FORGOT_PASSWORD} element={<ForgotPassord />} />
 
         {/* Authenticated */}
-        <Route path={pagesUrl.DASHBOARD_PAGE} element={<UserDashboard />} />
-        <Route path={pagesUrl.USER_PROFILE_PAGE} element={<UserProfile />} />
+        {/* redirection after signin according to user role */}
 
-        {/* ADMIN */}
+        <Route
+          path={pagesUrl.DASHBOARD_PAGE}
+          element={
+            <RequireAuth>
+              <UserDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path={pagesUrl.USER_PROFILE_PAGE}
+          element={
+            <RequireAuth>
+              <UserProfile />
+            </RequireAuth>
+          }
+        />
+
+        {/* Role : Admin */}
         <Route
           path={pagesUrl.ADMIN}
           element={
-            <OrganizationContextProvider>
-              <Outlet />
-            </OrganizationContextProvider>
+            <RequireAuth>
+              <RequireRole allowedRole={RoleEnum.ADMIN}>
+                <OrganizationContextProvider>
+                  <Outlet />
+                </OrganizationContextProvider>
+              </RequireRole>
+            </RequireAuth>
           }
         >
           <Route
@@ -69,30 +91,53 @@ export default function AppRouter(): JSX.Element {
             path={pagesUrl.ADMIN_ORGANIZATION_PAGE}
             element={
               <DialogContextProvider>
-                <ConfirmDialogContextProvider>
-                  <AdminOrganizationId />
-                </ConfirmDialogContextProvider>
+                <AdminOrganizationId />
               </DialogContextProvider>
             }
           />
         </Route>
 
-        {/* Authenticated */}
-        {/* MOA */}
+        {/* Role : MOA Manager */}
         <Route
-          path={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}
-          element={<MoaManagerDashboard />}
-        />
-        <Route
-          path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
-          element={<MoaManagerTeam />}
-        />
-        <Route
-          path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
-          element={<InviteProjectOwner />}
-        />
+          path={pagesUrl.MOA_MANAGER}
+          element={
+            <RequireAuth>
+              <RequireRole allowedRole={RoleEnum.ORGANIZATION_MANAGER}>
+                <Outlet />
+              </RequireRole>
+            </RequireAuth>
+          }
+        >
+          <Route
+            path={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}
+            element={<ManagerDashboard />}
+          />
+          <Route
+            path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
+            element={<ManagerTeam />}
+          />
+          <Route
+            path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
+            element={<InviteProjectOwner />}
+          />
+        </Route>
 
-        <Route path={pagesUrl.MOA_DASHBOARD_PAGE} element={<MoaDashboard />} />
+        {/* Role : MOA Project Owner */}
+        <Route
+          path={pagesUrl.MOA_PROJECT_OWNER}
+          element={
+            <RequireAuth>
+              <RequireRole allowedRole={RoleEnum.PROJECT_OWNER}>
+                <Outlet />
+              </RequireRole>
+            </RequireAuth>
+          }
+        >
+          <Route
+            path={pagesUrl.MOA_DASHBOARD_PAGE}
+            element={<MoaDashboard />}
+          />
+        </Route>
 
         {/* 404 */}
         <Route path={pagesUrl.ERROR_404} element={<Error />} />

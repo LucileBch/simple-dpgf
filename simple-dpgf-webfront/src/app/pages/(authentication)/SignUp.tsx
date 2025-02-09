@@ -1,84 +1,82 @@
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
+import { Box, Typography } from "@mui/material";
+import { useContext } from "react";
 import { UserCreationDto } from "../../core/dtos/user/UserCreationDto";
-import axios from "axios";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { OrganizationTypeEnum } from "../../core/enums/OrganizationTypeEnum";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "../../components/inputs/TextInput";
 import SubmitButton from "../../components/buttons/SubmitButton";
-import AlertSnack from "../../components/alert/AlertSnack";
-import { getErrorMessage } from "../../core/utils/error-handler";
 import PageContainer from "../../components/containers/PageContainer";
+import { AlertContext } from "../../core/contexts/alert-context";
+import { FormValues, useForm } from "../../core/hooks/use-form";
 
 export default function SignUp() {
-  const [formData, setFormData] = useState<UserCreationDto>({
+  const navigate = useNavigate();
+
+  const { handleErrorAlert } = useContext(AlertContext);
+
+  const initialFormValues: FormValues<UserCreationDto> = {
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     organization: { organizationType: OrganizationTypeEnum.MOA, name: "" },
-  });
+  };
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openAlert, setOpenAlert] = useState(false);
-
-  const navigate = useNavigate();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (name === "organizationType" || name === "name") {
-      setFormData({
-        ...formData,
-        organization: {
-          ...formData.organization,
-          [name]: value,
-        },
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+  const validate = (formData: FormValues<UserCreationDto>) => {
+    const errors: Record<string, string | undefined> = {};
+    if (!formData.firstName) {
+      errors.firstName = "Le prénom est requis";
     }
+    if (!formData.lastName) {
+      errors.lastName = "Le nom est requis";
+    }
+    if (!formData.email) {
+      errors.email = "L'email est requis";
+    }
+    if (!formData.password) {
+      errors.password = "Le mot de passe est requis";
+    }
+    if (!formData.organization.organizationType) {
+      errors["organization.organizationType"] =
+        "Le type de l'organisation est requis";
+    }
+    if (!formData.organization.name) {
+      errors["organization.name"] = "Le nom de l'organisation est requis";
+    }
+
+    return errors;
   };
 
-  const handleSelect = (e: SelectChangeEvent) => {
-    setFormData({
-      ...formData,
-      organization: {
-        ...formData.organization,
-        organizationType: e.target.value as OrganizationTypeEnum,
-      },
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (formData: FormValues<UserCreationDto>) => {
     try {
-      await axios.post(apiEndpoints.SIGN_UP, formData);
+      const response = await fetch(apiEndpoints.SIGN_UP, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.log("response not ok", errorMessage);
+        throw new Error(errorMessage);
+      }
+
       navigate(pagesUrl.ACCOUNT_VALIDATION_PAGE);
     } catch (error) {
       console.log(error);
 
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(getErrorMessage(error.response.data));
-        setOpenAlert(true);
+      if (error instanceof Error) {
+        console.log("ici", error);
+        handleErrorAlert(error);
       }
     }
   };
 
-  const handleCloseAlert = () => {
-    setOpenAlert(false);
-  };
+  const { formData, errors, isSubmitting, handleChange, handleSubmit } =
+    useForm({ initialFormValues, validate, onSubmit });
 
   return (
     <PageContainer>
@@ -100,16 +98,20 @@ export default function SignUp() {
             name="firstName"
             type="text"
             label="Prénom"
-            required
+            value={formData.firstName}
             onChange={handleChange}
+            error={!!errors.firstName}
+            helperText={errors.firstName}
           />
           <TextInput
             id="lastName"
             name="lastName"
             type="text"
             label="Nom"
-            required
+            value={formData.lastName}
             onChange={handleChange}
+            error={!!errors.lastName}
+            helperText={errors.lastName}
           />
         </Box>
 
@@ -121,34 +123,26 @@ export default function SignUp() {
             p: 1,
           }}
         >
-          <FormControl sx={{ minWidth: "398px" }}>
-            <InputLabel id="organizationType-label">
-              Type d'organisation
-            </InputLabel>
-            <Select
-              id="organizationType"
-              name="organizationType"
-              label="Type d'organisation"
-              value={formData.organization.organizationType || ""}
-              onChange={handleSelect}
-              displayEmpty
-            >
-              <MenuItem value="" disabled>
-                Sélectionnez un type
-              </MenuItem>
-              <MenuItem value={OrganizationTypeEnum.MOA}>
-                {OrganizationTypeEnum.MOA}
-              </MenuItem>
-            </Select>
-          </FormControl>
+          <TextInput
+            id="organizationType"
+            name="organization.organizationType"
+            type="text"
+            label="Type d'organisation"
+            disabled
+            value={OrganizationTypeEnum.MOA}
+            error={!!errors["organization.organizationType"]}
+            helperText={errors["organization.organizationType"]}
+          />
 
           <TextInput
             id="name"
-            name="name"
+            name="organization.name"
             type="text"
             label="Nom de l'organisation"
-            required
+            value={formData.organization.name}
             onChange={handleChange}
+            error={!!errors["organization.name"]}
+            helperText={errors["organization.name"]}
           />
         </Box>
 
@@ -165,27 +159,24 @@ export default function SignUp() {
             name="email"
             type="email"
             label="Email"
-            required
+            value={formData.email}
             onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
           />
           <TextInput
             id="password"
             name="password"
             type="password"
             label="Mot de passe"
-            required
+            value={formData.password}
             onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
           />
         </Box>
-        <SubmitButton label="S'inscrire" />
+        <SubmitButton label="S'inscrire" disabled={isSubmitting} />
       </form>
-
-      <AlertSnack
-        open={openAlert}
-        onClose={handleCloseAlert}
-        severity="error"
-        message={errorMessage}
-      />
     </PageContainer>
   );
 }

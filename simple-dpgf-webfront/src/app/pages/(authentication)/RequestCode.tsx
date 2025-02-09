@@ -1,50 +1,58 @@
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "../../components/inputs/TextInput";
 import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
-import { getErrorMessage } from "../../core/utils/error-handler";
-import axios from "axios";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { Box, Typography } from "@mui/material";
-import AlertSnack from "../../components/alert/AlertSnack";
-import { useState } from "react";
+import { useContext } from "react";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import PageContainer from "../../components/containers/PageContainer";
+import { AlertContext } from "../../core/contexts/alert-context";
+import { FormValues, useForm } from "../../core/hooks/use-form";
 
 export default function RequestCode(): JSX.Element {
-  const [email, setEmail] = useState<UserCodeRequestDto>({
-    email: "",
-  });
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openAlert, setOpenAlert] = useState(false);
-
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEmail({
-      ...email,
-      [name]: value,
-    });
+  const { handleErrorAlert } = useContext(AlertContext);
+
+  const initialFormValues: FormValues<UserCodeRequestDto> = {
+    email: "",
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const validate = (formData: FormValues<UserCodeRequestDto>) => {
+    const errors: Partial<UserCodeRequestDto> = {};
+    if (!formData.email) {
+      errors.email = "L'email est requis";
+    }
+
+    return errors;
+  };
+
+  const onSubmit = async (formData: FormValues<UserCodeRequestDto>) => {
     try {
-      await axios.post(apiEndpoints.USER_REQUEST_NEW_CODE, email);
+      const response = await fetch(apiEndpoints.USER_REQUEST_NEW_CODE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage);
+      }
+
       navigate(pagesUrl.ACCOUNT_VALIDATION_PAGE);
     } catch (error) {
-      console.log(error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(getErrorMessage(error.response.data));
-        setOpenAlert(true);
+      console.log("requestCode error", error);
+      if (error instanceof Error) {
+        handleErrorAlert(error);
       }
     }
   };
 
-  const handleCloseAlert = () => {
-    setOpenAlert(false);
-  };
+  const { formData, errors, isSubmitting, handleChange, handleSubmit } =
+    useForm({ initialFormValues, validate, onSubmit });
 
   return (
     <PageContainer>
@@ -67,20 +75,15 @@ export default function RequestCode(): JSX.Element {
             name="email"
             type="email"
             label="Email"
-            required
+            value={formData.email}
             onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
           />
         </Box>
 
-        <SubmitButton label="Valider" />
+        <SubmitButton label="Valider" disabled={isSubmitting} />
       </form>
-
-      <AlertSnack
-        open={openAlert}
-        onClose={handleCloseAlert}
-        severity="error"
-        message={errorMessage}
-      />
     </PageContainer>
   );
 }
