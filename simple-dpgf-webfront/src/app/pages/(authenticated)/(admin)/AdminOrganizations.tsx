@@ -11,8 +11,6 @@ export default function AdminOrganizations(): JSX.Element {
   const { organizationList, isOrganizationListLoading } =
     useContext(OrganizationContext);
 
-  console.log("oraganization", organizationList);
-
   return (
     <PageContainer>
       <NavBar />

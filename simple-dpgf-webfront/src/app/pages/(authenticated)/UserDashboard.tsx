@@ -25,7 +25,7 @@ export default function UserDashboard(): JSX.Element | null {
 
     const roleBaseRedirection: Record<RoleEnum, string> = {
       [RoleEnum.ADMIN]: pagesUrl.ADMIN_ORGANIZATIONS_PAGE,
-      [RoleEnum.ORGANIZATION_MANAGER]: pagesUrl.MOA_MANAGER_DASHBOARD_PAGE,
+      [RoleEnum.ORGANIZATION_MANAGER]: pagesUrl.MOA_MANAGER_PROJECTS_PAGE,
       [RoleEnum.PROJECT_OWNER]: pagesUrl.MOA_DASHBOARD_PAGE,
     };
 

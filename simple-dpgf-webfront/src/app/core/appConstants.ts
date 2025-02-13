@@ -18,7 +18,7 @@ export const pagesUrl = {
 
   // moa manager url
   MOA_MANAGER: "/moa/manager",
-  MOA_MANAGER_DASHBOARD_PAGE: "/moa/manager/dashboard",
+  MOA_MANAGER_PROJECTS_PAGE: "/moa/manager/:organizationId/projects",
   MOA_MANAGER_TEAM_PAGE: "/moa/manager/team",
   MOA_MANAGER_INVITE_PAGE: "/moa/manager/invitation",
 
@@ -56,9 +56,8 @@ export const apiEndpoints = {
   ORGANIZATION_DELETE_BY_ID: "/organization",
 
   // moa manager
-  SEND_PROJECT_OWNER_INVITATION: "http://localhost:8080/api/invitation",
-  GET_ORGANIZATION_MEMBERS:
-    "http://localhost:8080/api/organization/:organizationId/team",
+  SEND_PROJECT_OWNER_INVITATION: "/invitation",
+  GET_ORGANIZATION_MEMBERS: "/organization/:organizationId/team",
 
   // moa project owner
 };

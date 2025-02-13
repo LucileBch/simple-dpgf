@@ -4,6 +4,7 @@ import com.simpledpgfapi.user.model.invitation.dto.InvitationCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
 import com.simpledpgfapi.user.service.InvitationService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class InvitationController {
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public void sendTeamInvitation(@RequestBody InvitationCreationDto invitationCreationDto) {
+    public void sendTeamInvitation(@Valid @RequestBody InvitationCreationDto invitationCreationDto) {
         invitationService.sendProjectOwnerInvitation(invitationCreationDto);
     }
 

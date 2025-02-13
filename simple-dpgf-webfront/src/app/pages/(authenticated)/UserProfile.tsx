@@ -58,35 +58,31 @@ export default function UserProfile(): JSX.Element {
         return;
       }
 
-      try {
-        const updatedUser = await updateUserProfile(
-          user.id,
-          userUpdateProfileDto
-        );
+      const updatedUser = await updateUserProfile(
+        user.id,
+        userUpdateProfileDto
+      );
 
-        const userDetailsDto: UserDetailsDto = {
-          id: updatedUser.id,
-          firstName: updatedUser.firstName,
-          lastName: updatedUser.lastName,
-          email: updatedUser.email,
-          role: updatedUser.role,
-        };
-        setUser(userDetailsDto);
+      const userDetailsDto: UserDetailsDto = {
+        id: updatedUser.id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        role: updatedUser.role,
+      };
+      setUser(userDetailsDto);
 
-        removeUserFromLocalStorage();
-        setUserInLocalStorage(userDetailsDto);
+      removeUserFromLocalStorage();
+      setUserInLocalStorage(userDetailsDto);
 
-        if (updatedUser.accessToken && updatedUser.refreshToken) {
-          removeCookies();
-          setAccessToken(updatedUser.accessToken);
-          setRefreshToken(updatedUser.refreshToken);
-          setTokensInCookies(updatedUser.accessToken, updatedUser.refreshToken);
-        }
-
-        handleSuccessAlert("Vos informations ont bien été mises à jour.");
-      } catch (error) {
-        handleErrorAlert(error);
+      if (updatedUser.accessToken && updatedUser.refreshToken) {
+        removeCookies();
+        setAccessToken(updatedUser.accessToken);
+        setRefreshToken(updatedUser.refreshToken);
+        setTokensInCookies(updatedUser.accessToken, updatedUser.refreshToken);
       }
+
+      handleSuccessAlert("Vos informations ont bien été mises à jour.");
     },
     [
       handleErrorAlert,

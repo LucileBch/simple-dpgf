@@ -58,14 +58,28 @@ export default function NavBar(): JSX.Element {
         </Grid2>
       )}
       {user?.role === RoleEnum.ORGANIZATION_MANAGER && (
-        <Grid2 container spacing={2}>
+        <Grid2
+          container
+          spacing={2}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Grid2>
-            <NavigationButton label="Manager" path={pagesUrl.DASHBOARD_PAGE} />
+            <NavigationButton label="Projets" path={pagesUrl.DASHBOARD_PAGE} />
+          </Grid2>
+          <Grid2>
+            <NavigationButton
+              label="Equipe"
+              path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
+            />
           </Grid2>
           <Grid2>
             <NavigationButton
               label="Mon profil"
-              path={pagesUrl.USER_PROFILE_PAGE}
+              onClick={navigateToProfilePage}
             />
           </Grid2>
         </Grid2>
@@ -81,7 +95,7 @@ export default function NavBar(): JSX.Element {
           <Grid2>
             <NavigationButton
               label="Mon profil"
-              path={pagesUrl.USER_PROFILE_PAGE}
+              onClick={navigateToProfilePage}
             />
           </Grid2>
         </Grid2>

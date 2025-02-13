@@ -24,12 +24,7 @@ export function useUser(): UserHook {
           `${apiEndpoints.USER_UPDATE_PROFILE}/${userId}`,
           userProfileUpdateDto
         );
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.log("error TEXT", errorMessage);
 
-          throw new Error(errorMessage);
-        }
         return response.json();
       },
     }),

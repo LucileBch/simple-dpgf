@@ -3,9 +3,12 @@ import { pagesUrl } from "../../../core/appConstants";
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "../../../core/utils/error-handler";
 import axios from "axios";
-import { Box, Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 import AlertSnack from "../../../components/alert/AlertSnack";
 import { InvitationDto } from "../../../core/dtos/invitation/InvitationDto";
+import PageContainer from "../../../components/containers/PageContainer";
+import NavBar from "../../../components/NavBar";
+import TitleH2 from "../../../components/typographies/TitleH2";
 
 export default function ManagerTeam(): JSX.Element {
   const [data, setData] = useState<InvitationDto[]>([]);
@@ -39,30 +42,16 @@ export default function ManagerTeam(): JSX.Element {
   };
 
   return (
-    <>
+    <PageContainer>
+      <NavBar />
       <div>
-        {/* Orgnization manager */}
-        <h1>Manager MOA Equipe</h1>
-        {/* au click voir tous les membres de l'orga  avec statut de l'invit pending, consumed et possibilité d'annuler ou supprimer ...*/}
-        {/* bouton envoie invitation avec status invitation */}
-        <Link to={pagesUrl.MOA_MANAGER_TEAM_PAGE}>
-          <button>Equipe</button>
-        </Link>
-        {/* au click voir tous les projets + status du projet en cours... */}
-        {/* au click sur un projet voir la page extrait pdf */}
-        <Link to={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}>
-          <button>Projets</button>
-        </Link>
+        <TitleH2>Membres de l'organisation</TitleH2>
         <Link to={pagesUrl.MOA_MANAGER_INVITE_PAGE}>
           <button>Inviter un membre</button>
         </Link>
       </div>
 
       <Container maxWidth="lg" sx={{ mb: 4 }}>
-        <Box sx={{ textAlign: "center", p: 4 }}>
-          <Typography variant="h1">Membres de l'équipe</Typography>
-        </Box>
-
         {data.length === 0 ? (
           <p>Personne dans l'équipe</p>
         ) : (
@@ -93,6 +82,6 @@ export default function ManagerTeam(): JSX.Element {
           message={errorMessage}
         />
       </Container>
-    </>
+    </PageContainer>
   );
 }

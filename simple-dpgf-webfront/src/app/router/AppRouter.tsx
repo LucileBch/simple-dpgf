@@ -21,9 +21,8 @@ import MoaDashboard from "../pages/(authenticated)/(projectowner)/MoaDashboard";
 import RequestCode from "../pages/(authentication)/RequestCode";
 import Error from "../pages/Error";
 import ForgotPassord from "../pages/(authentication)/ForgotPassword";
-import ManagerDashboard from "../pages/(authenticated)/(moamanager)/ManagerDashboard";
 import ManagerTeam from "../pages/(authenticated)/(moamanager)/ManagerTeam";
-import InviteProjectOwner from "../pages/(authenticated)/(moamanager)/InviteProjectOwner";
+import ManagerInvitation from "../pages/(authenticated)/(moamanager)/ManagerInvitation";
 import UserDashboard from "../pages/(authenticated)/UserDashboard";
 import { OrganizationContextProvider } from "../core/contexts/organization-context";
 import AdminOrganizations from "../pages/(authenticated)/(admin)/AdminOrganizations";
@@ -33,6 +32,7 @@ import { DialogContextProvider } from "../core/contexts/dialog-context";
 import RequireAuth from "../components/rights/RequireAuth";
 import RequireRole from "../components/rights/RequireRole";
 import { RoleEnum } from "../core/enums/RoleEnum";
+import ManagerProjects from "../pages/(authenticated)/(moamanager)/ManagerProjects";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -109,8 +109,8 @@ export default function AppRouter(): JSX.Element {
           }
         >
           <Route
-            path={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}
-            element={<ManagerDashboard />}
+            path={pagesUrl.MOA_MANAGER_PROJECTS_PAGE}
+            element={<ManagerProjects />}
           />
           <Route
             path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
@@ -118,7 +118,7 @@ export default function AppRouter(): JSX.Element {
           />
           <Route
             path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
-            element={<InviteProjectOwner />}
+            element={<ManagerInvitation />}
           />
         </Route>
 

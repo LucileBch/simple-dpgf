@@ -51,7 +51,6 @@ export default function SignIn(): JSX.Element {
 
       if (!response.ok) {
         const errorMessage = await response.text();
-        // console.log("response not ok", errorMessage);
         throw new Error(errorMessage);
       }
 
