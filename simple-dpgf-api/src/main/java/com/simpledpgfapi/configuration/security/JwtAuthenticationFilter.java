@@ -18,8 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Service
 @Slf4j
+@Service
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;

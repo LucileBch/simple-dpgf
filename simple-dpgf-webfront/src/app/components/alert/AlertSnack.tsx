@@ -1,5 +1,10 @@
-import { Alert, Snackbar } from "@mui/material";
-//import Alert from '@mui/material/Alert';
+import {
+  Alert,
+  AlertColor,
+  AlertPropsColorOverrides,
+  Snackbar,
+} from "@mui/material";
+import { OverridableStringUnion } from "@mui/types";
 
 interface IAlertSnackProps {
   anchorOrigin?: {
@@ -9,8 +14,8 @@ interface IAlertSnackProps {
   open: boolean;
   autoHideDuration?: number;
   onClose: () => void;
-  severity: "error" | "warning" | "info" | "success";
-  errorMessage: string | null;
+  severity: OverridableStringUnion<AlertColor, AlertPropsColorOverrides>;
+  message: string | null;
 }
 
 export default function AlertSnack({
@@ -19,8 +24,8 @@ export default function AlertSnack({
   autoHideDuration = 3000,
   onClose,
   severity,
-  errorMessage,
-}: IAlertSnackProps): JSX.Element {
+  message: errorMessage,
+}: Readonly<IAlertSnackProps>): JSX.Element {
   return (
     <Snackbar
       anchorOrigin={anchorOrigin}

@@ -1,70 +1,85 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { TextInput } from "../../components/inputs/TextInput";
-import { useState } from "react";
+import { useContext } from "react";
 import { UserAuthenticationDto } from "../../core/dtos/user/UserAuthenticationDto";
 import { Link, useNavigate } from "react-router-dom";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
-import axios from "axios";
 import SubmitButton from "../../components/buttons/SubmitButton";
-import { getErrorMessage } from "../../core/utils/error-handler";
-import AlertSnack from "../../components/alert/AlertSnack";
-import apiClient from "../../core/utils/apiClient";
+import { UserContext } from "../../core/contexts/user-context";
+import { TokenContext } from "../../core/contexts/token-context";
+import PageContainer from "../../components/containers/PageContainer";
+import {
+  setTokensInCookies,
+  setUserInLocalStorage,
+} from "../../core/services/authentication-service";
+import { AlertContext } from "../../core/contexts/alert-context";
+import { FormValues, useForm } from "../../core/hooks/use-form";
 
-export default function SignIn() {
-  const [formData, setFormData] = useState<UserAuthenticationDto>({
-    email: "",
-    password: "",
-  });
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openAlert, setOpenAlert] = useState(false);
-
+export default function SignIn(): JSX.Element {
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const { setUser } = useContext(UserContext);
+  const { setIsAuthenticated, setAccessToken, setRefreshToken } =
+    useContext(TokenContext);
+  const { handleErrorAlert } = useContext(AlertContext);
+
+  const initialFormValues: FormValues<UserAuthenticationDto> = {
+    email: "",
+    password: "",
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const validate = (formData: FormValues<UserAuthenticationDto>) => {
+    const errors: Partial<UserAuthenticationDto> = {};
+    if (!formData.email) {
+      errors.email = "L'email est requis";
+    }
+    if (!formData.password) {
+      errors.password = "Le mot de passe est requis";
+    }
+    return errors;
+  };
+
+  const onSubmit = async (formData: FormValues<UserAuthenticationDto>) => {
     try {
-      const response = await axios.post(apiEndpoints.SIGN_IN, formData);
+      const response = await fetch(apiEndpoints.SIGN_IN, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Intercepter et stocker l'Access Token depuis les en-têtes
-      const accessToken = response.headers["authorization"]?.split(" ")[1];
-      console.log("accessToken login", accessToken);
-
-      if (accessToken) {
-        apiClient.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${accessToken}`;
-
-        navigate(pagesUrl.MOA_MANAGER_DASHBOARD_PAGE);
-      } else {
-        throw new Error("Access Token not found in response headers");
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        // console.log("response not ok", errorMessage);
+        throw new Error(errorMessage);
       }
 
-      // await axios.post(apiEndpoints.SIGN_IN, formData);
-    } catch (error) {
-      console.log(error);
+      const { accessToken, refreshToken, user } = await response.json();
 
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(getErrorMessage(error.response.data));
-        setOpenAlert(true);
+      if (user) {
+        setUserInLocalStorage(user);
+        setTokensInCookies(accessToken, refreshToken);
+        setIsAuthenticated(true);
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        setUser(user);
+      }
+
+      navigate(pagesUrl.DASHBOARD_PAGE);
+    } catch (error) {
+      console.log("catch ", error);
+      if (error instanceof Error) {
+        handleErrorAlert(error);
       }
     }
   };
 
-  const handleCloseAlert = () => {
-    setOpenAlert(false);
-  };
+  const { formData, errors, isSubmitting, handleChange, handleSubmit } =
+    useForm({ initialFormValues, validate, onSubmit });
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 4 }}>
+    <PageContainer>
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Se connecter</Typography>
       </Box>
@@ -83,16 +98,20 @@ export default function SignIn() {
             name="email"
             type="email"
             label="Email"
-            required
+            value={formData.email}
             onChange={handleChange}
+            error={!!errors.email}
+            helperText={errors.email}
           />
           <TextInput
             id="password"
             name="password"
             type="password"
             label="Mot de passe"
-            required
+            value={formData.password}
             onChange={handleChange}
+            error={!!errors.password}
+            helperText={errors.password}
           />
         </Box>
 
@@ -105,16 +124,9 @@ export default function SignIn() {
           }}
         >
           <Link to={pagesUrl.FORGOT_PASSWORD}>Mot de passe oublié</Link>
-          <SubmitButton label="Se connecter" />
+          <SubmitButton label="Se connecter" disabled={isSubmitting} />
         </Box>
       </form>
-
-      <AlertSnack
-        open={openAlert}
-        onClose={handleCloseAlert}
-        severity="error"
-        errorMessage={errorMessage}
-      />
-    </Container>
+    </PageContainer>
   );
 }

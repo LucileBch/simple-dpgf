@@ -1,4 +1,4 @@
-import { OrganizationTypeEnum } from "../enums/OrganizationTypeEnum";
+import { OrganizationTypeEnum } from "../../enums/OrganizationTypeEnum";
 
 export interface OrganizationCreationDto {
   organizationType: OrganizationTypeEnum;

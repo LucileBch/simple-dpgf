@@ -1,4 +1,4 @@
-export interface UserUpdatePasswordDto {
+export interface UserPasswordResetDto {
   email: string;
   activationCode: string;
   password: string;

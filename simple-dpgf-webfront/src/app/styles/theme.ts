@@ -12,13 +12,18 @@ export const theme = createTheme({
     },
     h2: {
       fontFamily: "'PT Serif',Roboto, sans-serif",
-      fontWeight: 400,
-      fontSize: "14px",
+      fontWeight: 600,
+      fontSize: "20px",
+    },
+    h3: {
+      fontFamily: "'PT Serif',Roboto, sans-serif",
+      fontWeight: "bold",
+      fontSize: "16px",
     },
     body1: {
       fontFamily: "'Roboto Condensed', Arial, sans-serif",
       fontWeight: 400,
-      fontSize: "12px",
+      fontSize: "13px",
     },
   },
 
@@ -62,6 +67,36 @@ export const theme = createTheme({
         root: {
           "& .MuiInputBase-root": {
             backgroundColor: "#ffffff", // Couleur de fond de l'input
+          },
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontFamily: "'PT Serif',Roboto, sans-serif",
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          color: "#0d5c63", // Change la couleur du texte sélectionné
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#424242", // Change la couleur de la bordure
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#0d5c63", // Couleur de bordure au hover
+          },
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          color: "#424242", // Couleur des options dans le menu déroulant
+          "&:hover": {
+            backgroundColor: "#44a1a0", // Couleur de fond au hover
           },
         },
       },

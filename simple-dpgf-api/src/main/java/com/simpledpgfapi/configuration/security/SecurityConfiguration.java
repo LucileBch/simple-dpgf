@@ -57,16 +57,17 @@ public class SecurityConfiguration {
          // allow cors request --> revoir cors
          httpSecurity.cors(cors -> cors.configurationSource(request-> getCorsConfiguration()));
 
+        // statelasse session policy
+        httpSecurity.sessionManagement(httpSecuritySessionManagementConfigurer ->
+                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
          // config authorisation sur requete http
          httpSecurity.authorizeHttpRequests(
                  authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        //.requestMatchers("/user").hasAnyAuthority("ROLE_ORGANIZATION_MANAGER", "ROLE_PROJECT_OWNER")
-                        .anyRequest().authenticated());
-
-         // statelasse session policy
-         httpSecurity.sessionManagement(httpSecuritySessionManagementConfigurer ->
-                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated()
          );
 
         httpSecurity.exceptionHandling(exceptionHandling ->
@@ -91,9 +92,11 @@ public class SecurityConfiguration {
     public CorsConfiguration getCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         // headers
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Cookies"));
         // origins (qui à le droit d'appeller quels host
-        corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080"));
+        corsConfiguration.setAllowedOrigins(
+                List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080")
+        );
         // methodes authoriées
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         // si app securisée avec authorisation header
@@ -101,7 +104,7 @@ public class SecurityConfiguration {
         // duree validité
         corsConfiguration.setMaxAge(4800L);
         // header expose en reponse
-        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+        corsConfiguration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
 
         return corsConfiguration;
     }

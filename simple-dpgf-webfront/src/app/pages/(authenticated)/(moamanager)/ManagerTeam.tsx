@@ -3,22 +3,21 @@ import { pagesUrl } from "../../../core/appConstants";
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "../../../core/utils/error-handler";
 import axios from "axios";
-import apiClient from "../../../core/utils/apiClient";
 import { Box, Container, Typography } from "@mui/material";
 import AlertSnack from "../../../components/alert/AlertSnack";
 import { InvitationDto } from "../../../core/dtos/invitation/InvitationDto";
 
-export default function MoaManagerTeam(): JSX.Element {
+export default function ManagerTeam(): JSX.Element {
   const [data, setData] = useState<InvitationDto[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState(false);
 
   const fetchData = async () => {
     try {
-      const { data } = await apiClient.get(
-        "http://localhost:8080/organization/6776732d35bdb812f8eced24/members"
-      );
-      console.log("response", data);
+      // const { data } = await apiClient.get(
+      //   "http://localhost:8080/api/organization/67796e9d68110c23b71c3260/members"
+      // );
+      // console.log("response", data);
 
       setData(data);
     } catch (error) {
@@ -91,7 +90,7 @@ export default function MoaManagerTeam(): JSX.Element {
           open={openAlert}
           onClose={handleCloseAlert}
           severity="error"
-          errorMessage={errorMessage}
+          message={errorMessage}
         />
       </Container>
     </>

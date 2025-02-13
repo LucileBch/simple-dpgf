@@ -22,6 +22,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Id
     private ObjectId id;
+
     private String firstName;
     private String lastName;
     private String email;

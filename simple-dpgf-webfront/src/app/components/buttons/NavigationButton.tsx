@@ -1,33 +1,50 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface IProps {
   label: string;
-  path: string;
+  path?: string;
   disabled?: boolean;
+  loading?: boolean;
+  onClick?(): void;
 }
 
 export default function NavigationButton({
   label,
   path,
   disabled = false,
-}: IProps): JSX.Element {
-  return (
-    // entourer d'un Link !!
+  loading,
+  onClick,
+}: Readonly<IProps>): JSX.Element {
+  const theme = useTheme();
+  const location = useLocation();
+  const isActive = location.pathname === path;
 
+  const button = (
+    <Button
+      variant="contained"
+      disabled={disabled}
+      onClick={onClick}
+      sx={{
+        backgroundColor: isActive
+          ? theme.palette.secondary.main
+          : theme.palette.primary.main,
+      }}
+    >
+      {loading ? <CircularProgress size={24} color="inherit" /> : label}
+    </Button>
+  );
+
+  return (
     <Box
       sx={{
         display: "flex",
         justifyContent: "end",
-        pt: 1,
+        alignContent: "center",
       }}
     >
-      <Link to={path}>
-        <Button variant="contained" disabled={disabled}>
-          {label}
-        </Button>
-      </Link>
+      {path ? <Link to={path}>{button}</Link> : button}
     </Box>
   );
 }

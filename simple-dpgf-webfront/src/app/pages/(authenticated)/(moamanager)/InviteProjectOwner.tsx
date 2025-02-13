@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiEndpoints, pagesUrl } from "../../../core/appConstants";
+import { pagesUrl } from "../../../core/appConstants";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getErrorMessage } from "../../../core/utils/error-handler";
@@ -7,7 +7,6 @@ import AlertSnack from "../../../components/alert/AlertSnack";
 import { Box, Container, Typography } from "@mui/material";
 import { TextInput } from "../../../components/inputs/TextInput";
 import SubmitButton from "../../../components/buttons/SubmitButton";
-import apiClient from "../../../core/utils/apiClient";
 import { InvitationCreationDto } from "../../../core/dtos/invitation/InvitationCreationDto";
 
 // TODO : transformer en modal
@@ -34,10 +33,10 @@ export default function InviteProjectOwner() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiClient.post(
-        apiEndpoints.SEND_PROJECT_OWNER_INVITATION,
-        formData
-      );
+      //  await apiClient.post(
+      //   apiEndpoints.SEND_PROJECT_OWNER_INVITATION,
+      //   formData
+      // );
       navigate(pagesUrl.MOA_MANAGER_TEAM_PAGE);
     } catch (error) {
       console.log(error);
@@ -112,7 +111,7 @@ export default function InviteProjectOwner() {
           open={openAlert}
           onClose={handleCloseAlert}
           severity="error"
-          errorMessage={errorMessage}
+          message={errorMessage}
         />
       </Container>
     </>

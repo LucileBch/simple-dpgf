@@ -1,9 +1,11 @@
-import { InvitationStatusEnum } from "../../enums/InvitationStatusEnum";
+//import { InvitationStatusEnum } from "../../enums/InvitationStatusEnum";
+
+import { RoleEnum } from "../../enums/RoleEnum";
 
 export interface UserDetailsDto {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
-  invitationStatus: InvitationStatusEnum;
+  role: RoleEnum;
 }

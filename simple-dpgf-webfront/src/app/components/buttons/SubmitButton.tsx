@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Button, { ButtonProps } from "@mui/material/Button";
 
 interface ISubmitButtonProps extends ButtonProps {
@@ -11,7 +11,7 @@ export default function SubmitButton({
   label,
   disabled = false,
   ...rest
-}: ISubmitButtonProps): JSX.Element {
+}: Readonly<ISubmitButtonProps>): JSX.Element {
   return (
     <Box
       sx={{
@@ -21,7 +21,19 @@ export default function SubmitButton({
       }}
     >
       <Button variant="contained" type={type} disabled={disabled} {...rest}>
-        {label}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {disabled ? (
+            <CircularProgress size={24} sx={{ marginRight: 1 }} />
+          ) : (
+            label
+          )}
+        </Box>
       </Button>
     </Box>
   );

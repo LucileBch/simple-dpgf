@@ -1,6 +1,7 @@
 package com.simpledpgfapi.user.model.user.dto;
 
 import com.simpledpgfapi.user.model.organization.dto.OrganizationDto;
+import com.simpledpgfapi.user.model.role.RoleEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -14,4 +15,5 @@ public class UserDto {
     private String email;
     @NotNull
     private OrganizationDto organization;
+    private RoleEnum role;
 }
