@@ -29,7 +29,7 @@ export function useForm<T extends object>({
         setFormData((prev) => ({
           ...prev,
           [outerKey]: {
-            ...prev[outerKey as keyof T], // Assure-toi que la clé existe
+            ...prev[outerKey as keyof T],
             [innerKey]: value,
           },
         }));

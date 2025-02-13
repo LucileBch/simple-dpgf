@@ -20,6 +20,12 @@ export function getErrorMessage(errorMessage: string): string {
       return "Le compte a déjà été activé.";
     case "USER_ACCOUNT_NOT_ACTIVATED":
       return "Vous n'avez pas encore activez votre compte.";
+    case "USER_OLD_PASSWORD_REQUIRED":
+      return "Votre mot de passe est requis";
+    case "USER_WRONG_PASSWORD":
+      return "Mot de passe incorrect, veuillez re-essayer";
+    case "USER_NEW_PASSWORD_EQUALS_OLD":
+      return "Le nouveau mot de passe doit être différent de l'ancien";
 
     // Token Errors
     case "REFRESH_TOKEN_EXPIRED":

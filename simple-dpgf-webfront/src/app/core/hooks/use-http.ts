@@ -26,7 +26,7 @@ type HttpHook = {
 };
 
 export function useHttp(): HttpHook {
-  const { accessToken, setAccessToken, setRefreshToken } =
+  const { accessToken, setAccessToken, setRefreshToken, setIsAuthenticated } =
     useContext(TokenContext);
   // const { setAlertMessage, setSeverity, setOpenAlert } =
   //   useContext(AlertContext);
@@ -75,20 +75,16 @@ export function useHttp(): HttpHook {
     ): Promise<Response> => {
       if (response.status === 401) {
         try {
-          const resfreshTokenResponse = await fetch(
-            apiEndpoints.REFRESH_TOKEN,
-            {
-              method: "POST",
-              credentials: "include",
-            }
-          );
+          const response = await fetch(apiEndpoints.REFRESH_TOKEN, {
+            method: "POST",
+            credentials: "include",
+          });
 
-          if (!resfreshTokenResponse) {
+          if (!response.ok) {
             throw new Error("Failed to refresh token");
           }
 
-          const { accessToken, refreshToken } =
-            await resfreshTokenResponse.json();
+          const { accessToken, refreshToken } = await response.json();
           setAccessToken(accessToken);
           setRefreshToken(refreshToken);
 
@@ -101,6 +97,9 @@ export function useHttp(): HttpHook {
         } catch (error) {
           removeCookies();
           removeUserFromLocalStorage();
+          setAccessToken(undefined);
+          setRefreshToken(undefined);
+          setIsAuthenticated(false);
 
           console.log("erreor refresh", error);
           throw new Error("Failed to refresh access token");
@@ -109,7 +108,7 @@ export function useHttp(): HttpHook {
 
       throw response;
     },
-    [setAccessToken, setRefreshToken]
+    [setAccessToken, setIsAuthenticated, setRefreshToken]
   );
 
   return useMemo<HttpHook>(
@@ -200,15 +199,24 @@ export function useHttp(): HttpHook {
         };
         try {
           const response = await fetch(finalUrl, options);
-          if (response.ok) {
-            return response;
+
+          if (response.status === 401) {
+            const newResponse = await handleRetryWithRefreshToken(
+              response,
+              finalUrl,
+              headers,
+              options
+            );
+
+            return newResponse;
           }
-          return handleRetryWithRefreshToken(
-            response,
-            finalUrl,
-            headers,
-            options
-          );
+
+          if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+          }
+
+          return response;
         } catch (error) {
           console.log("erreur lors de la requete PUT", error);
           throw error;

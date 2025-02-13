@@ -28,7 +28,6 @@ export function AlertContextProvider({
     setAlertMessage(null);
   }, []);
 
-  // Nouvelle fonction pour gérer les erreurs plus facilement
   const handleErrorAlert = useCallback(
     (error: unknown) => {
       if (error instanceof Error) {
@@ -40,6 +39,12 @@ export function AlertContextProvider({
     [setAlertMessage, setSeverity, setOpenAlert]
   );
 
+  const handleSuccessAlert = useCallback((message: string) => {
+    setAlertMessage(message);
+    setSeverity("success");
+    setOpenAlert(true);
+  }, []);
+
   const alertStore: AlertStore = useMemo(
     () => ({
       alertMessage,
@@ -47,8 +52,16 @@ export function AlertContextProvider({
       setSeverity,
       setOpenAlert,
       handleErrorAlert,
+      handleSuccessAlert,
     }),
-    [alertMessage, setAlertMessage, setSeverity, setOpenAlert, handleErrorAlert]
+    [
+      alertMessage,
+      setAlertMessage,
+      setSeverity,
+      setOpenAlert,
+      handleErrorAlert,
+      handleSuccessAlert,
+    ]
   );
 
   return (
@@ -72,4 +85,5 @@ export type AlertStore = {
   >;
   setOpenAlert: Dispatch<SetStateAction<boolean>>;
   handleErrorAlert: (error: unknown) => void;
+  handleSuccessAlert: (message: string) => void;
 };

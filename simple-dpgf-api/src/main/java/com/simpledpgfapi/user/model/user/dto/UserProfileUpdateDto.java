@@ -1,6 +1,5 @@
 package com.simpledpgfapi.user.model.user.dto;
 
-import com.mongodb.lang.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -14,6 +13,6 @@ public class UserProfileUpdateDto {
     private String email;
     @NotNull(message = "Le champ ne peut pas être vide")
     private String oldPassword;
-    @Nullable
+    @NotNull(message = "Le champ ne peut pas être vide")
     private String newPassword;
 }

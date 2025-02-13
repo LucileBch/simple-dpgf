@@ -78,14 +78,21 @@ public class UserService {
         if(!bCryptPasswordEncoder.matches(userProfileUpdateDto.getOldPassword(), currentUser.getPassword())) {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_WRONG_PASSWORD);
         }
-        if(bCryptPasswordEncoder.matches(userProfileUpdateDto.getNewPassword(), currentUser.getPassword())) {
-            throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NEW_PASSWORD_EQUALS_OLD);
+
+        if(!userProfileUpdateDto.getNewPassword().isEmpty()) {
+            if (userProfileUpdateDto.getOldPassword() == null || userProfileUpdateDto.getOldPassword().isEmpty()) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_OLD_PASSWORD_REQUIRED);
+            }
+
+            if(bCryptPasswordEncoder.matches(userProfileUpdateDto.getNewPassword(), currentUser.getPassword())) {
+                throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NEW_PASSWORD_EQUALS_OLD);
+            }
+
+            String cryptedNewPassword = bCryptPasswordEncoder.encode(userProfileUpdateDto.getNewPassword());
+            currentUser.setPassword(cryptedNewPassword);
         }
 
-        String cryptedNewPassword = bCryptPasswordEncoder.encode(userProfileUpdateDto.getNewPassword());
-        currentUser.setPassword(cryptedNewPassword);
         userRepository.save(currentUser);
-
         return userMapper.modelAndTokenToDto(currentUser, newAccessToken, newRefreshToken);
     }
 }

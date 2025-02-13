@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class UserDetailsDto {
     private String id;
+    private String firstName;
+    private String lastName;
     private String email;
     private RoleEnum role;
 }

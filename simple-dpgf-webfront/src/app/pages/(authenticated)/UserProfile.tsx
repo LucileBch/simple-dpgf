@@ -7,13 +7,27 @@ import { useCallback, useContext } from "react";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import { UserProfileUpdateDto } from "../../core/dtos/user/UserProfileUpdateDto";
 import { UserContext } from "../../core/contexts/user-context";
+import { AlertContext } from "../../core/contexts/alert-context";
+import { useUser } from "../../core/hooks/use-user";
+import { UserDetailsDto } from "../../core/dtos/user/UserDetailsDto";
+import {
+  removeCookies,
+  removeUserFromLocalStorage,
+  setTokensInCookies,
+  setUserInLocalStorage,
+} from "../../core/services/authentication-service";
+import { TokenContext } from "../../core/contexts/token-context";
 
 export default function UserProfile(): JSX.Element {
-  const { user, updateUserProfileAndTokens } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const { handleErrorAlert, handleSuccessAlert } = useContext(AlertContext);
+  const { setAccessToken, setRefreshToken } = useContext(TokenContext);
+
+  const { updateUserProfile } = useUser();
 
   const initialFormValues: FormValues<UserProfileUpdateDto> = {
-    firstName: "",
-    lastName: "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
     email: user?.email || "",
     oldPassword: "",
     newPassword: "",
@@ -38,10 +52,51 @@ export default function UserProfile(): JSX.Element {
   };
 
   const onSubmit = useCallback(
-    (formData: FormValues<UserProfileUpdateDto>) => {
-      return updateUserProfileAndTokens(formData);
+    async (userUpdateProfileDto: UserProfileUpdateDto) => {
+      if (!user) {
+        handleErrorAlert("Identifiant utilisateur invalide");
+        return;
+      }
+
+      try {
+        const updatedUser = await updateUserProfile(
+          user.id,
+          userUpdateProfileDto
+        );
+
+        const userDetailsDto: UserDetailsDto = {
+          id: updatedUser.id,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+          role: updatedUser.role,
+        };
+        setUser(userDetailsDto);
+
+        removeUserFromLocalStorage();
+        setUserInLocalStorage(userDetailsDto);
+
+        if (updatedUser.accessToken && updatedUser.refreshToken) {
+          removeCookies();
+          setAccessToken(updatedUser.accessToken);
+          setRefreshToken(updatedUser.refreshToken);
+          setTokensInCookies(updatedUser.accessToken, updatedUser.refreshToken);
+        }
+
+        handleSuccessAlert("Vos informations ont bien été mises à jour.");
+      } catch (error) {
+        handleErrorAlert(error);
+      }
     },
-    [updateUserProfileAndTokens]
+    [
+      handleErrorAlert,
+      handleSuccessAlert,
+      setAccessToken,
+      setRefreshToken,
+      setUser,
+      updateUserProfile,
+      user,
+    ]
   );
 
   const { formData, errors, isSubmitting, handleChange, handleSubmit } =
@@ -101,7 +156,7 @@ export default function UserProfile(): JSX.Element {
             <TextInput
               id="oldPassword"
               name="oldPassword"
-              type="oldPassword"
+              type="password"
               label="Ancien mot de passe"
               value={formData.oldPassword}
               onChange={handleChange}
@@ -112,7 +167,7 @@ export default function UserProfile(): JSX.Element {
             <TextInput
               id="newPassword"
               name="newPassword"
-              type="newPassword"
+              type="password"
               label="Nouveau mot de passe"
               value={formData.newPassword}
               onChange={handleChange}

@@ -1,9 +1,8 @@
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { useHttp } from "./use-http";
 import { UserTokenUpdateDto } from "../dtos/user/UserTokenUpdateDto";
 import { apiEndpoints } from "../appConstants";
 import { UserProfileUpdateDto } from "../dtos/user/UserProfileUpdateDto";
-import { AlertContext } from "../contexts/alert-context";
 
 type UserHook = {
   updateUserProfile(
@@ -14,25 +13,26 @@ type UserHook = {
 
 export function useUser(): UserHook {
   const { put } = useHttp();
-  const { handleErrorAlert } = useContext(AlertContext);
 
   return useMemo(
     () => ({
-      updateUserProfile(
+      updateUserProfile: async (
         userId: string,
         userProfileUpdateDto: UserProfileUpdateDto
-      ): Promise<UserTokenUpdateDto> {
-        return put(
+      ): Promise<UserTokenUpdateDto> => {
+        const response = await put(
           `${apiEndpoints.USER_UPDATE_PROFILE}/${userId}`,
           userProfileUpdateDto
-        )
-          .then((response) => response.json())
-          .catch((error) => {
-            handleErrorAlert(error);
-            throw error;
-          });
+        );
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          console.log("error TEXT", errorMessage);
+
+          throw new Error(errorMessage);
+        }
+        return response.json();
       },
     }),
-    [handleErrorAlert, put]
+    [put]
   );
 }

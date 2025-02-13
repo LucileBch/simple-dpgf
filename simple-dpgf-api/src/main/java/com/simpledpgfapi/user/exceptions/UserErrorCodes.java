@@ -11,6 +11,7 @@ public enum UserErrorCodes implements ErrorCodes {
     USER_NOT_AUTHORIZED,
     USER_DELETED,
     USER_WRONG_PASSWORD,
+    USER_OLD_PASSWORD_REQUIRED,
     USER_NEW_PASSWORD_EQUALS_OLD;
 
     @Override

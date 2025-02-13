@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class UserTokenUpdateDto {
     String id;
+    String firstName;
+    String lastName;
     String email;
     RoleEnum role;
     String accessToken;
