@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { OrganizationDto } from "../../core/dtos/organization/OrganizationDto";
 import { useContext } from "react";
-import { OrganizationContext } from "../../core/contexts/organization-context";
+import { AdminOrganizationContext } from "../../core/contexts/admin-organization-context";
 import { useNavigate } from "react-router-dom";
 import { pagesUrl } from "../../core/appConstants";
 import { resolveUrl } from "../../core/services/http-service";
@@ -16,7 +16,7 @@ export default function OrganizationCard({
 }: IProps): JSX.Element {
   const navigate = useNavigate();
 
-  const { setOrganization } = useContext(OrganizationContext);
+  const { setOrganization } = useContext(AdminOrganizationContext);
 
   function navigateToOrganization(): void {
     if (organization.id !== undefined) {

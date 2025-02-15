@@ -8,6 +8,7 @@ import {
   removeCookies,
   removeUserFromLocalStorage,
 } from "../services/authentication-service";
+import { AlertContext } from "../contexts/alert-context";
 
 type HttpHook = {
   get(url: string, requestParams?: RequestParam[]): Promise<Response>;
@@ -28,6 +29,7 @@ type HttpHook = {
 export function useHttp(): HttpHook {
   const { accessToken, setAccessToken, setRefreshToken, setIsAuthenticated } =
     useContext(TokenContext);
+  const { handleErrorAlert } = useContext(AlertContext);
   // const { setAlertMessage, setSeverity, setOpenAlert } =
   //   useContext(AlertContext);
 
@@ -166,18 +168,26 @@ export function useHttp(): HttpHook {
 
         try {
           const response = await fetch(finalUrl, options);
-          if (response.ok) {
-            return response;
+
+          if (response.status === 401) {
+            const newResponse = handleRetryWithRefreshToken(
+              response,
+              finalUrl,
+              headers,
+              options
+            );
+            return newResponse;
           }
 
-          return handleRetryWithRefreshToken(
-            response,
-            finalUrl,
-            headers,
-            options
-          );
+          if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+          }
+
+          return response;
         } catch (error) {
           console.error("Erreur lors de la requête POST", error);
+          handleErrorAlert(error);
           throw error;
         }
       },
@@ -219,6 +229,7 @@ export function useHttp(): HttpHook {
           return response;
         } catch (error) {
           console.log("erreur lors de la requete PUT", error);
+          handleErrorAlert(error);
           throw error;
         }
       },
@@ -238,22 +249,31 @@ export function useHttp(): HttpHook {
         };
         try {
           const response = await fetch(finalUrl, options);
-          if (response.ok) {
-            return response;
+
+          if (response.status === 401) {
+            const newResponse = await handleRetryWithRefreshToken(
+              response,
+              finalUrl,
+              headers,
+              options
+            );
+
+            return newResponse;
           }
 
-          return handleRetryWithRefreshToken(
-            response,
-            finalUrl,
-            headers,
-            options
-          );
+          if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+          }
+
+          return response;
         } catch (error) {
           console.log("error DELETE method", error);
+          handleErrorAlert(error);
           throw error;
         }
       },
     }),
-    [accessToken, handleRetryWithRefreshToken]
+    [accessToken, handleErrorAlert, handleRetryWithRefreshToken]
   );
 }

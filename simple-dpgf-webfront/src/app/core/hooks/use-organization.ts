@@ -4,6 +4,8 @@ import { apiEndpoints } from "../appConstants";
 import { UserDto } from "../dtos/user/UserDto";
 import { OrganizationLicenseUpdateDto } from "../dtos/OrganizationLicenseUpdateDto";
 import { useMemo } from "react";
+import { resolveUrl } from "../services/http-service";
+import { InvitationDto } from "../dtos/invitation/InvitationDto";
 
 type OrganizationHook = {
   fetchOrganizationList(): Promise<OrganizationDto[]>;
@@ -14,6 +16,15 @@ type OrganizationHook = {
     organizationId: string,
     organizationLicenseUpdateDto: OrganizationLicenseUpdateDto
   ): Promise<OrganizationDto>;
+  fetchOrganization(): Promise<OrganizationDto>;
+  fetchOrganizationInvitedMembers(
+    organizationId: string
+  ): Promise<InvitationDto[]>;
+  deleteOrganizationMember(
+    organizationId: string,
+    invitationId: string
+  ): Promise<Response>;
+  deletePendingInvitation(invitationId: string): Promise<Response>;
 };
 
 export function useOrganization(): OrganizationHook {
@@ -49,6 +60,38 @@ export function useOrganization(): OrganizationHook {
           `${apiEndpoints.ORGANIZATION_UPDATE_LICENSE}/${organizationId}/update-license`,
           organizationUpdateLicenseDto
         ).then((response) => response.json());
+      },
+      fetchOrganization(): Promise<OrganizationDto> {
+        return get(apiEndpoints.ORGANIZATION).then((response) =>
+          response.json()
+        );
+      },
+      fetchOrganizationInvitedMembers(
+        organizationId: string
+      ): Promise<InvitationDto[]> {
+        return get(
+          resolveUrl(apiEndpoints.GET_ORGANIZATION_INVITED_MEMBERS, [
+            organizationId,
+          ])
+        ).then((response) => response.json());
+      },
+      deleteOrganizationMember(
+        organizationId: string,
+        invitationId: string
+      ): Promise<Response> {
+        return deleteRequest(
+          resolveUrl(apiEndpoints.DELETE_ORGANIZATION_MEMBER, [
+            organizationId,
+            invitationId,
+          ])
+        );
+      },
+      deletePendingInvitation(invitationId: string): Promise<Response> {
+        return deleteRequest(
+          resolveUrl(apiEndpoints.DELETE_ORGANIZATION_INVITATION, [
+            invitationId,
+          ])
+        );
       },
     }),
     [get, put, deleteRequest]

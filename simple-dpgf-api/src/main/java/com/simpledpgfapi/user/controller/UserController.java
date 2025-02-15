@@ -23,5 +23,4 @@ public class UserController {
                                                 @Valid @RequestBody UserProfileUpdateDto userProfileUpdateDto) {
         return userService.updateUserInfoById(userId, userProfileUpdateDto);
     }
-
 }

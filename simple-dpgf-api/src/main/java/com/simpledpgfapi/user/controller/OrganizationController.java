@@ -43,6 +43,12 @@ public class OrganizationController {
     }
 
     // Role ORGANIZATION_MANAGER
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping()
+    public OrganizationDto getOrganizationByUser() {
+        return organizationService.getOrganizationByUserId();
+    }
+
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @GetMapping("/{organizationId}/invitation-list")
     public List<InvitationDto> getUserInvitationByOrganizationId(@PathVariable ObjectId organizationId) {
@@ -50,9 +56,9 @@ public class OrganizationController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
-    @DeleteMapping("/{organizationId}/member/{userId}")
+    @DeleteMapping("{organizationId}/invitation/{invitationId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void removeMemberFromOrganization(@PathVariable ObjectId organizationId, @PathVariable ObjectId userId) {
-        organizationService.removeUserFromOrganization(organizationId, userId);
+    public void removeMemberFromOrganization(@PathVariable ObjectId organizationId, @PathVariable ObjectId invitationId) {
+        organizationService.removeUserFromOrganization(organizationId, invitationId);
     }
 }

@@ -6,26 +6,28 @@ import {
 } from "@mui/material";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { useCallback, useContext } from "react";
-import { AdminOrganizationContext } from "../../core/contexts/admin-organization-context";
 import { DialogContext } from "../../core/contexts/dialog-context";
-import { useOrganization } from "../../core/hooks/use-organization";
-import { useNavigate } from "react-router-dom";
+import { OrganizationContext } from "../../core/contexts/organization-context";
+import { useNavigate, useParams } from "react-router-dom";
 import { pagesUrl } from "../../core/appConstants";
+import { resolveUrl } from "../../core/services/http-service";
 
 interface IProps {
   dialogTitle: string;
   dialogContent?: string;
-  organizationId: string;
+  dialogOption: string;
+  invitationId: string;
 }
 
-export default function DeleteOrgaDialog({
+export default function InvitationDialog({
   dialogTitle,
   dialogContent,
-  organizationId,
+  dialogOption,
+  invitationId,
 }: Readonly<IProps>): JSX.Element {
   const navigate = useNavigate();
+  const { organizationId } = useParams();
 
-  const { setOrganizationList } = useContext(AdminOrganizationContext);
   const {
     isDeleteDialogOpen,
     isSubmitting,
@@ -34,8 +36,8 @@ export default function DeleteOrgaDialog({
     setAlertMessage,
     handleCancelAndClose,
   } = useContext(DialogContext);
-
-  const { deleteOrganizationById } = useOrganization();
+  const { deleteTeamMember, cancelInvitation } =
+    useContext(OrganizationContext);
 
   const handleSubmitAndClose = useCallback(async () => {
     if (isSubmitting) {
@@ -47,43 +49,42 @@ export default function DeleteOrgaDialog({
     setOpenAlert(false);
 
     try {
-      await deleteOrganizationById(organizationId);
-      setAlertMessage("Organisation supprimée");
-      setOpenAlert(true);
+      if (dialogOption === "deleteMember" && organizationId != undefined) {
+        console.log("appel delete memner", organizationId, invitationId);
 
-      setOrganizationList((prev) =>
-        prev.filter((organization) => organizationId != organization.id)
-      );
+        await deleteTeamMember(organizationId, invitationId);
+        setAlertMessage("Collaborateur supprimé de l'équipe");
+        setOpenAlert(true);
+      } else if (dialogOption === "deleteInvitation") {
+        await cancelInvitation(invitationId);
+        setAlertMessage("Invitation annulée");
+        setOpenAlert(true);
+      }
 
       setTimeout(() => {
-        navigate(pagesUrl.ADMIN_ORGANIZATIONS_PAGE);
+        navigate(resolveUrl(pagesUrl.MOA_MANAGER_TEAM_PAGE, [organizationId]));
         setIsSubmitting(false);
       }, 2000);
     } finally {
       setIsSubmitting(false);
     }
   }, [
-    deleteOrganizationById,
+    cancelInvitation,
+    deleteTeamMember,
+    invitationId,
     isSubmitting,
     navigate,
+    dialogOption,
     organizationId,
     setAlertMessage,
     setIsSubmitting,
     setOpenAlert,
-    setOrganizationList,
   ]);
 
   return (
-    <Dialog
-      open={isDeleteDialogOpen}
-      onClose={handleCancelAndClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{dialogTitle}</DialogTitle>
-      <DialogContentText id="alert-dialog-description">
-        {dialogContent}
-      </DialogContentText>
+    <Dialog open={isDeleteDialogOpen} onClose={handleCancelAndClose}>
+      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogContentText>{dialogContent}</DialogContentText>
       <DialogActions>
         <OutlinedButton
           label="Annuler"

@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { OrganizationContext } from "../../../core/contexts/organization-context";
+import { AdminOrganizationContext } from "../../../core/contexts/admin-organization-context";
 import { Box, Button, Divider, Grid2, Typography } from "@mui/material";
 import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/NavBar";
@@ -15,8 +15,9 @@ import UpdateLicenseDialog from "../../../components/modals/UpdateLicenseDialog"
 import { DialogContext } from "../../../core/contexts/dialog-context";
 
 export default function AdminOrganizationId(): JSX.Element {
-  const { organization, isOrganizationLoading } =
-    useContext(OrganizationContext);
+  const { organization, isOrganizationLoading } = useContext(
+    AdminOrganizationContext
+  );
   const { setIsUpdateDialogOpen, setIsDeleteDialogOpen } =
     useContext(DialogContext);
 

@@ -4,6 +4,7 @@ import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.InvitationErrorCodes;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
+import com.simpledpgfapi.user.mapper.UserMapper;
 import com.simpledpgfapi.user.model.invitation.Invitation;
 import com.simpledpgfapi.user.model.invitation.InvitationStatusEnum;
 import com.simpledpgfapi.user.model.invitation.dto.InvitationCreationDto;
@@ -13,6 +14,7 @@ import com.simpledpgfapi.user.model.role.RoleEnum;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
+import com.simpledpgfapi.user.model.user.dto.UserInvitedDto;
 import com.simpledpgfapi.user.repository.InvitationRepository;
 import com.simpledpgfapi.user.repository.OrganizationRepository;
 import org.bson.types.ObjectId;
@@ -37,6 +39,8 @@ public class InvitationService {
     private OrganizationRepository organizationRepository;
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     //TODO - LICENSE UTILISATEUR : incrémenter la license nombre utilisateurs
     // WARNING si invit existante ne pas incrémenter
@@ -74,7 +78,7 @@ public class InvitationService {
     }
 
     @Transactional
-    public UserDto acceptInvitation(String invitationToken, UserCreationDto userCreationDto) {
+    public UserDto acceptInvitation(String invitationToken, UserInvitedDto userInvitedDto) {
         Invitation invitation = invitationRepository.findByInvitationToken(invitationToken)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
 
@@ -89,8 +93,9 @@ public class InvitationService {
         invitation.setInvitationStatus(InvitationStatusEnum.CONSUMED);
         invitationRepository.save(invitation);
 
+        UserCreationDto userCreationDto = userMapper.invitedToCreationDto(userInvitedDto);
         userCreationDto.setOrganization(organizationCreationDto);
-        return authenticationService.createUser(userCreationDto, invitation.getRole());
+        return authenticationService.createUser(userCreationDto, RoleEnum.PROJECT_OWNER);
     }
 
     private Invitation createProjectOwnerInvitation(String emailSender, InvitationCreationDto invitationCreationDto, ObjectId organizationId) {

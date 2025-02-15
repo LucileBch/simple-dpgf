@@ -1,9 +1,10 @@
 package com.simpledpgfapi.user.controller;
 
 import com.simpledpgfapi.user.model.invitation.dto.InvitationCreationDto;
-import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
+import com.simpledpgfapi.user.model.user.dto.UserInvitedDto;
 import com.simpledpgfapi.user.service.InvitationService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,14 @@ public class InvitationController {
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")
     @PostMapping
     @ResponseStatus(value = HttpStatus.ACCEPTED)
-    public void sendTeamInvitation(@RequestBody InvitationCreationDto invitationCreationDto) {
+    public void sendTeamInvitation(@Valid @RequestBody InvitationCreationDto invitationCreationDto) {
         invitationService.sendProjectOwnerInvitation(invitationCreationDto);
     }
 
     @PostMapping("/accept")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public UserDto acceptTeamInvitation(@RequestParam String invitationToken, @RequestBody UserCreationDto userCreationDto) {
-        return invitationService.acceptInvitation(invitationToken, userCreationDto);
+    public UserDto acceptTeamInvitation(@RequestParam String invitationToken, @Valid @RequestBody UserInvitedDto invitedUserDto) {
+        return invitationService.acceptInvitation(invitationToken, invitedUserDto);
     }
 
     @PreAuthorize("hasAuthority('ROLE_ORGANIZATION_MANAGER')")

@@ -6,21 +6,15 @@ import Logo from "../../assets/images/logo.webp";
 import { useCallback, useContext, useState } from "react";
 import { TokenContext } from "../core/contexts/token-context";
 import { UserContext } from "../core/contexts/user-context";
-import {
-  getAccessTokenFromCookies,
-  getRefreshTokenFromCookies,
-  getUserFromLocalStorage,
-} from "../core/services/authentication-service";
+import { getUserFromLocalStorage } from "../core/services/authentication-service";
 
 export default function Header() {
   const navigate = useNavigate();
 
-  const { isAuthenticated, accessToken, refreshToken } =
-    useContext(TokenContext);
-  const { logoutUser, user } = useContext(UserContext);
+  const { isAuthenticated } = useContext(TokenContext);
+  const { logoutUser } = useContext(UserContext);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  console.log("authen header", isAuthenticated);
 
   const handleLogout = useCallback(async () => {
     setIsLoading(true);
@@ -29,10 +23,7 @@ export default function Header() {
     navigate(pagesUrl.HOME_PAGE);
   }, [logoutUser, navigate]);
 
-  console.log("logout", user, accessToken, refreshToken, isAuthenticated);
   console.log("getlocalstorage", getUserFromLocalStorage());
-  console.log("getcookie access", getAccessTokenFromCookies());
-  console.log("getcookie refresh", getRefreshTokenFromCookies());
 
   return (
     <Container

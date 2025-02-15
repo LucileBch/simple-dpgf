@@ -51,7 +51,6 @@ export default function SignIn(): JSX.Element {
 
       if (!response.ok) {
         const errorMessage = await response.text();
-        // console.log("response not ok", errorMessage);
         throw new Error(errorMessage);
       }
 
@@ -68,7 +67,6 @@ export default function SignIn(): JSX.Element {
 
       navigate(pagesUrl.DASHBOARD_PAGE);
     } catch (error) {
-      console.log("catch ", error);
       if (error instanceof Error) {
         handleErrorAlert(error);
       }

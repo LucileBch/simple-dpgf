@@ -1,98 +1,64 @@
-import { Link } from "react-router-dom";
 import { pagesUrl } from "../../../core/appConstants";
-import { useEffect, useState } from "react";
-import { getErrorMessage } from "../../../core/utils/error-handler";
-import axios from "axios";
-import { Box, Container, Typography } from "@mui/material";
-import AlertSnack from "../../../components/alert/AlertSnack";
-import { InvitationDto } from "../../../core/dtos/invitation/InvitationDto";
+import { useContext, useEffect } from "react";
+import { Box, Grid2, Typography } from "@mui/material";
+import PageContainer from "../../../components/containers/PageContainer";
+import NavBar from "../../../components/NavBar";
+import TitleH2 from "../../../components/typographies/TitleH2";
+import { OrganizationContext } from "../../../core/contexts/organization-context";
+import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
+import MemberCard from "../../../components/cards/MemberCard";
+import NavigationButton from "../../../components/buttons/NavigationButton";
+
+{
+  /* //TODO => helper service transformer enum en label */
+}
 
 export default function ManagerTeam(): JSX.Element {
-  const [data, setData] = useState<InvitationDto[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openAlert, setOpenAlert] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      // const { data } = await apiClient.get(
-      //   "http://localhost:8080/api/organization/67796e9d68110c23b71c3260/members"
-      // );
-      // console.log("response", data);
-
-      setData(data);
-    } catch (error) {
-      console.log(error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        setErrorMessage(getErrorMessage(error.response.data));
-        setOpenAlert(true);
-      }
-    }
-  };
+  const { isInvitedMemberListLoading, invitedMemberList } =
+    useContext(OrganizationContext);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleCloseAlert = () => {
-    setOpenAlert(false);
-  };
+    // Effect logic here
+  }, [invitedMemberList]);
 
   return (
-    <>
+    <PageContainer>
+      <NavBar />
       <div>
-        {/* Orgnization manager */}
-        <h1>Manager MOA Equipe</h1>
-        {/* au click voir tous les membres de l'orga  avec statut de l'invit pending, consumed et possibilité d'annuler ou supprimer ...*/}
-        {/* bouton envoie invitation avec status invitation */}
-        <Link to={pagesUrl.MOA_MANAGER_TEAM_PAGE}>
-          <button>Equipe</button>
-        </Link>
-        {/* au click voir tous les projets + status du projet en cours... */}
-        {/* au click sur un projet voir la page extrait pdf */}
-        <Link to={pagesUrl.MOA_MANAGER_DASHBOARD_PAGE}>
-          <button>Projets</button>
-        </Link>
-        <Link to={pagesUrl.MOA_MANAGER_INVITE_PAGE}>
-          <button>Inviter un membre</button>
-        </Link>
+        <TitleH2>Membres de l'organisation</TitleH2>
       </div>
-
-      <Container maxWidth="lg" sx={{ mb: 4 }}>
-        <Box sx={{ textAlign: "center", p: 4 }}>
-          <Typography variant="h1">Membres de l'équipe</Typography>
-        </Box>
-
-        {data.length === 0 ? (
-          <p>Personne dans l'équipe</p>
-        ) : (
-          data.map((invitation) => {
-            //TODO => helper service transformer enum en label
-            return (
-              <div
-                key={invitation._id}
-                style={{ display: "flex", gap: "15px" }}
-              >
-                <p>{invitation.firstName}</p>
-                <p>{invitation.lastName}</p>
-                <p>{invitation.emailReceiver}</p>
-                <p>{invitation.invitationStatus}</p>
-                {/* si invit pending */}
-                <button>delete invitation</button>
-                {/* si invit consumed */}
-                <button>delete user</button>
-              </div>
-            );
-          })
-        )}
-
-        <AlertSnack
-          open={openAlert}
-          onClose={handleCloseAlert}
-          severity="error"
-          message={errorMessage}
-        />
-      </Container>
-    </>
+      {isInvitedMemberListLoading ? (
+        <CircularLoadingPage />
+      ) : (
+        <Grid2 container spacing={2}>
+          {invitedMemberList.length === 0 ? (
+            <Typography>Personne dans l'équipe</Typography>
+          ) : (
+            <Grid2
+              size={12}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "20px",
+              }}
+            >
+              {invitedMemberList.map((invitedMember) => {
+                return (
+                  <Grid2 key={invitedMember.id}>
+                    <MemberCard invitedMember={invitedMember} />
+                  </Grid2>
+                );
+              })}
+            </Grid2>
+          )}
+          <Box sx={{ display: "flex", justifyContent: "end" }}>
+            <NavigationButton
+              label="Inviter un membre"
+              path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
+            />
+          </Box>
+        </Grid2>
+      )}
+    </PageContainer>
   );
 }

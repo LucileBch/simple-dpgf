@@ -20,11 +20,7 @@ export default function RequireRole({
   const { setAlertMessage, setOpenAlert, setSeverity } =
     useContext(AlertContext);
 
-  console.log("requireRole", user?.role);
-  console.log(allowedRole);
-
   const hasPermission = user ? allowedRole === user.role : false;
-  console.log("hasPerm", hasPermission);
 
   useEffect(() => {
     if (!hasPermission) {

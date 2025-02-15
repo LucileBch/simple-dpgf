@@ -8,8 +8,8 @@ import React, {
   useState,
 } from "react";
 import { OrganizationDto } from "../dtos/organization/OrganizationDto";
+import { InvitationDto } from "../dtos/invitation/InvitationDto";
 import { useOrganization } from "../hooks/use-organization";
-import { useParams } from "react-router-dom";
 
 export const OrganizationContext = React.createContext<OrganizationStore>(
   {} as OrganizationStore
@@ -18,72 +18,90 @@ export const OrganizationContext = React.createContext<OrganizationStore>(
 export function OrganizationContextProvider({
   children,
 }: React.PropsWithChildren): React.JSX.Element {
-  const { organizationId } = useParams();
+  const {
+    fetchOrganizationInvitedMembers,
+    deleteOrganizationMember,
+    deletePendingInvitation,
+  } = useOrganization();
 
-  const { fetchOrganizationList, fetchOrganizationById } = useOrganization();
-
-  const [organizationList, setOrganizationList] = useState<OrganizationDto[]>(
-    []
-  );
-  const [isOrganizationListLoading, setIsOrganizationListLoading] =
-    useState<boolean>(false);
   const [organization, setOrganization] = useState<OrganizationDto | undefined>(
     undefined
   );
-  const [isOrganizationLoading, setIsOrganizationLoading] =
+  const [invitedMemberList, setInvitedMemberList] = useState<InvitationDto[]>(
+    []
+  );
+  const [isInvitedMemberListLoading, setIsInvitedMemberListLoading] =
     useState<boolean>(false);
 
-  const getOrganizationList = useCallback(() => {
-    setIsOrganizationListLoading(true);
-    fetchOrganizationList()
-      .then((newOrganizationList) => setOrganizationList(newOrganizationList))
-      .finally(() => setIsOrganizationListLoading(false));
-  }, [fetchOrganizationList]);
-
-  useEffect(() => {
-    getOrganizationList();
-  }, [getOrganizationList]);
-
-  useEffect(() => {
-    if (organizationId) {
-      setIsOrganizationLoading(true);
-      fetchOrganizationById(organizationId)
-        .then((organization) => setOrganization(organization))
-        .finally(() => setIsOrganizationLoading(false));
+  const getInvitedMembers = useCallback(() => {
+    if (organization != undefined) {
+      setIsInvitedMemberListLoading(true);
+      fetchOrganizationInvitedMembers(organization?.id)
+        .then((newInvitedMemberList) =>
+          setInvitedMemberList(newInvitedMemberList)
+        )
+        .finally(() => setIsInvitedMemberListLoading(false));
     }
-  }, [fetchOrganizationById, organizationId]);
+  }, [fetchOrganizationInvitedMembers, organization]);
 
-  const organizationStore: OrganizationStore = useMemo(
+  useEffect(() => {
+    getInvitedMembers();
+  }, [getInvitedMembers]);
+
+  const deleteTeamMember = useCallback(
+    async (organizationId: string, invitationId: string) => {
+      await deleteOrganizationMember(organizationId, invitationId);
+      setInvitedMemberList((prev) =>
+        prev.filter((invitation) => invitation.id !== invitationId)
+      );
+    },
+    [deleteOrganizationMember]
+  );
+
+  const cancelInvitation = useCallback(
+    async (invitationId: string) => {
+      await deletePendingInvitation(invitationId);
+      setInvitedMemberList((prev) =>
+        prev.filter((invitation) => invitation.id !== invitationId)
+      );
+    },
+    [deletePendingInvitation]
+  );
+
+  const OrganizationStore: OrganizationStore = useMemo(
     () => ({
-      organizationList,
-      setOrganizationList,
-      isOrganizationListLoading,
       organization,
+      invitedMemberList,
+      isInvitedMemberListLoading,
       setOrganization,
-      isOrganizationLoading,
+      getInvitedMembers,
+      deleteTeamMember,
+      cancelInvitation,
     }),
     [
-      organizationList,
-      setOrganizationList,
-      isOrganizationListLoading,
       organization,
+      invitedMemberList,
+      isInvitedMemberListLoading,
       setOrganization,
-      isOrganizationLoading,
+      getInvitedMembers,
+      deleteTeamMember,
+      cancelInvitation,
     ]
   );
 
   return (
-    <OrganizationContext.Provider value={organizationStore}>
+    <OrganizationContext.Provider value={OrganizationStore}>
       {children}
     </OrganizationContext.Provider>
   );
 }
 
-export type OrganizationStore = {
-  organizationList: OrganizationDto[];
-  setOrganizationList: Dispatch<SetStateAction<OrganizationDto[]>>;
-  isOrganizationListLoading: boolean;
+export type OrganizationStore = Readonly<{
   organization: OrganizationDto | undefined;
+  invitedMemberList: InvitationDto[];
+  isInvitedMemberListLoading: boolean;
   setOrganization: Dispatch<SetStateAction<OrganizationDto | undefined>>;
-  isOrganizationLoading: boolean;
-};
+  getInvitedMembers(): void;
+  deleteTeamMember(organizationId: string, userId: string): Promise<void>;
+  cancelInvitation(userId: string): Promise<void>;
+}>;
