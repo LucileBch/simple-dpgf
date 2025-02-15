@@ -1,11 +1,13 @@
 package com.simpledpgfapi.user.service;
 
 import com.simpledpgfapi.global.exceptions.HttpException;
+import com.simpledpgfapi.user.exceptions.InvitationErrorCodes;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.mapper.InvitationMapper;
 import com.simpledpgfapi.user.mapper.OrganizationMapper;
 import com.simpledpgfapi.user.mapper.UserMapper;
+import com.simpledpgfapi.user.model.invitation.Invitation;
 import com.simpledpgfapi.user.model.invitation.dto.InvitationDto;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.organization.OrganizationStatusEnum;
@@ -46,6 +48,8 @@ public class OrganizationService {
     private RefreshTokenRepository refreshTokenRepository;
     @Autowired
     private OrganizationMapper organizationMapper;
+    @Autowired
+    private UserService userService;
 
     public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
         Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
@@ -89,8 +93,11 @@ public class OrganizationService {
     // TODO - GESTION PROJETS : si il a des projets non delete, il faudra attribuer un nouveau userId
     // TODO - LICENSE UTILISATEUR : incrémenter la license nombre utilisateurs
     @Transactional
-    public void removeUserFromOrganization(ObjectId organizationId, ObjectId userId) {
-        User userToRemove = userRepository.findById(userId)
+    public void removeUserFromOrganization(ObjectId organizationId, ObjectId invitationId) {
+        Invitation currentInvitation = invitationRepository.findById(invitationId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
+
+        User userToRemove = userRepository.findByEmail(currentInvitation.getEmailReceiver())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
         if(!userToRemove.getOrganizationId().equals(organizationId)) {
@@ -141,6 +148,13 @@ public class OrganizationService {
         organizationRepository.save(organizationToUpdate);
 
         return organizationMapper.modelToDto(organizationToUpdate);
+    }
+
+    public OrganizationDto getOrganizationByUserId() {
+        User currentUser = userService.getCurrentAuthenticatedUser();
+        Organization currentOrganization = organizationRepository.findById(currentUser.getOrganizationId())
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
+        return organizationMapper.modelToDto(currentOrganization);
     }
 
     // utils

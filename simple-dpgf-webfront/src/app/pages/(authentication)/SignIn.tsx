@@ -67,7 +67,6 @@ export default function SignIn(): JSX.Element {
 
       navigate(pagesUrl.DASHBOARD_PAGE);
     } catch (error) {
-      console.log("catch ", error);
       if (error instanceof Error) {
         handleErrorAlert(error);
       }

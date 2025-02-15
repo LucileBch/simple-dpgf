@@ -11,7 +11,7 @@ import { OrganizationLicenseUpdateDto } from "../../core/dtos/OrganizationLicens
 import { useOrganization } from "../../core/hooks/use-organization";
 import { OrganizationDto } from "../../core/dtos/organization/OrganizationDto";
 import { NumberInput } from "../inputs/NumberInput";
-import { OrganizationContext } from "../../core/contexts/organization-context";
+import { AdminOrganizationContext } from "../../core/contexts/admin-organization-context";
 
 interface IProps {
   dialogTitle: string;
@@ -26,7 +26,7 @@ export default function UpdateLicenseDialog({
 }: Readonly<IProps>): JSX.Element {
   const { updateOrganizationLicense } = useOrganization();
 
-  const { setOrganization } = useContext(OrganizationContext);
+  const { setOrganization } = useContext(AdminOrganizationContext);
   const {
     isUpdateDialogOpen,
     isSubmitting,
@@ -72,6 +72,7 @@ export default function UpdateLicenseDialog({
     if (isSubmitting) {
       return;
     }
+
     setIsSubmitting(true);
     setAlertMessage(null);
     setOpenAlert(false);
@@ -91,9 +92,7 @@ export default function UpdateLicenseDialog({
       setTimeout(() => {
         setIsUpdateDialogOpen(false);
       }, 2000);
-    } catch (error) {
-      console.log("update license error", error);
-      setAlertMessage("Une erreur est survenue");
+    } finally {
       setIsSubmitting(false);
     }
   }, [
@@ -156,7 +155,11 @@ export default function UpdateLicenseDialog({
         />
       </DialogContent>
       <DialogActions>
-        <OutlinedButton label="Annuler" onClick={handleCancelAndClose} />
+        <OutlinedButton
+          label="Annuler"
+          onClick={handleCancelAndClose}
+          disabled={isSubmitting}
+        />
         <OutlinedButton label="Confirmer" onClick={handleSubmitAndClose} />
       </DialogActions>
     </Dialog>

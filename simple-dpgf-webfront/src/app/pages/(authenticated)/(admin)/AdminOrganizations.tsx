@@ -1,4 +1,4 @@
-import { OrganizationContext } from "../../../core/contexts/organization-context";
+import { AdminOrganizationContext } from "../../../core/contexts/admin-organization-context";
 import OrganizationCard from "../../../components/cards/OrganizationCard";
 import { Grid2, Typography } from "@mui/material";
 import { useContext } from "react";
@@ -8,8 +8,9 @@ import TitleH2 from "../../../components/typographies/TitleH2";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
 
 export default function AdminOrganizations(): JSX.Element {
-  const { organizationList, isOrganizationListLoading } =
-    useContext(OrganizationContext);
+  const { organizationList, isOrganizationListLoading } = useContext(
+    AdminOrganizationContext
+  );
 
   return (
     <PageContainer>

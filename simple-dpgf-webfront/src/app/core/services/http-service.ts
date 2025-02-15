@@ -43,26 +43,27 @@ export function resolveUrl(
 
   placeholders.forEach((placeholder, index) => {
     const pathVariable = params[index];
-    if (pathVariable !== null && pathVariable !== undefined) {
+    if (index < params.length && pathVariable !== undefined) {
       url = url.replace(placeholder, pathVariable.toString());
     }
   });
 
-  if (queryParams && Object.keys(queryParams).length > 0) {
-    const queryToString = Object.keys(queryParams)
-      .filter(
-        (key) => queryParams[key] !== null && queryParams[key] !== undefined
-      )
-      .map(
-        (key) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(
-            queryParams[key]!.toString()
-          )}`
-      )
-      .join("&");
-
-    if (queryToString) {
-      url += `?${queryToString}`;
+  if (queryParams) {
+    const queryStrs: string[] = [];
+    for (const key in queryParams) {
+      if (Object.hasOwn(queryParams, key)) {
+        const queryParam = queryParams[key];
+        if (queryParam !== undefined && queryParam !== null) {
+          queryStrs.push(
+            `${encodeURIComponent(key)}=${encodeURIComponent(
+              queryParam.toString()
+            )}`
+          );
+        }
+      }
+    }
+    if (queryStrs.length) {
+      url += `?${queryStrs.join("&")}`;
     }
   }
 

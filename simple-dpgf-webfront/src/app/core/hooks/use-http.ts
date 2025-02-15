@@ -249,22 +249,31 @@ export function useHttp(): HttpHook {
         };
         try {
           const response = await fetch(finalUrl, options);
-          if (response.ok) {
-            return response;
+
+          if (response.status === 401) {
+            const newResponse = await handleRetryWithRefreshToken(
+              response,
+              finalUrl,
+              headers,
+              options
+            );
+
+            return newResponse;
           }
 
-          return handleRetryWithRefreshToken(
-            response,
-            finalUrl,
-            headers,
-            options
-          );
+          if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+          }
+
+          return response;
         } catch (error) {
           console.log("error DELETE method", error);
+          handleErrorAlert(error);
           throw error;
         }
       },
     }),
-    [accessToken, handleRetryWithRefreshToken]
+    [accessToken, handleErrorAlert, handleRetryWithRefreshToken]
   );
 }

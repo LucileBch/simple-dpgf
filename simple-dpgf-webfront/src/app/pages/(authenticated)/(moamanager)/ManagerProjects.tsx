@@ -4,20 +4,19 @@ import TitleH2 from "../../../components/typographies/TitleH2";
 
 export default function ManagerProjects(): JSX.Element {
   return (
-    <>
-      <PageContainer>
-        <NavBar />
-        <TitleH2>Gestion des projets</TitleH2>
+    <PageContainer>
+      <NavBar />
+      <TitleH2>Gestion des projets</TitleH2>
 
-        {/* display tous les projets de l'organisation */}
+      {/* display tous les projets de l'organisation */}
 
-        {/* au click voir tous les membres de l'orga  avec statut de l'invit pending, consumed et possibilité d'annuler ou supprimer ...*/}
-        {/* bouton envoie invitation avec status invitation */}
+      {/* au click voir tous les membres de l'orga  avec statut de l'invit pending, consumed et possibilité d'annuler ou supprimer ...*/}
+      {/* bouton envoie invitation avec status invitation */}
 
-        {/* display tous les projets + status du projet en cours... */}
-        {/* au click sur un projet voir la page extrait pdf */}
+      {/* display tous les projets + status du projet en cours... */}
+      {/* au click sur un projet voir la page extrait pdf */}
 
-        {/* {isOrganizationListLoading ? (
+      {/* {isOrganizationListLoading ? (
         <CircularLoadingPage />
       ) : (
         <Grid2 container spacing={2}>
@@ -28,13 +27,12 @@ export default function ManagerProjects(): JSX.Element {
               return (
                 <Grid2 size={4} key={organization.id}>
                   {/* projects cards */}
-        {/* </Grid2>
+      {/* </Grid2>
               );
             })
           )}
         </Grid2>
       )} */}
-      </PageContainer>
-    </>
+    </PageContainer>
   );
 }

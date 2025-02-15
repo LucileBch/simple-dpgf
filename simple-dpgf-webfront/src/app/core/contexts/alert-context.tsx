@@ -34,6 +34,10 @@ export function AlertContextProvider({
         setAlertMessage(getErrorMessage(error.message));
         setSeverity("error");
         setOpenAlert(true);
+      } else if (typeof error === "string") {
+        setAlertMessage(error);
+        setSeverity("error");
+        setOpenAlert(true);
       }
     },
     [setAlertMessage, setSeverity, setOpenAlert]

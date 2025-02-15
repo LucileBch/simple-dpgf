@@ -10,6 +10,7 @@ import { FormValues, useForm } from "../../../core/hooks/use-form";
 import { useMoaManger } from "../../../core/hooks/use-moaManager";
 import { AlertContext } from "../../../core/contexts/alert-context";
 import { useContext } from "react";
+import { OrganizationContext } from "../../../core/contexts/organization-context";
 
 export default function ManagerInvitation() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function ManagerInvitation() {
   const { sendInvitation } = useMoaManger();
 
   const { handleSuccessAlert } = useContext(AlertContext);
+  const { organization, getInvitedMembers } = useContext(OrganizationContext);
 
   const initialFormValues: FormValues<InvitationCreationDto> = {
     firstName: "",
@@ -40,10 +42,13 @@ export default function ManagerInvitation() {
   };
 
   const onSubmit = async (formData: FormValues<InvitationCreationDto>) => {
-    await sendInvitation(formData);
+    if (organization !== undefined) {
+      await sendInvitation(formData);
+      getInvitedMembers();
 
-    handleSuccessAlert("L'invitation a été envoyée");
-    navigate(pagesUrl.MOA_MANAGER_TEAM_PAGE);
+      handleSuccessAlert("L'invitation a été envoyée");
+      navigate(pagesUrl.MOA_MANAGER_TEAM_PAGE);
+    }
   };
 
   const { formData, errors, isSubmitting, handleChange, handleSubmit } =

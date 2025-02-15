@@ -56,7 +56,7 @@ public class EmailService {
             mimeMessageHelper.setTo(invitationCreationDto.getEmailReceiver());
             mimeMessageHelper.setSubject("Votre lien d'invitation à rejoindre Simple DPGF");
 
-            String htmlContent = String.format("Bonjour %s %s,<br/> %s %s vous invite à rejoindre son organization." +
+            String htmlContent = String.format("Bonjour %s %s,<br/> %s %s vous invite à rejoindre son organisation." +
                             "<br/> Veuillez cliquer sur <a href='%s'>ce lien</a>  pour créer votre compte.",
                     invitationCreationDto.getFirstName(), invitationCreationDto.getLastName(),
                     firstName, lastName, invitationLink);
