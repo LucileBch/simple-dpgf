@@ -1,8 +1,12 @@
+import { useContext } from "react";
 import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/NavBar";
 import TitleH2 from "../../../components/typographies/TitleH2";
+import { OrganizationContext } from "../../../core/contexts/organization-context";
+import { Typography } from "@mui/material";
 
 export default function ManagerProjects(): JSX.Element {
+  const { organization } = useContext(OrganizationContext);
   return (
     <PageContainer>
       <NavBar />
@@ -33,6 +37,11 @@ export default function ManagerProjects(): JSX.Element {
           )}
         </Grid2>
       )} */}
+      <Typography sx={{ textAlign: "end" }}>
+        Nombre de licenses projets consommées :{" "}
+        {organization?.projectLicenseCounter} /{" "}
+        {organization?.maxProjectLicenseCounter}
+      </Typography>
     </PageContainer>
   );
 }

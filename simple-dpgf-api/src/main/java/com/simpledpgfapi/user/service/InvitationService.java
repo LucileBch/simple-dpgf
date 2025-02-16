@@ -16,7 +16,7 @@ import com.simpledpgfapi.user.model.user.dto.UserCreationDto;
 import com.simpledpgfapi.user.model.user.dto.UserDto;
 import com.simpledpgfapi.user.model.user.dto.UserInvitedDto;
 import com.simpledpgfapi.user.repository.InvitationRepository;
-import com.simpledpgfapi.user.repository.OrganizationRepository;
+import com.simpledpgfapi.user.repository.organizationrepository.OrganizationRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,9 +41,10 @@ public class InvitationService {
     private OrganizationMapper organizationMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private LicenseService licenseService;
 
-    //TODO - LICENSE UTILISATEUR : incrémenter la license nombre utilisateurs
-    // WARNING si invit existante ne pas incrémenter
+    @Transactional
     public void sendProjectOwnerInvitation(InvitationCreationDto invitationCreationDto) {
         User currentUser = userService.getCurrentAuthenticatedUser();
 
@@ -52,20 +53,19 @@ public class InvitationService {
         if(existingInvitation != null) {
             if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.CONSUMED) {
                 throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CONSUMED);
-            }
-
-            if(existingInvitation.getInvitationStatus() == InvitationStatusEnum.PENDING) {
+            } else {
                 invitationRepository.delete(existingInvitation);
             }
+        } else {
+            licenseService.incrementUserLicenseCounter(currentUser);
         }
 
         Invitation invitation = createProjectOwnerInvitation(currentUser.getEmail(), invitationCreationDto, currentUser.getOrganizationId());
-
         String invitationLink = generateInvitationLink(invitation.getInvitationToken());
-
         emailService.sendInvitationMessage(invitationCreationDto, currentUser.getEmail(), currentUser.getFirstName(), currentUser.getLastName(), invitationLink);
     }
 
+    @Transactional
     public void deleteInvitation(ObjectId invitationId) {
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_NOT_FOUND));
@@ -73,6 +73,9 @@ public class InvitationService {
         if(invitation.getInvitationStatus().name().equals(InvitationStatusEnum.CONSUMED.name())) {
             throw new HttpException(HttpStatus.BAD_REQUEST, InvitationErrorCodes.INVITATION_CONSUMED);
         }
+
+        User currentUser = userService.getCurrentAuthenticatedUser();
+        licenseService.releaseUserLicenseCounter(currentUser);
 
         invitationRepository.delete(invitation);
     }
