@@ -36,7 +36,7 @@ export default function InvitationDialog({
     setAlertMessage,
     handleCancelAndClose,
   } = useContext(DialogContext);
-  const { deleteTeamMember, cancelInvitation } =
+  const { setOrganization, deleteTeamMember, cancelInvitation } =
     useContext(OrganizationContext);
 
   const handleSubmitAndClose = useCallback(async () => {
@@ -53,10 +53,20 @@ export default function InvitationDialog({
         console.log("appel delete memner", organizationId, invitationId);
 
         await deleteTeamMember(organizationId, invitationId);
+        setOrganization((prev) =>
+          prev
+            ? { ...prev, memberLicenseCounter: prev.memberLicenseCounter - 1 }
+            : prev
+        );
         setAlertMessage("Collaborateur supprimé de l'équipe");
         setOpenAlert(true);
       } else if (dialogOption === "deleteInvitation") {
         await cancelInvitation(invitationId);
+        setOrganization((prev) =>
+          prev
+            ? { ...prev, memberLicenseCounter: prev.memberLicenseCounter - 1 }
+            : prev
+        );
         setAlertMessage("Invitation annulée");
         setOpenAlert(true);
       }

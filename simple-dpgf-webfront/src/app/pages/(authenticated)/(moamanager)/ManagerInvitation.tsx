@@ -18,7 +18,8 @@ export default function ManagerInvitation() {
   const { sendInvitation } = useMoaManger();
 
   const { handleSuccessAlert } = useContext(AlertContext);
-  const { organization, getInvitedMembers } = useContext(OrganizationContext);
+  const { organization, setOrganization, getInvitedMembers } =
+    useContext(OrganizationContext);
 
   const initialFormValues: FormValues<InvitationCreationDto> = {
     firstName: "",
@@ -45,7 +46,11 @@ export default function ManagerInvitation() {
     if (organization !== undefined) {
       await sendInvitation(formData);
       getInvitedMembers();
-
+      setOrganization((prev) =>
+        prev
+          ? { ...prev, memberLicenseCounter: prev.memberLicenseCounter + 1 }
+          : prev
+      );
       handleSuccessAlert("L'invitation a été envoyée");
       navigate(pagesUrl.MOA_MANAGER_TEAM_PAGE);
     }

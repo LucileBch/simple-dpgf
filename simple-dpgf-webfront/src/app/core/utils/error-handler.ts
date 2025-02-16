@@ -5,6 +5,7 @@ export function getErrorMessage(errorMessage: string): string {
       return "L'url demandée n'existe pas.";
     case "UNAUTHORIZED":
       return "Vous n'avez pas l'autorisation.";
+
     // User Errors
     case "USER_NOT_FOUND":
       return "Utilisateur non reconnu.";
@@ -44,6 +45,12 @@ export function getErrorMessage(errorMessage: string): string {
       return "L'invitation a été acceptée. Vous ne pouvez la renvoyer ou la supprimer";
     case "INVITATION_ALREADY_ACCEPTED":
       return "Vous avez déjà accepté l'invitation. Veuillez vous connecter.";
+
+    // Organization Errors
+    case "NO_MORE_USER_LICENSE":
+      return "Vous avez atteint le nombre maximum de collaborateurs";
+    case "NO_MORE_PROJECT_LICENSE":
+      return "Vous avez atteint le nombre maximum de projets";
 
     default:
       return "Une erreur est survenue";
