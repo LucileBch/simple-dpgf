@@ -26,7 +26,7 @@ export const pagesUrl = {
   // moa project owner url
   MOA_PROJECT_OWNER: "/moa",
   MOA_PROJECTS_PAGE: "/moa/projects",
-  PROJECT: "/moa/projet/:projectId",
+  MOA_PROJECT: "/moa/projet/:dpgfId",
 
   // error url
   ERROR_404: "*",
@@ -68,4 +68,8 @@ export const apiEndpoints = {
     "/organization/:organizationId/invitation/:invitationId",
 
   // moa project owner
+  CREATE_DPGF: "/dpgf",
+  GET_ALL_DPGF: "/dpgf/list",
+  UPDATE_DPGF_STATUS: "/dpgf/:dpgfId",
+  DELETE_DPGF_BY_ID: "/dpgf/:dpgfId",
 };

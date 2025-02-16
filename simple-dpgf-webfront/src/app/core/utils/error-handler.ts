@@ -52,6 +52,14 @@ export function getErrorMessage(errorMessage: string): string {
     case "NO_MORE_PROJECT_LICENSE":
       return "Vous avez atteint le nombre maximum de projets";
 
+    // Dpgf Errors
+    case "DPGF_NOT_FOUND":
+      return "Le Dpgf n'existe pas";
+    case "DPGF_ALREADY_DELETED":
+      return "Le Dpgf a déjà été supprimé";
+    case "DPGF_SHOULD_BE_ARCHIVED":
+      return "Le Dpgf doit être archivé avant de pouvoir être supprimé";
+
     default:
       return "Une erreur est survenue";
   }

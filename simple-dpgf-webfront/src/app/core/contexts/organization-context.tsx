@@ -3,6 +3,7 @@ import React, {
   Dispatch,
   SetStateAction,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -10,6 +11,8 @@ import React, {
 import { OrganizationDto } from "../dtos/organization/OrganizationDto";
 import { InvitationDto } from "../dtos/invitation/InvitationDto";
 import { useOrganization } from "../hooks/use-organization";
+import { UserContext } from "./user-context";
+import { RoleEnum } from "../enums/RoleEnum";
 
 export const OrganizationContext = React.createContext<OrganizationStore>(
   {} as OrganizationStore
@@ -24,6 +27,8 @@ export function OrganizationContextProvider({
     deletePendingInvitation,
   } = useOrganization();
 
+  const { user } = useContext(UserContext);
+
   const [organization, setOrganization] = useState<OrganizationDto | undefined>(
     undefined
   );
@@ -34,7 +39,10 @@ export function OrganizationContextProvider({
     useState<boolean>(false);
 
   const getInvitedMembers = useCallback(() => {
-    if (organization != undefined) {
+    if (
+      organization != undefined &&
+      user?.role === RoleEnum.ORGANIZATION_MANAGER
+    ) {
       setIsInvitedMemberListLoading(true);
       fetchOrganizationInvitedMembers(organization?.id)
         .then((newInvitedMemberList) =>
@@ -42,11 +50,13 @@ export function OrganizationContextProvider({
         )
         .finally(() => setIsInvitedMemberListLoading(false));
     }
-  }, [fetchOrganizationInvitedMembers, organization]);
+  }, [fetchOrganizationInvitedMembers, organization, user?.role]);
 
   useEffect(() => {
-    getInvitedMembers();
-  }, [getInvitedMembers]);
+    if (user?.role === RoleEnum.ORGANIZATION_MANAGER) {
+      getInvitedMembers();
+    }
+  }, [getInvitedMembers, user?.role]);
 
   const deleteTeamMember = useCallback(
     async (organizationId: string, invitationId: string) => {

@@ -36,6 +36,7 @@ import ManagerProjects from "../pages/(authenticated)/(moamanager)/ManagerProjec
 import { OrganizationContextProvider } from "../core/contexts/organization-context";
 import AcceptInvitation from "../pages/(authentication)/AcceptInvitation";
 import Project from "../pages/(authenticated)/(projectowner)/Project";
+import { DpgfContextProvider } from "../core/contexts/dpgf-context";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -139,7 +140,9 @@ export default function AppRouter(): JSX.Element {
               element={
                 <RequireAuth>
                   <RequireRole allowedRole={RoleEnum.PROJECT_OWNER}>
-                    <Outlet />
+                    <DpgfContextProvider>
+                      <Outlet />
+                    </DpgfContextProvider>
                   </RequireRole>
                 </RequireAuth>
               }
@@ -148,7 +151,7 @@ export default function AppRouter(): JSX.Element {
                 path={pagesUrl.MOA_PROJECTS_PAGE}
                 element={<MoaProjects />}
               />
-              <Route path={pagesUrl.PROJECT} element={<Project />} />
+              <Route path={pagesUrl.MOA_PROJECT} element={<Project />} />
             </Route>
 
             {/* 404 */}

@@ -41,9 +41,11 @@ export const theme = createTheme({
     },
     error: {
       main: "#A30015",
+      contrastText: "rgba(163, 0, 21, 0.4)",
     },
     success: {
       main: "#104911",
+      contrastText: "rgba(16, 73, 17, 0.5)",
     },
     background: {
       default: "#ffffff",

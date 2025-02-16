@@ -6,8 +6,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrganizationRepositoryCustom {
     void incrementUserLicenseCounter(ObjectId organizationId);
-    void decrementUserLicenseCounter(ObjectId organizationId);
-    void incrementProjectLicenseCounter(ObjectId organizationId);
-    void decrementProjectLicenseCounter(ObjectId organizationId);
 
+    void decrementUserLicenseCounter(ObjectId organizationId);
+
+    void incrementProjectLicenseCounter(ObjectId organizationId);
+
+    void decrementProjectLicenseCounter(ObjectId organizationId);
 }
