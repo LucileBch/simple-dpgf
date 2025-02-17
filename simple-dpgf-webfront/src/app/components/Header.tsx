@@ -6,7 +6,6 @@ import Logo from "../../assets/images/logo.webp";
 import { useCallback, useContext, useState } from "react";
 import { TokenContext } from "../core/contexts/token-context";
 import { UserContext } from "../core/contexts/user-context";
-import { getUserFromLocalStorage } from "../core/services/authentication-service";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -22,8 +21,6 @@ export default function Header() {
     setIsLoading(false);
     navigate(pagesUrl.HOME_PAGE);
   }, [logoutUser, navigate]);
-
-  console.log("getlocalstorage", getUserFromLocalStorage());
 
   return (
     <Container

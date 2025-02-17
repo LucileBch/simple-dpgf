@@ -27,7 +27,8 @@ export default function DpgfCreationDialog({
 }: Readonly<IProps>): JSX.Element {
   const navigate = useNavigate();
 
-  const { createNewDpgf, setDpgfList } = useContext(DpgfContext);
+  const { createNewDpgf, setDpgfByUserList: setDpgfList } =
+    useContext(DpgfContext);
   const { isCreateDialogOpen, setIsCreateDialogOpen, handleCancelAndClose } =
     useContext(DialogContext);
   const { handleSuccessAlert } = useContext(AlertContext);

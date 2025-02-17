@@ -8,10 +8,12 @@ import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfCreationDto;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfDto;
 import com.simpledpgfapi.dpgf.repository.DpgfRepository;
 import com.simpledpgfapi.global.exceptions.HttpException;
+import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.repository.UserRepository;
+import com.simpledpgfapi.user.repository.organizationrepository.OrganizationRepository;
 import com.simpledpgfapi.user.service.LicenseService;
 import com.simpledpgfapi.user.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -38,6 +41,8 @@ public class DpgfService {
     private DpgfRepository dpgfRepository;
     @Autowired
     private LicenseService licenseService;
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     @Transactional
     public DpgfDto createDpgf(DpgfCreationDto dpgfCreationDto) {
@@ -70,6 +75,29 @@ public class DpgfService {
         List<Dpgf> dpgfList = dpgfRepository.findByUserIdAndDpgfStatusNot(currentUser.getId(), DpgfStatusEnum.DELETED);
         List<DpgfDto> dpgfDtoList = dpgfMapper.modelsToDtos(dpgfList);
         dpgfDtoList.forEach(dpgfDto -> dpgfDto.setCreatedByUser(currentUser.getFirstName() + " " + currentUser.getLastName()));
+        return dpgfDtoList;
+    }
+
+    public List<DpgfDto> getDpgfListByOrganizationId(ObjectId organizationId) {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User currentUser = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+
+        Organization currentOrganization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
+
+        if(!Objects.equals(currentUser.getOrganizationId(), currentOrganization.getId())) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.USER_NOT_IN_ORGANIZATION);
+        }
+
+        List<Dpgf> dpgfList = dpgfRepository.findByOrganizationIdAndDpgfStatusNot(currentOrganization.getId(), DpgfStatusEnum.DELETED);
+        List<DpgfDto> dpgfDtoList = dpgfMapper.modelsToDtos(dpgfList);
+        dpgfDtoList.forEach(dpgfDto -> {
+                    String userEmail = dpgfDto.getCreatedByUser();
+                    User userOwner = userRepository.findByEmail(userEmail).orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+                    dpgfDto.setCreatedByUser(userOwner.getFirstName() + " " + userOwner.getLastName());
+        });
 
         return dpgfDtoList;
     }

@@ -35,6 +35,13 @@ public class DpgfController {
         return dpgfService.getDpgfListByUserId();
     }
 
+    @PreAuthorize("hasAnyRole( 'ROLE_ORGANIZATION_MANAGER')")
+    @GetMapping("/{organizationId}/list")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<DpgfDto> getAllDpgfByOrganizationId(@PathVariable ObjectId organizationId) {
+        return dpgfService.getDpgfListByOrganizationId(organizationId);
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
     @PutMapping("/{dpgfId}")
     @ResponseStatus(value = HttpStatus.OK)

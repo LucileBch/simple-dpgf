@@ -38,25 +38,23 @@ export function OrganizationContextProvider({
   const [isInvitedMemberListLoading, setIsInvitedMemberListLoading] =
     useState<boolean>(false);
 
-  const getInvitedMembers = useCallback(() => {
-    if (
-      organization != undefined &&
-      user?.role === RoleEnum.ORGANIZATION_MANAGER
-    ) {
+  const getInvitedMembers = useCallback(
+    (organization: OrganizationDto) => {
       setIsInvitedMemberListLoading(true);
       fetchOrganizationInvitedMembers(organization?.id)
         .then((newInvitedMemberList) =>
           setInvitedMemberList(newInvitedMemberList)
         )
         .finally(() => setIsInvitedMemberListLoading(false));
-    }
-  }, [fetchOrganizationInvitedMembers, organization, user?.role]);
+    },
+    [fetchOrganizationInvitedMembers]
+  );
 
   useEffect(() => {
-    if (user?.role === RoleEnum.ORGANIZATION_MANAGER) {
-      getInvitedMembers();
+    if (user?.role === RoleEnum.ORGANIZATION_MANAGER && organization) {
+      getInvitedMembers(organization);
     }
-  }, [getInvitedMembers, user?.role]);
+  }, [organization, user?.role]);
 
   const deleteTeamMember = useCallback(
     async (organizationId: string, invitationId: string) => {
@@ -111,7 +109,7 @@ export type OrganizationStore = Readonly<{
   invitedMemberList: InvitationDto[];
   isInvitedMemberListLoading: boolean;
   setOrganization: Dispatch<SetStateAction<OrganizationDto | undefined>>;
-  getInvitedMembers(): void;
+  getInvitedMembers(organization: OrganizationDto): void;
   deleteTeamMember(organizationId: string, userId: string): Promise<void>;
   cancelInvitation(userId: string): Promise<void>;
 }>;

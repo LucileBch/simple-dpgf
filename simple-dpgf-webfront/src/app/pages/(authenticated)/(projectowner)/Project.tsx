@@ -5,6 +5,7 @@ import TitleH2 from "../../../components/typographies/TitleH2";
 import { DpgfContext } from "../../../core/contexts/dpgf-context";
 import { Box } from "@mui/material";
 import SelectStatusInput from "../../../components/inputs/SelectStatusInput";
+import TooltipCustom from "../../../components/info/TooltipCustom";
 
 export default function Project(): JSX.Element {
   const { dpgf } = useContext(DpgfContext);
@@ -22,7 +23,9 @@ export default function Project(): JSX.Element {
           }}
         >
           <TitleH2>{dpgf?.name}</TitleH2>
-          <SelectStatusInput label={dpgf.dpgfStatus} />
+          <TooltipCustom title="Mettre à jour le status du projet">
+            <SelectStatusInput label={dpgf.dpgfStatus} />
+          </TooltipCustom>
         </Box>
       )}
     </PageContainer>

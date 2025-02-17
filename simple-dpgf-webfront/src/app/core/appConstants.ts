@@ -66,6 +66,7 @@ export const apiEndpoints = {
   DELETE_ORGANIZATION_INVITATION: "/invitation/:invitationId",
   DELETE_ORGANIZATION_MEMBER:
     "/organization/:organizationId/invitation/:invitationId",
+  GET_ALL_DPGF_BY_ORGANIZATION_ID: "/dpgf/:organizationId/list",
 
   // moa project owner
   CREATE_DPGF: "/dpgf",

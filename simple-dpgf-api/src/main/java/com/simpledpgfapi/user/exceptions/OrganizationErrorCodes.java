@@ -7,7 +7,8 @@ public enum OrganizationErrorCodes implements ErrorCodes {
     NOT_IN_THIS_ORGANIZATION,
     ORGANIZATION_ALREADY_DELETED,
     NO_MORE_USER_LICENSE,
-    NO_MORE_PROJECT_LICENSE;
+    NO_MORE_PROJECT_LICENSE,
+    USER_NOT_IN_ORGANIZATION;
 
     @Override
     public String getCode() {

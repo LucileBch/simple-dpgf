@@ -13,4 +13,6 @@ public interface DpgfRepository extends MongoRepository<Dpgf, ObjectId> {
     double countByOrganizationId(ObjectId organizationId);
 
     List<Dpgf> findByUserIdAndDpgfStatusNot(ObjectId userId, DpgfStatusEnum dpgfStatus);
+
+    List<Dpgf> findByOrganizationIdAndDpgfStatusNot(ObjectId organizationId, DpgfStatusEnum dpgfStatus);
 }

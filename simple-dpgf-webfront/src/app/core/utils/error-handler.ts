@@ -51,6 +51,8 @@ export function getErrorMessage(errorMessage: string): string {
       return "Vous avez atteint le nombre maximum de collaborateurs";
     case "NO_MORE_PROJECT_LICENSE":
       return "Vous avez atteint le nombre maximum de projets";
+    case "USER_NOT_IN_ORGANIZATION":
+      return "Vous ne faites pas partie de l'organisation";
 
     // Dpgf Errors
     case "DPGF_NOT_FOUND":

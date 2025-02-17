@@ -11,6 +11,7 @@ type DpgfHook = {
   fetchAllDpgf(): Promise<DpgfDto[]>;
   putDpgfStatus(dpgfId: string, dpgfStatus: DpgfStatusEnum): Promise<Response>;
   deleteDpgfById(dpgfId: string): Promise<Response>;
+  fetchAllDpgfByOrganizationId(organizationId: string): Promise<DpgfDto[]>;
 };
 
 export function useDpgf(): DpgfHook {
@@ -43,6 +44,13 @@ export function useDpgf(): DpgfHook {
         return deleteRequest(
           resolveUrl(apiEndpoints.DELETE_DPGF_BY_ID, [dpgfId])
         );
+      },
+      fetchAllDpgfByOrganizationId(organizationId: string): Promise<DpgfDto[]> {
+        return get(
+          resolveUrl(apiEndpoints.GET_ALL_DPGF_BY_ORGANIZATION_ID, [
+            organizationId,
+          ])
+        ).then((response) => response.json());
       },
     }),
     [get, post, put, deleteRequest]

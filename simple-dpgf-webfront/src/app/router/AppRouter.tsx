@@ -115,7 +115,9 @@ export default function AppRouter(): JSX.Element {
               element={
                 <RequireAuth>
                   <RequireRole allowedRole={RoleEnum.ORGANIZATION_MANAGER}>
-                    <Outlet />
+                    <DpgfContextProvider>
+                      <Outlet />
+                    </DpgfContextProvider>
                   </RequireRole>
                 </RequireAuth>
               }

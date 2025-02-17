@@ -103,5 +103,16 @@ export const theme = createTheme({
         },
       },
     },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: "rgba(13, 92, 99, 0.8) ",
+          fontWeight: "bold",
+        },
+        arrow: {
+          color: "rgba(13, 92, 99, 0.8)",
+        },
+      },
+    },
   },
 });
