@@ -18,6 +18,10 @@ export function DialogContextProvider({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
+  const [isCreateDialogProductOpen, setIsCreateDialogProductOpen] =
+    useState<boolean>(false);
+  const [isDeleteDialogProductOpen, setIsDeleteDialogProductOpen] =
+    useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -30,6 +34,8 @@ export function DialogContextProvider({
     setIsCreateDialogOpen(false);
     setIsUpdateDialogOpen(false);
     setIsDeleteDialogOpen(false);
+    setIsCreateDialogProductOpen(false);
+    setIsDeleteDialogProductOpen(false);
   }, []);
 
   const dialogStore: DialogStore = useMemo(
@@ -38,6 +44,10 @@ export function DialogContextProvider({
       isUpdateDialogOpen,
       isDeleteDialogOpen,
       isSubmitting,
+      isCreateDialogProductOpen,
+      isDeleteDialogProductOpen,
+      setIsDeleteDialogProductOpen,
+      setIsCreateDialogProductOpen,
       setIsSubmitting,
       setIsDeleteDialogOpen,
       setIsUpdateDialogOpen,
@@ -51,6 +61,10 @@ export function DialogContextProvider({
       isUpdateDialogOpen,
       isDeleteDialogOpen,
       isSubmitting,
+      isCreateDialogProductOpen,
+      isDeleteDialogProductOpen,
+      setIsDeleteDialogProductOpen,
+      setIsCreateDialogProductOpen,
       setIsSubmitting,
       setIsDeleteDialogOpen,
       setIsUpdateDialogOpen,
@@ -79,6 +93,10 @@ export type DialogStore = {
   isUpdateDialogOpen: boolean;
   isDeleteDialogOpen: boolean;
   isSubmitting: boolean;
+  isCreateDialogProductOpen: boolean;
+  isDeleteDialogProductOpen: boolean;
+  setIsDeleteDialogProductOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreateDialogProductOpen: Dispatch<SetStateAction<boolean>>;
   setIsSubmitting: Dispatch<SetStateAction<boolean>>;
   setIsDeleteDialogOpen: Dispatch<SetStateAction<boolean>>;
   setIsUpdateDialogOpen: Dispatch<SetStateAction<boolean>>;

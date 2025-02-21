@@ -73,4 +73,8 @@ export const apiEndpoints = {
   GET_ALL_DPGF: "/dpgf/list",
   UPDATE_DPGF_STATUS: "/dpgf/:dpgfId",
   DELETE_DPGF_BY_ID: "/dpgf/:dpgfId",
+  CREATE_LOT: "/dpgf/:dpgfId/lot",
+  GET_ALL_LOT: "/dpgf/:dpgfId/lot-list",
+  CREATE_PRODUCT: "/dpgf/:dpgfId/lot/:lotId/product",
+  GET_ALL_PRODUCT: "/dpgf/:dpgfId/product-list",
 };

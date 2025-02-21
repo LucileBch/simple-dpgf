@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 
-interface INumberInputProps {
+interface IProps {
   id: string;
   name: string;
   label: string;
@@ -9,6 +9,9 @@ interface INumberInputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value: number;
   autoComplete?: string;
+  fullWidth?: boolean;
+  error?: boolean;
+  helperText?: string;
 }
 
 const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -26,7 +29,10 @@ export function NumberInput({
   onChange,
   value,
   autoComplete = "off",
-}: INumberInputProps): JSX.Element {
+  fullWidth = false,
+  error,
+  helperText,
+}: Readonly<IProps>): JSX.Element {
   return (
     <TextField
       id={id}
@@ -40,7 +46,10 @@ export function NumberInput({
       value={value}
       autoComplete={autoComplete}
       variant="outlined"
-      sx={{ width: "400px" }}
+      error={error}
+      helperText={helperText}
+      inputProps={{ min: "0" }}
+      sx={{ width: fullWidth ? "100%" : "400px" }}
     />
   );
 }

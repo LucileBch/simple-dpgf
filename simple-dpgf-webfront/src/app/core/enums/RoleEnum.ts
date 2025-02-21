@@ -4,7 +4,6 @@ export enum RoleEnum {
   PROJECT_OWNER = "PROJECT_OWNER",
 }
 
-// TODO : voir si util ?
 export const roleEnumTypeLabel = {
   [RoleEnum.ADMIN]: "Administrateur",
   [RoleEnum.ORGANIZATION_MANAGER]: "Manager de l'organisation",

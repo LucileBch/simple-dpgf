@@ -1,8 +1,10 @@
+import { SelectChangeEvent } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { UnitEnum } from "../enums/UnitEnum";
 
 export type FormValues<T extends object> = T;
 
-interface IFormProps<T extends object> {
+interface IProps<T extends object> {
   initialFormValues: FormValues<T>;
   validate(formData: FormValues<T>): Record<string, string | undefined>;
   onSubmit(formData: FormValues<T>): Promise<void>;
@@ -12,7 +14,7 @@ export function useForm<T extends object>({
   initialFormValues,
   validate,
   onSubmit,
-}: Readonly<IFormProps<T>>): FormHook<T> {
+}: Readonly<IProps<T>>): FormHook<T> {
   const [formData, setFormData] = useState<FormValues<T>>(initialFormValues);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -44,6 +46,19 @@ export function useForm<T extends object>({
     []
   );
 
+  // handle select change on formData
+  const handleSelectChange = useCallback(
+    (event: SelectChangeEvent<UnitEnum>) => {
+      const { name, value } = event.target;
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    []
+  );
+
   // form data validation
   const validateForm = useCallback(
     (formData: FormValues<T>) => {
@@ -52,6 +67,20 @@ export function useForm<T extends object>({
       return validationErrors;
     },
     [validate]
+  );
+
+  //reset form
+  const resetForm = useCallback(() => {
+    setFormData(initialFormValues);
+    setErrors({});
+  }, [initialFormValues]);
+
+  useEffect(
+    () => {
+      resetForm();
+    },
+    // resetForm
+    []
   );
 
   // submit form
@@ -75,22 +104,10 @@ export function useForm<T extends object>({
         console.log("error in submit form", error);
       } finally {
         setIsSubmitting(false);
+        resetForm();
       }
     },
-    [formData, onSubmit, validateForm]
-  );
-
-  const resetForm = useCallback(() => {
-    setFormData(initialFormValues);
-    setErrors({});
-  }, [initialFormValues]);
-
-  useEffect(
-    () => {
-      resetForm();
-    },
-    // resetForm
-    []
+    [formData, onSubmit, resetForm, validateForm]
   );
 
   return useMemo(
@@ -99,6 +116,7 @@ export function useForm<T extends object>({
       errors,
       isSubmitting,
       handleChange,
+      handleSelectChange,
       handleSubmit,
       validateForm,
       resetForm,
@@ -108,6 +126,7 @@ export function useForm<T extends object>({
       errors,
       isSubmitting,
       handleChange,
+      handleSelectChange,
       handleSubmit,
       validateForm,
       resetForm,
@@ -122,6 +141,7 @@ interface FormHook<T extends object> {
   handleChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
+  handleSelectChange: (event: SelectChangeEvent<UnitEnum>) => void;
   handleSubmit: (event: React.FormEvent) => Promise<void>;
   validateForm(formData: FormValues<T>): Record<string, string | undefined>;
   resetForm: () => void;

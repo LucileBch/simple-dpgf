@@ -15,13 +15,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { pagesUrl } from "../../core/appConstants";
 
-interface ISelectStatusInputProps {
+interface IProps {
   label: DpgfStatusEnum;
 }
 
-export default function SelectStatusInput({
+export default function StatusSelectInput({
   label,
-}: Readonly<ISelectStatusInputProps>): JSX.Element {
+}: Readonly<IProps>): JSX.Element {
   const { dpgfId } = useParams();
 
   const navigate = useNavigate();
@@ -71,6 +71,11 @@ export default function SelectStatusInput({
         value={status}
         label="Statut"
         onChange={handleChange}
+        sx={{
+          "& .MuiSelect-select": {
+            padding: "8px 16px",
+          },
+        }}
       >
         <MenuItem value={DpgfStatusEnum.IN_PROGRESS}>
           {dpgfStatusToLabel(DpgfStatusEnum.IN_PROGRESS)}

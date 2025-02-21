@@ -18,7 +18,16 @@ public class Lot extends BaseEntity {
     @NotNull
     private ObjectId dpgfId;
     @NotNull
-    private String name;
+    private LotEnum lotName;
     @NotNull
-    private String code;
+    private Integer code;
+
+    public void setLotName(LotEnum lotName) {
+        this.lotName = lotName;
+        this.code = lotName.getKey();
+    }
+
+    public Integer getCode() {
+        return lotName != null ? lotName.getKey() : null;
+    }
 }

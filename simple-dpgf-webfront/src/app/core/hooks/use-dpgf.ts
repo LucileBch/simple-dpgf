@@ -5,6 +5,10 @@ import { apiEndpoints } from "../appConstants";
 import { DpgfCreationDto } from "../dtos/dpgf/DpgfCreationDto";
 import { resolveUrl } from "../services/http-service";
 import { DpgfStatusEnum } from "../enums/DpgfStatusEnum";
+import { LotDto } from "../dtos/lot/LotDto";
+import { LotEnum } from "../enums/LotEnum";
+import { ProductCreationDto } from "../dtos/product/ProductCreationDto";
+import { ProductDto } from "../dtos/product/ProductDto";
 
 type DpgfHook = {
   postNewDpgf(formData: DpgfCreationDto): Promise<DpgfDto>;
@@ -12,6 +16,14 @@ type DpgfHook = {
   putDpgfStatus(dpgfId: string, dpgfStatus: DpgfStatusEnum): Promise<Response>;
   deleteDpgfById(dpgfId: string): Promise<Response>;
   fetchAllDpgfByOrganizationId(organizationId: string): Promise<DpgfDto[]>;
+  postLotInDpgf(dpgfId: string, lot: LotEnum): Promise<LotDto>;
+  fetchAllLotByDpgfId(dpgfId: string): Promise<LotDto[]>;
+  postProductInLot(
+    dpgfId: string,
+    lotId: string,
+    formData: ProductCreationDto
+  ): Promise<ProductDto>;
+  fetchAllProductByDpgfId(dpgfId: string): Promise<ProductDto[]>;
 };
 
 export function useDpgf(): DpgfHook {
@@ -51,6 +63,32 @@ export function useDpgf(): DpgfHook {
             organizationId,
           ])
         ).then((response) => response.json());
+      },
+      postLotInDpgf(dpgfId: string, lot: LotEnum): Promise<LotDto> {
+        return post(
+          resolveUrl(apiEndpoints.CREATE_LOT, [dpgfId], { lotName: lot }),
+          {}
+        ).then((response) => response.json());
+      },
+      fetchAllLotByDpgfId(dpgfId: string): Promise<LotDto[]> {
+        return get(resolveUrl(apiEndpoints.GET_ALL_LOT, [dpgfId])).then(
+          (response) => response.json()
+        );
+      },
+      postProductInLot(
+        dpgfId: string,
+        lotId: string,
+        formData: ProductCreationDto
+      ): Promise<ProductDto> {
+        return post(
+          resolveUrl(apiEndpoints.CREATE_PRODUCT, [dpgfId, lotId]),
+          formData
+        ).then((response) => response.json());
+      },
+      fetchAllProductByDpgfId(dpgfId: string): Promise<ProductDto[]> {
+        return get(resolveUrl(apiEndpoints.GET_ALL_PRODUCT, [dpgfId])).then(
+          (response) => response.json()
+        );
       },
     }),
     [get, post, put, deleteRequest]

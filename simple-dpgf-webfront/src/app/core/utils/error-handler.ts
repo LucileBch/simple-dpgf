@@ -61,6 +61,10 @@ export function getErrorMessage(errorMessage: string): string {
       return "Le Dpgf a déjà été supprimé";
     case "DPGF_SHOULD_BE_ARCHIVED":
       return "Le Dpgf doit être archivé avant de pouvoir être supprimé";
+    case "DPGF_ARCHIVED":
+      return "Le Dpgf est archivé";
+    case "LOT_ALREADY_EXISTS":
+      return "Ce lot existe déjà dans votre DPGF";
 
     default:
       return "Une erreur est survenue";

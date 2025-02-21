@@ -3,7 +3,13 @@ package com.simpledpgfapi.dpgf.controller;
 import com.simpledpgfapi.dpgf.model.dpgf.DpgfStatusEnum;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfCreationDto;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfDto;
+import com.simpledpgfapi.dpgf.model.lot.LotEnum;
+import com.simpledpgfapi.dpgf.model.lot.dto.LotDto;
+import com.simpledpgfapi.dpgf.model.product.dto.ProductCreationDto;
+import com.simpledpgfapi.dpgf.model.product.dto.ProductDto;
 import com.simpledpgfapi.dpgf.service.DpgfService;
+import com.simpledpgfapi.dpgf.service.LotService;
+import com.simpledpgfapi.dpgf.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -20,6 +26,10 @@ import java.util.List;
 public class DpgfController {
     @Autowired
     private DpgfService dpgfService;
+    @Autowired
+    private LotService lotService;
+    @Autowired
+    private ProductService productService;
 
     @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
     @PostMapping
@@ -54,5 +64,34 @@ public class DpgfController {
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteDpgf(@PathVariable ObjectId dpgfId) {
        dpgfService.deleteDpgfById(dpgfId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PostMapping("/{dpgfId}/lot")
+    @ResponseStatus(value = HttpStatus.OK)
+    public LotDto createLotForDpgf(@PathVariable ObjectId dpgfId, @RequestParam LotEnum lotName) {
+        return lotService.createLot(dpgfId, lotName);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @GetMapping("/{dpgfId}/lot-list")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<LotDto> getAllLotByDpgfId(@PathVariable ObjectId dpgfId) {
+        return lotService.getAllLot(dpgfId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PostMapping("/{dpgfId}/lot/{lotId}/product")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ProductDto createProduct(@PathVariable ObjectId dpgfId, @PathVariable ObjectId lotId,
+                                    @Valid @RequestBody ProductCreationDto productCreationDto) {
+        return productService.createProductForDpgf(dpgfId, lotId, productCreationDto);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @GetMapping("/{dpgfId}/product-list")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ProductDto> getAllProductByDpgfId(@PathVariable ObjectId dpgfId) {
+        return productService.getAllProducts(dpgfId);
     }
 }

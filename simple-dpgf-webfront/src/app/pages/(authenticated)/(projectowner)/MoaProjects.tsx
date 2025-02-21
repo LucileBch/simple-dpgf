@@ -17,7 +17,8 @@ import { DpgfDto } from "../../../core/dtos/dpgf/DpgfDto";
 export default function MoaProjects(): JSX.Element {
   const navigate = useNavigate();
 
-  const { setIsCreateDialogOpen } = useContext(DialogContext);
+  const { isCreateDialogOpen, setIsCreateDialogOpen } =
+    useContext(DialogContext);
   const { setDpgf, dpgfByUserList, isDpgfByUserListLoading } =
     useContext(DpgfContext);
 
@@ -32,6 +33,8 @@ export default function MoaProjects(): JSX.Element {
   const handleOpenDpgfCreationDialog = useCallback(() => {
     setIsCreateDialogOpen(true);
   }, [setIsCreateDialogOpen]);
+
+  console.log("modal", isCreateDialogOpen);
 
   return (
     <>

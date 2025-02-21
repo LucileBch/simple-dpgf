@@ -16,24 +16,33 @@ import { RoleEnum } from "../enums/RoleEnum";
 import { UserContext } from "./user-context";
 import { OrganizationContext } from "./organization-context";
 import { OrganizationDto } from "../dtos/organization/OrganizationDto";
+import { LotDto } from "../dtos/lot/LotDto";
+import { LotEnum } from "../enums/LotEnum";
+import { useParams } from "react-router-dom";
+import { ProductCreationDto } from "../dtos/product/ProductCreationDto";
+import { ProductDto } from "../dtos/product/ProductDto";
 
 export const DpgfContext = React.createContext<DpgfStore>({} as DpgfStore);
 
 export function DpgfContextProvider({
   children,
 }: React.PropsWithChildren): React.JSX.Element {
+  const { dpgfId } = useParams();
+
   const {
     postNewDpgf,
     fetchAllDpgf,
     putDpgfStatus,
     deleteDpgfById,
     fetchAllDpgfByOrganizationId,
+    postLotInDpgf,
+    fetchAllLotByDpgfId,
+    postProductInLot,
+    fetchAllProductByDpgfId,
   } = useDpgf();
 
   const { user } = useContext(UserContext);
   const { organization } = useContext(OrganizationContext);
-
-  console.log("organization in dpgf context", organization);
 
   const [dpgf, setDpgf] = useState<DpgfDto | undefined>(undefined);
   const [dpgfByUserList, setDpgfByUserList] = useState<DpgfDto[]>([]);
@@ -44,6 +53,18 @@ export function DpgfContextProvider({
   >([]);
   const [isDpgfByOrganizationListLoading, setIsDpgfByOrganizationListLoading] =
     useState<boolean>(false);
+
+  const [lotList, setLotList] = useState<LotDto[] | undefined>([]);
+  const [isLotListLoading, setIsLotListLoading] = useState<boolean>(false);
+
+  const [selectedLot, setSelectedLot] = useState<LotDto | undefined>(undefined);
+
+  const [productList, setProductList] = useState<ProductDto[] | undefined>([]);
+  const [isProductListLoading, setIsProductListLoading] =
+    useState<boolean>(false);
+
+  console.log("lotList", lotList);
+  console.log("selectedLot", selectedLot);
 
   const createNewDpgf = useCallback(
     async (formData: DpgfCreationDto): Promise<DpgfDto> => {
@@ -113,6 +134,59 @@ export function DpgfContextProvider({
     [deleteDpgfById]
   );
 
+  // Lots
+  const createLotForDpgf = useCallback(
+    async (dpgfId: string, lot: LotEnum): Promise<LotDto> => {
+      const response = await postLotInDpgf(dpgfId, lot);
+      setLotList((prev) => (prev ? [...prev, response] : [response]));
+      return response;
+    },
+    [postLotInDpgf]
+  );
+
+  // fetch all Lot when landing on page
+  const getLotListByDpgfId = useCallback(
+    async (dpgfId: string) => {
+      setIsLotListLoading(true);
+      const response = await fetchAllLotByDpgfId(dpgfId);
+      setLotList(response);
+      setIsLotListLoading(false);
+    },
+    [fetchAllLotByDpgfId]
+  );
+
+  useEffect(() => {
+    if (user?.role === RoleEnum.PROJECT_OWNER && dpgfId) {
+      getLotListByDpgfId(dpgfId);
+    }
+  }, [dpgfId, getLotListByDpgfId, user?.role]);
+
+  // products
+  const createProduct = useCallback(
+    async (dpgfId: string, lotId: string, formData: ProductCreationDto) => {
+      const response = await postProductInLot(dpgfId, lotId, formData);
+      setProductList((prev) => (prev ? [...prev, response] : [response]));
+      return response;
+    },
+    [postProductInLot]
+  );
+
+  const getProductListByDpgfId = useCallback(
+    async (dpgfId: string) => {
+      setIsProductListLoading(true);
+      const response = await fetchAllProductByDpgfId(dpgfId);
+      setProductList(response);
+      setIsProductListLoading(false);
+    },
+    [fetchAllProductByDpgfId]
+  );
+
+  useEffect(() => {
+    if (user?.role === RoleEnum.PROJECT_OWNER && dpgfId) {
+      getProductListByDpgfId(dpgfId);
+    }
+  }, [dpgfId, getProductListByDpgfId, user?.role]);
+
   const dpgfStore: DpgfStore = useMemo(
     () => ({
       dpgf,
@@ -120,11 +194,22 @@ export function DpgfContextProvider({
       isDpgfByUserListLoading,
       dpgfByOrganizationList,
       isDpgfByOrganizationListLoading,
+      isLotListLoading,
+      lotList,
+      productList,
+      selectedLot,
+      isProductListLoading,
+      setSelectedLot,
+      setProductList,
       setDpgf,
       setDpgfByUserList,
       createNewDpgf,
       updateDpgfStatus,
       deleteDpgf,
+      createLotForDpgf,
+      getLotListByDpgfId,
+      createProduct,
+      getProductListByDpgfId,
     }),
     [
       dpgf,
@@ -132,11 +217,22 @@ export function DpgfContextProvider({
       isDpgfByUserListLoading,
       dpgfByOrganizationList,
       isDpgfByOrganizationListLoading,
+      isLotListLoading,
+      lotList,
+      productList,
+      selectedLot,
+      isProductListLoading,
+      setSelectedLot,
+      setProductList,
       setDpgf,
       setDpgfByUserList,
       createNewDpgf,
       updateDpgfStatus,
       deleteDpgf,
+      createLotForDpgf,
+      getLotListByDpgfId,
+      createProduct,
+      getProductListByDpgfId,
     ]
   );
 
@@ -151,9 +247,24 @@ export type DpgfStore = Readonly<{
   isDpgfByUserListLoading: boolean;
   dpgfByOrganizationList: DpgfDto[];
   isDpgfByOrganizationListLoading: boolean;
+  isLotListLoading: boolean;
+  lotList: LotDto[] | undefined;
+  productList: ProductDto[] | undefined;
+  selectedLot: LotDto | undefined;
+  isProductListLoading: boolean;
+  setSelectedLot: Dispatch<SetStateAction<LotDto | undefined>>;
+  setProductList: Dispatch<SetStateAction<ProductDto[] | undefined>>;
   setDpgf: Dispatch<SetStateAction<DpgfDto | undefined>>;
   setDpgfByUserList: Dispatch<SetStateAction<DpgfDto[]>>;
   createNewDpgf(formData: DpgfCreationDto): Promise<DpgfDto>;
   updateDpgfStatus(dpgfId: string, dpgfStatus: DpgfStatusEnum): Promise<void>;
   deleteDpgf(dpgfId: string): Promise<void>;
+  createLotForDpgf(dpgfId: string, lot: LotEnum): Promise<LotDto>;
+  getLotListByDpgfId(dpgfId: string): Promise<void>;
+  createProduct(
+    dpgfId: string,
+    lotId: string,
+    formData: ProductCreationDto
+  ): Promise<ProductDto>;
+  getProductListByDpgfId(dpgfId: string): Promise<void>;
 }>;

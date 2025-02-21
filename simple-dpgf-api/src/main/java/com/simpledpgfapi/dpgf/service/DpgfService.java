@@ -30,7 +30,6 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class DpgfService {
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -130,6 +129,27 @@ public class DpgfService {
             User currentUser = userRepository.findById(dpgfToDelete.getUserId())
                     .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
             licenseService.releaseProjectLicenseCounter(currentUser);
+        }
+    }
+
+    // utils
+    public void throwIfDpgfStatusNotValidForCreateOrUpdate(ObjectId dpgfId) {
+        Dpgf dpgfToCheck = dpgfRepository.findById(dpgfId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
+
+        if (dpgfToCheck.getDpgfStatus().equals(DpgfStatusEnum.DELETED)) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ALREADY_DELETED);
+        } else if (dpgfToCheck.getDpgfStatus().equals(DpgfStatusEnum.ARCHIVED)) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ARCHIVED);
+        }
+    }
+
+    public void throwIfDpgfStatusNotValidForDisplay(ObjectId dpgfId) {
+        Dpgf dpgfToCheck = dpgfRepository.findById(dpgfId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
+
+        if (dpgfToCheck.getDpgfStatus().equals(DpgfStatusEnum.DELETED)) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ALREADY_DELETED);
         }
     }
 }

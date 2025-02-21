@@ -14,8 +14,6 @@ import java.util.List;
         uses = {ObjectIdMapper.class}
         )
 public interface DpgfMapper {
-
-
     Dpgf creationDtoToModel(DpgfCreationDto dpgfCreationDto);
 
     DpgfDto modelToDto(Dpgf dpgf);

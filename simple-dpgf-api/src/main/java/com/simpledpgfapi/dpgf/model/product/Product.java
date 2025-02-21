@@ -17,23 +17,20 @@ public class Product extends BaseEntity {
     @Id
     private ObjectId id;
     @NotNull
-    private ObjectId organizationId;
-    @NotNull
     private ObjectId dpgfId;
     @NotNull
     private ObjectId lotId;
+    private int lotCode;
     @NotNull
     private String name;
 
     private UnitEnum unit;
     private double unitPrice = 0.;
-    private double netPrice = 0.;
-    private double grossPrice = 0.;
-    private double taxPercentage = 20.;
     private double quantity;
+    private double totalPrice = 0.;
+
 
     public void calculatePrices() {
-        this.netPrice = this.unitPrice * this.quantity;
-        this.grossPrice = this.unitPrice * (this.taxPercentage / 100 ) * this.quantity;
+        this.totalPrice = this.unitPrice * this.quantity;
     }
 }

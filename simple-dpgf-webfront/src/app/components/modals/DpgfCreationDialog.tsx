@@ -86,7 +86,7 @@ export default function DpgfCreationDialog({
             <TextInput
               id="name"
               name="name"
-              type="name"
+              type="text"
               label="Nom"
               value={formData.name}
               onChange={handleChange}
