@@ -2,7 +2,7 @@ import {
   Box,
   Dialog,
   DialogActions,
-  DialogContentText,
+  DialogContent,
   DialogTitle,
 } from "@mui/material";
 import { useCallback, useContext, useState } from "react";
@@ -79,7 +79,7 @@ export default function LotCreationDialog({
       }}
     >
       <DialogTitle>{dialogTitle}</DialogTitle>
-      <DialogContentText>
+      <DialogContent>
         <Box
           sx={{
             display: "flex",
@@ -108,7 +108,7 @@ export default function LotCreationDialog({
             onClick={handleSubmit}
           />
         </DialogActions>
-      </DialogContentText>
+      </DialogContent>
     </Dialog>
   );
 }

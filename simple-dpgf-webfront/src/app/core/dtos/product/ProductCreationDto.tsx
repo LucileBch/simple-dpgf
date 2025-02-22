@@ -1,6 +1,6 @@
 import { UnitEnum } from "../../enums/UnitEnum";
 
-export interface ProductCreationDto {
+export interface ProductCreationOrUpdateDto {
   name: string;
   unit: UnitEnum;
   quantity: number;

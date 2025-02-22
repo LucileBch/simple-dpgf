@@ -24,5 +24,6 @@ public class Dpgf extends BaseEntity {
     @NotNull
     private ObjectId userId;
     private DpgfStatusEnum dpgfStatus = DpgfStatusEnum.IN_PROGRESS;
+    private double dpgfTotal = 0;
 
 }

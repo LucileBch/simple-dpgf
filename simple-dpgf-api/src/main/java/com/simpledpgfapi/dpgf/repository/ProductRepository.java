@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ProductRepository extends MongoRepository<Product, ObjectId> {
     List<Product> findByDpgfId(ObjectId dpgfId);
+
+    List<Product> findByLotId(ObjectId lotId);
 }

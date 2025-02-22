@@ -5,24 +5,30 @@ import { LotDto } from "../../core/dtos/lot/LotDto";
 import { lotNameToLabel } from "../../core/enums/LotEnum";
 import { theme } from "../../styles/theme";
 import TitleH3 from "../typographies/TitleH3";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import ProductCreationDialog from "../modals/ProductCreationDialog";
-import { DpgfContext } from "../../core/contexts/dpgf-context";
+import DeleteLotDialog from "../modals/DeleteLotDialog";
 
 interface IProps {
   lot: LotDto;
 }
 
 export default function LotCard({ lot }: Readonly<IProps>): JSX.Element {
-  const { setIsCreateDialogProductOpen } = useContext(DialogContext);
+  const [selectedLot, setSelectedLot] = useState<LotDto | undefined>(undefined);
 
-  const { setSelectedLot } = useContext(DpgfContext);
+  const { setIsCreateDialogProductOpen, setIsDeleteDialogOpen } =
+    useContext(DialogContext);
 
   const handleOpenCreateDialog = useCallback(() => {
     setIsCreateDialogProductOpen(true);
     setSelectedLot(lot);
   }, [lot, setIsCreateDialogProductOpen, setSelectedLot]);
+
+  const handleOpenDeleteDialog = useCallback(() => {
+    setIsDeleteDialogOpen(true);
+    setSelectedLot(lot);
+  }, [lot, setIsDeleteDialogOpen, setSelectedLot]);
 
   return (
     <Grid2
@@ -58,10 +64,17 @@ export default function LotCard({ lot }: Readonly<IProps>): JSX.Element {
             }}
           />
         </Tooltip>
-        <ProductCreationDialog dialogTitle="Ajouter un nouveau poste" />
+        {selectedLot && (
+          <ProductCreationDialog
+            dialogTitle="Ajouter un nouveau poste"
+            selectedLot={selectedLot}
+            setSelectedLot={setSelectedLot}
+          />
+        )}
 
         <Tooltip title="Supprimer un lot">
           <DeleteOutlineIcon
+            onClick={handleOpenDeleteDialog}
             sx={{
               color: theme.palette.error.main,
               cursor: "pointer",
@@ -72,6 +85,19 @@ export default function LotCard({ lot }: Readonly<IProps>): JSX.Element {
             }}
           />
         </Tooltip>
+
+        {selectedLot && (
+          <DeleteLotDialog
+            dialogTitle="Supprimer un lot"
+            dialogContent={`Êtes-vous sur de vouloir supprimer le lot n°${
+              lot.code
+            } : ${lotNameToLabel(
+              lot.lotName
+            )}, ainsi que tous les postes associés ?`}
+            selectedLot={selectedLot}
+            setSelectedLot={setSelectedLot}
+          />
+        )}
       </Grid2>
     </Grid2>
   );

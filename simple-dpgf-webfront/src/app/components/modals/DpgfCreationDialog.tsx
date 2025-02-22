@@ -27,8 +27,7 @@ export default function DpgfCreationDialog({
 }: Readonly<IProps>): JSX.Element {
   const navigate = useNavigate();
 
-  const { createNewDpgf, setDpgfByUserList: setDpgfList } =
-    useContext(DpgfContext);
+  const { createNewDpgf, setDpgf, setDpgfByUserList } = useContext(DpgfContext);
   const { isCreateDialogOpen, setIsCreateDialogOpen, handleCancelAndClose } =
     useContext(DialogContext);
   const { handleSuccessAlert } = useContext(AlertContext);
@@ -51,7 +50,8 @@ export default function DpgfCreationDialog({
       const newDpgf = await createNewDpgf(formData);
 
       setIsCreateDialogOpen(false);
-      setDpgfList((prev) => (prev ? [...prev, newDpgf] : [newDpgf]));
+      setDpgf(newDpgf);
+      setDpgfByUserList((prev) => (prev ? [...prev, newDpgf] : [newDpgf]));
       handleSuccessAlert("Nouveau DPGF créé");
 
       setTimeout(() => {
@@ -62,7 +62,8 @@ export default function DpgfCreationDialog({
       createNewDpgf,
       handleSuccessAlert,
       navigate,
-      setDpgfList,
+      setDpgf,
+      setDpgfByUserList,
       setIsCreateDialogOpen,
     ]
   );

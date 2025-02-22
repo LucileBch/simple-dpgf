@@ -17,31 +17,25 @@ import { DpgfDto } from "../../../core/dtos/dpgf/DpgfDto";
 export default function MoaProjects(): JSX.Element {
   const navigate = useNavigate();
 
-  const { isCreateDialogOpen, setIsCreateDialogOpen } =
-    useContext(DialogContext);
-  const { setDpgf, dpgfByUserList, isDpgfByUserListLoading } =
-    useContext(DpgfContext);
+  const { setIsCreateDialogOpen } = useContext(DialogContext);
+  const { dpgfByUserList, isDpgfByUserListLoading } = useContext(DpgfContext);
 
   const navigateToDpgf = useCallback(
     (dpgf: DpgfDto) => {
-      setDpgf(dpgf);
       navigate(resolveUrl(pagesUrl.MOA_PROJECT, [dpgf.id]));
     },
-    [navigate, setDpgf]
+    [navigate]
   );
 
   const handleOpenDpgfCreationDialog = useCallback(() => {
     setIsCreateDialogOpen(true);
   }, [setIsCreateDialogOpen]);
 
-  console.log("modal", isCreateDialogOpen);
-
   return (
     <>
       <NavBar />
       <PageContainer>
         <TitleH2>Mes projets</TitleH2>
-        {/* au click sur un projet => page de SYNTHESE d'un projet avec bouton "modifier" qui renvoie à la page de modif du projet*/}
 
         {isDpgfByUserListLoading ? (
           <CircularLoadingPage />

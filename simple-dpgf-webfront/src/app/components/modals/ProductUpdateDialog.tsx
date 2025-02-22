@@ -1,3 +1,4 @@
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
   Box,
   Dialog,
@@ -9,52 +10,54 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Tooltip,
 } from "@mui/material";
-import OutlinedButton from "../buttons/OutlinedButton";
-import SubmitButton from "../buttons/SubmitButton";
-import { useParams } from "react-router-dom";
-import { Dispatch, SetStateAction, useCallback, useContext } from "react";
-import { DialogContext } from "../../core/contexts/dialog-context";
-import { AlertContext } from "../../core/contexts/alert-context";
+import { ProductDto } from "../../core/dtos/product/ProductDto";
 import { TextInput } from "../inputs/TextInput";
 import { NumberInput } from "../inputs/NumberInput";
+import { UnitEnum, unitEnumtoLabel } from "../../core/enums/UnitEnum";
+import OutlinedButton from "../buttons/OutlinedButton";
+import SubmitButton from "../buttons/SubmitButton";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import { ProductCreationOrUpdateDto } from "../../core/dtos/product/ProductCreationDto";
-import { UnitEnum, unitEnumtoLabel } from "../../core/enums/UnitEnum";
+import { useCallback, useContext, useState } from "react";
+import { DialogContext } from "../../core/contexts/dialog-context";
+import { AlertContext } from "../../core/contexts/alert-context";
 import { DpgfContext } from "../../core/contexts/dpgf-context";
-import { LotDto } from "../../core/dtos/lot/LotDto";
+import { useParams } from "react-router-dom";
+import { theme } from "../../styles/theme";
 
 interface IProps {
   dialogTitle: string;
-  selectedLot: LotDto;
-  setSelectedLot: Dispatch<SetStateAction<LotDto | undefined>>;
+  product: ProductDto;
 }
 
-export default function ProductCreationDialog({
+export default function ProductUpdateDialog({
   dialogTitle,
-  selectedLot,
-  setSelectedLot,
+  product,
 }: Readonly<IProps>): JSX.Element {
   const { dpgfId } = useParams();
 
-  const {
-    isCreateDialogProductOpen,
-    setIsCreateDialogProductOpen,
-    handleCancelAndClose,
-  } = useContext(DialogContext);
+  const { isUpdateDialogOpen, setIsUpdateDialogOpen, handleCancelAndClose } =
+    useContext(DialogContext);
   const { handleSuccessAlert, handleErrorAlert } = useContext(AlertContext);
-  const { createProduct, setProductList, setDpgf } = useContext(DpgfContext);
+  const {
+    selectedProduct,
+    setSelectedProduct,
+    setProductList,
+    setDpgf,
+    updateProductInfos,
+    deleteProductFromDpgf,
+  } = useContext(DpgfContext);
 
-  const handleCancel = useCallback(() => {
-    setIsCreateDialogProductOpen(false);
-    setSelectedLot(undefined);
-  }, [setIsCreateDialogProductOpen, setSelectedLot]);
+  const [isDeleteSubmitting, setIsDeleteSubmitting] = useState<boolean>(false);
 
+  // update
   const initialFormValues: FormValues<ProductCreationOrUpdateDto> = {
-    name: "",
-    unit: UnitEnum.NONE,
-    unitPrice: 0,
-    quantity: 0,
+    name: product.name,
+    unit: product.unit,
+    unitPrice: product.unitPrice,
+    quantity: product.quantity,
   };
 
   const validate = (formData: FormValues<ProductCreationOrUpdateDto>) => {
@@ -81,45 +84,50 @@ export default function ProductCreationDialog({
         handleErrorAlert("Dpgf non reconnu");
         return;
       }
-
-      if (!selectedLot) {
-        handleErrorAlert("Lot non reconnu");
+      if (!selectedProduct) {
+        handleErrorAlert("Poste non reconnu");
         return;
       }
 
-      const newProduct = await createProduct(dpgfId, selectedLot.id, formData);
+      const updatedProduct = await updateProductInfos(
+        dpgfId,
+        selectedProduct.id,
+        formData
+      );
 
-      setIsCreateDialogProductOpen(false);
-      setProductList((prev) => {
-        const currentList = prev ?? [];
-
-        const isProductAlreadyInList = currentList.some(
-          (product) => product.id === newProduct.id
-        );
-        if (isProductAlreadyInList) {
-          return currentList;
-        }
-        return [...currentList, newProduct];
-      });
-
+      setIsUpdateDialogOpen(false);
+      setProductList((prev) =>
+        prev
+          ? prev.map((product) =>
+              product.id === updatedProduct.id ? updatedProduct : product
+            )
+          : []
+      );
       setDpgf((prev) =>
         prev
-          ? { ...prev, dpgfTotal: prev.dpgfTotal + newProduct.totalPrice }
+          ? {
+              ...prev,
+              dpgfTotal:
+                prev.dpgfTotal -
+                selectedProduct.totalPrice +
+                updatedProduct.totalPrice,
+            }
           : prev
       );
-      handleSuccessAlert("Nouveau poste ajouté");
-      setSelectedLot(undefined);
+
+      handleSuccessAlert(`Le poste ${updatedProduct.name} a bien été modifié`);
+      setSelectedProduct(undefined);
     },
     [
-      createProduct,
       dpgfId,
       handleErrorAlert,
       handleSuccessAlert,
-      selectedLot,
+      selectedProduct,
       setDpgf,
-      setIsCreateDialogProductOpen,
+      setIsUpdateDialogOpen,
       setProductList,
-      setSelectedLot,
+      setSelectedProduct,
+      updateProductInfos,
     ]
   );
 
@@ -132,18 +140,58 @@ export default function ProductCreationDialog({
     handleSubmit,
   } = useForm({ initialFormValues, validate, onSubmit });
 
+  // delete
+  const handleDeleteProduct = useCallback(async () => {
+    if (!dpgfId) {
+      handleErrorAlert("Dpgf non reconnu");
+      return;
+    }
+    if (!selectedProduct) {
+      handleErrorAlert("Poste non reconnu");
+      return;
+    }
+
+    setIsDeleteSubmitting(true);
+    await deleteProductFromDpgf(dpgfId, selectedProduct.id);
+
+    setProductList(
+      (prev) =>
+        prev?.filter((product) => product.id !== selectedProduct.id) ?? []
+    );
+    setDpgf((prev) =>
+      prev
+        ? { ...prev, dpgfTotal: prev.dpgfTotal - selectedProduct.totalPrice }
+        : prev
+    );
+
+    handleSuccessAlert("Le poste a été supprimé");
+    setSelectedProduct(undefined);
+    setIsUpdateDialogOpen(false);
+    setIsDeleteSubmitting(false);
+  }, [
+    deleteProductFromDpgf,
+    dpgfId,
+    handleErrorAlert,
+    handleSuccessAlert,
+    selectedProduct,
+    setDpgf,
+    setIsUpdateDialogOpen,
+    setProductList,
+    setSelectedProduct,
+  ]);
+
   return (
     <Dialog
-      open={isCreateDialogProductOpen}
-      onClose={handleCancel}
+      open={isUpdateDialogOpen}
+      onClose={handleCancelAndClose}
       sx={{
         "& .MuiDialog-paper": {
           minWidth: 500,
         },
       }}
-      aria-hidden={!isCreateDialogProductOpen}
+      aria-hidden={!isUpdateDialogOpen}
     >
-      <DialogTitle>{dialogTitle}</DialogTitle>
+      <DialogTitle sx={{ textAlign: "center" }}>{dialogTitle}</DialogTitle>
       <DialogContent>
         <form>
           <Box
@@ -212,18 +260,39 @@ export default function ProductCreationDialog({
             </FormControl>
           </Box>
           <DialogActions>
-            <Box sx={{ paddingTop: "8px" }}>
+            <Box
+              sx={{
+                paddingTop: "8px",
+              }}
+            >
               <OutlinedButton
                 label="Annuler"
-                onClick={handleCancelAndClose}
-                disabled={isSubmitting}
+                onClick={() => {
+                  handleCancelAndClose();
+                  setSelectedProduct(undefined);
+                }}
+                disabled={isSubmitting || isDeleteSubmitting}
               />
             </Box>
             <SubmitButton
               label="Confirmer"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isDeleteSubmitting}
               onClick={handleSubmit}
             />
+            <Tooltip title="Supprimer le poste" placement="top">
+              <DeleteOutlineIcon
+                onClick={handleDeleteProduct}
+                sx={{
+                  color: theme.palette.error.main,
+                  cursor: "pointer",
+                  fontSize: "40px",
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              />
+            </Tooltip>
           </DialogActions>
         </form>
       </DialogContent>

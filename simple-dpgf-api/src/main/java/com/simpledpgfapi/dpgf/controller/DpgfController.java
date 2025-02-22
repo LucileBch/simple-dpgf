@@ -53,6 +53,13 @@ public class DpgfController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @GetMapping("/{dpgfId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public DpgfDto getDpgf(@PathVariable ObjectId dpgfId) {
+        return dpgfService.getDpgfById(dpgfId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
     @PutMapping("/{dpgfId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void updateDpgfStatus(@PathVariable ObjectId dpgfId, @RequestParam DpgfStatusEnum dpgfStatus) {
@@ -71,6 +78,13 @@ public class DpgfController {
     @ResponseStatus(value = HttpStatus.OK)
     public LotDto createLotForDpgf(@PathVariable ObjectId dpgfId, @RequestParam LotEnum lotName) {
         return lotService.createLot(dpgfId, lotName);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @DeleteMapping("/{dpgfId}/lot/{lotId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteLotById(@PathVariable ObjectId dpgfId, @PathVariable ObjectId lotId) {
+        lotService.deleteLotAndAssociatedProducts(dpgfId, lotId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
@@ -93,5 +107,19 @@ public class DpgfController {
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProductDto> getAllProductByDpgfId(@PathVariable ObjectId dpgfId) {
         return productService.getAllProducts(dpgfId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PutMapping("/{dpgfId}/product/{productId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ProductDto updateProduct(@PathVariable ObjectId dpgfId,@PathVariable ObjectId productId, @Valid @RequestBody ProductCreationDto productCreationDto) {
+        return productService.updateProductById(dpgfId, productId, productCreationDto);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @DeleteMapping("/{dpgfId}/product/{productId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteProduct(@PathVariable ObjectId dpgfId, @PathVariable ObjectId productId) {
+        productService.deleteProductById(dpgfId, productId);
     }
 }

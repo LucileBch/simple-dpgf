@@ -71,10 +71,14 @@ export const apiEndpoints = {
   // moa project owner
   CREATE_DPGF: "/dpgf",
   GET_ALL_DPGF: "/dpgf/list",
+  GET_DPGF_BY_ID: "/dpgf/:dpgfId",
   UPDATE_DPGF_STATUS: "/dpgf/:dpgfId",
   DELETE_DPGF_BY_ID: "/dpgf/:dpgfId",
   CREATE_LOT: "/dpgf/:dpgfId/lot",
+  DELETE_LOT: "/dpgf/:dpgfId/lot/:lotId",
   GET_ALL_LOT: "/dpgf/:dpgfId/lot-list",
   CREATE_PRODUCT: "/dpgf/:dpgfId/lot/:lotId/product",
   GET_ALL_PRODUCT: "/dpgf/:dpgfId/product-list",
+  PUT_PRODUCT_BY_ID: "/dpgf/:dpgfId/product/:productId",
+  DELETE_PRODUCT_BY_ID: "/dpgf/:dpgfId/product/:productId",
 };

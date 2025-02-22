@@ -6,6 +6,7 @@ import com.simpledpgfapi.dpgf.model.dpgf.Dpgf;
 import com.simpledpgfapi.dpgf.model.dpgf.DpgfStatusEnum;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfCreationDto;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfDto;
+import com.simpledpgfapi.dpgf.model.product.Product;
 import com.simpledpgfapi.dpgf.repository.DpgfRepository;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
@@ -101,6 +102,17 @@ public class DpgfService {
         return dpgfDtoList;
     }
 
+    public DpgfDto getDpgfById(ObjectId dpgfId) {
+        Dpgf dpgf = dpgfRepository.findById(dpgfId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
+
+        if (dpgf.getDpgfStatus().equals(DpgfStatusEnum.DELETED)) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ALREADY_DELETED);
+        }
+
+        return dpgfMapper.modelToDto(dpgf);
+    }
+
     public void updateDpgfStatusById(ObjectId dpgfId, DpgfStatusEnum dpgfStatus) {
         Dpgf dpgfToUpdate = dpgfRepository.findById(dpgfId)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
@@ -133,13 +145,10 @@ public class DpgfService {
     }
 
     // utils
-    public void throwIfDpgfStatusNotValidForCreateOrUpdate(ObjectId dpgfId) {
-        Dpgf dpgfToCheck = dpgfRepository.findById(dpgfId)
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
-
-        if (dpgfToCheck.getDpgfStatus().equals(DpgfStatusEnum.DELETED)) {
+    public void throwIfDpgfStatusNotValidForCreateOrUpdate(Dpgf dpgf) {
+        if (dpgf.getDpgfStatus().equals(DpgfStatusEnum.DELETED)) {
             throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ALREADY_DELETED);
-        } else if (dpgfToCheck.getDpgfStatus().equals(DpgfStatusEnum.ARCHIVED)) {
+        } else if (dpgf.getDpgfStatus().equals(DpgfStatusEnum.ARCHIVED)) {
             throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ARCHIVED);
         }
     }
@@ -151,5 +160,37 @@ public class DpgfService {
         if (dpgfToCheck.getDpgfStatus().equals(DpgfStatusEnum.DELETED)) {
             throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_ALREADY_DELETED);
         }
+    }
+
+    public void addNewProductToDpgfTotal(Dpgf dpgf, Product product) {
+        double dpgfTotal = dpgf.getDpgfTotal();
+        dpgfTotal += product.getTotalPrice();
+
+        dpgf.setDpgfTotal(dpgfTotal);
+        dpgfRepository.save(dpgf);
+    }
+
+    public void deleteProductFromDpgfTotal(Dpgf dpgf, Product product) {
+        double dpgfTotal = dpgf.getDpgfTotal();
+        double productTotal = product.getTotalPrice();
+
+        if (dpgfTotal < productTotal) {
+            throw new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_TOTAL_NEGATIV);
+        } else {
+            dpgfTotal -= product.getTotalPrice();
+        }
+
+        dpgf.setDpgfTotal(dpgfTotal);
+        dpgfRepository.save(dpgf);
+    }
+
+    public void updateProductPriceInDpgfTotal(Dpgf dpgf, double oldProductTotalPrice, Product product) {
+        double dpgfTotal = dpgf.getDpgfTotal();
+
+        dpgfTotal -= oldProductTotalPrice;
+        dpgfTotal += product.getTotalPrice();
+
+        dpgf.setDpgfTotal(dpgfTotal);
+        dpgfRepository.save(dpgf);
     }
 }

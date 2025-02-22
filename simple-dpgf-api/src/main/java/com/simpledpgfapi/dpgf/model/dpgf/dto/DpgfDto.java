@@ -15,4 +15,5 @@ public class DpgfDto {
     private DpgfStatusEnum dpgfStatus = DpgfStatusEnum.IN_PROGRESS;
     private String createdByUser;
     private Instant lastModifiedDate;
+    private double dpgfTotal;
 }

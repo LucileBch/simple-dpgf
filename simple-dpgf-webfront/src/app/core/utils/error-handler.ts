@@ -65,6 +65,10 @@ export function getErrorMessage(errorMessage: string): string {
       return "Le Dpgf est archivé";
     case "LOT_ALREADY_EXISTS":
       return "Ce lot existe déjà dans votre DPGF";
+    case "PRODUCT_NOT_FOUND":
+      return "Ce poste n'existe pas dans votre DPGF";
+    case "DPGF_TOTAL_NEGATIV":
+      return "Le total ne peut être négatif";
 
     default:
       return "Une erreur est survenue";

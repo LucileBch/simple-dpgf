@@ -6,4 +6,5 @@ export interface DpgfDto {
   dpgfStatus: DpgfStatusEnum;
   createdByUser: string;
   lastModifiedDate: Date;
+  dpgfTotal: number;
 }

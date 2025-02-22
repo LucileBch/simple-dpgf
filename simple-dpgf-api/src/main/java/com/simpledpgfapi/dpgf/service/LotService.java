@@ -3,9 +3,12 @@ package com.simpledpgfapi.dpgf.service;
 import com.simpledpgfapi.dpgf.exceptions.DpgfErrorCodes;
 import com.simpledpgfapi.dpgf.mapper.LotMapper;
 import com.simpledpgfapi.dpgf.mapper.ProductMapper;
+import com.simpledpgfapi.dpgf.model.dpgf.Dpgf;
 import com.simpledpgfapi.dpgf.model.lot.Lot;
 import com.simpledpgfapi.dpgf.model.lot.LotEnum;
 import com.simpledpgfapi.dpgf.model.lot.dto.LotDto;
+import com.simpledpgfapi.dpgf.model.product.Product;
+import com.simpledpgfapi.dpgf.repository.DpgfRepository;
 import com.simpledpgfapi.dpgf.repository.LotRepository;
 import com.simpledpgfapi.dpgf.repository.ProductRepository;
 import com.simpledpgfapi.global.exceptions.HttpException;
@@ -14,6 +17,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,9 +34,14 @@ public class LotService {
     private DpgfService dpgfService;
     @Autowired
     private LotRepository lotRepository;
+    @Autowired
+    private DpgfRepository dpgfRepository;
 
     public LotDto createLot(ObjectId dpgfId, LotEnum lotName){
-        dpgfService.throwIfDpgfStatusNotValidForCreateOrUpdate(dpgfId);
+        Dpgf currentDpgf = dpgfRepository.findById(dpgfId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
+
+        dpgfService.throwIfDpgfStatusNotValidForCreateOrUpdate(currentDpgf);
 
         boolean isLotExisting = lotRepository.existsByDpgfIdAndLotName(dpgfId, lotName);
 
@@ -55,4 +64,22 @@ public class LotService {
         return lotMapper.modelsToDtos(lotList);
     }
 
+    @Transactional
+    public void deleteLotAndAssociatedProducts(ObjectId dpgfId, ObjectId lotId) {
+        Dpgf currentDpgf = dpgfRepository.findById(dpgfId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.DPGF_NOT_FOUND));
+
+        dpgfService.throwIfDpgfStatusNotValidForCreateOrUpdate(currentDpgf);
+
+        Lot currentLot = lotRepository.findById(lotId)
+                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, DpgfErrorCodes.LOT_NOT_FOUND));
+
+        List<Product> productList = productRepository.findByLotId(currentLot.getId());
+        productList.forEach(product -> {
+            dpgfService.deleteProductFromDpgfTotal(currentDpgf, product);
+            productRepository.delete(product);
+        });
+
+        lotRepository.delete(currentLot);
+    }
 }

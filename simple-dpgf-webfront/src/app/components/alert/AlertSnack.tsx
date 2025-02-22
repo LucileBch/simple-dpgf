@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import { OverridableStringUnion } from "@mui/types";
 
-interface IAlertSnackProps {
+interface IProps {
   anchorOrigin?: {
     vertical: "top" | "bottom";
     horizontal: "left" | "center" | "right";
@@ -25,7 +25,7 @@ export default function AlertSnack({
   onClose,
   severity,
   message: errorMessage,
-}: Readonly<IAlertSnackProps>): JSX.Element {
+}: Readonly<IProps>): JSX.Element {
   return (
     <Snackbar
       anchorOrigin={anchorOrigin}

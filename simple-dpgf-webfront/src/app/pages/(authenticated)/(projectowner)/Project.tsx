@@ -1,9 +1,10 @@
+import DownloadIcon from "@mui/icons-material/Download";
 import { useCallback, useContext } from "react";
 import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/NavBar";
 import TitleH2 from "../../../components/typographies/TitleH2";
 import { DpgfContext } from "../../../core/contexts/dpgf-context";
-import { Box, Table, TableBody } from "@mui/material";
+import { Box, Grid2, Table, TableBody, Tooltip } from "@mui/material";
 import StatusSelectInput from "../../../components/inputs/StatusSelectInput";
 import TooltipCustom from "../../../components/info/TooltipCustom";
 import OutlinedButton from "../../../components/buttons/OutlinedButton";
@@ -13,19 +14,32 @@ import LotCard from "../../../components/cards/LotCard";
 import ProductTableHead from "../../../components/table/ProductTableHead";
 import ProductRow from "../../../components/table/ProductRow";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
+import TitleH3 from "../../../components/typographies/TitleH3";
+import { theme } from "../../../styles/theme";
+import { generatePdf } from "../../../core/services/generate-pdf";
 
 export default function Project(): JSX.Element {
-  const { dpgf, lotList, productList, isLotListLoading, isProductListLoading } =
-    useContext(DpgfContext);
+  const {
+    dpgf,
+    lotList,
+    productList,
+    isDpgfLoading,
+    isLotListLoading,
+    isProductListLoading,
+  } = useContext(DpgfContext);
   const { setIsCreateDialogOpen } = useContext(DialogContext);
 
   const handleOpenCreateDialog = useCallback(() => {
     setIsCreateDialogOpen(true);
   }, [setIsCreateDialogOpen]);
 
-  console.log("produit", productList);
+  const handlePdfExport = useCallback(() => {
+    if (dpgf && lotList && productList) {
+      generatePdf(dpgf, lotList, productList);
+    }
+  }, [dpgf, lotList, productList]);
 
-  if (isLotListLoading && isProductListLoading) {
+  if (isDpgfLoading || isLotListLoading || isProductListLoading) {
     return <CircularLoadingPage />;
   }
 
@@ -42,7 +56,8 @@ export default function Project(): JSX.Element {
                 justifyContent: "space-between",
               }}
             >
-              <TitleH2>{dpgf?.name}</TitleH2>
+              <TitleH2>{dpgf.name}</TitleH2>
+
               <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <Box>
                   <OutlinedButton
@@ -74,8 +89,8 @@ export default function Project(): JSX.Element {
                         <Table>
                           <ProductTableHead />
                           {filteredProducts.map((product) => (
-                            <TableBody>
-                              <ProductRow key={product.id} product={product} />
+                            <TableBody key={product.id}>
+                              <ProductRow product={product} />
                             </TableBody>
                           ))}
                         </Table>
@@ -83,8 +98,52 @@ export default function Project(): JSX.Element {
                     </Box>
                   );
                 })}
+            <Grid2
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+
+                paddingX: "10px",
+                border: "solid",
+                borderWidth: "1px",
+                borderColor: theme.palette.primary.main,
+                borderRadius: "5px",
+                width: "100%",
+                backgroundColor: theme.palette.background.paper,
+              }}
+            >
+              <Grid2>
+                <TitleH3>Total: </TitleH3>
+              </Grid2>
+              <Grid2>
+                <TitleH3>{dpgf.dpgfTotal.toFixed(2)} €</TitleH3>
+              </Grid2>
+            </Grid2>
           </>
         )}
+
+        {dpgf &&
+          lotList &&
+          productList &&
+          lotList.length > 0 &&
+          productList.length > 0 && (
+            <Box
+              sx={{ display: "flex", justifyContent: "end", marginTop: "20px" }}
+            >
+              <Tooltip title="Exporter au format PDF">
+                <DownloadIcon
+                  onClick={handlePdfExport}
+                  sx={{
+                    fontSize: "30px",
+                    color: theme.palette.secondary.main,
+                    cursor: "pointer",
+                    "&:hover": { opacity: 0.8 },
+                  }}
+                />
+              </Tooltip>
+            </Box>
+          )}
       </PageContainer>
     </>
   );

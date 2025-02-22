@@ -21,7 +21,6 @@ export default function LotSelectInput({
     async (event: SelectChangeEvent<string>) => {
       const newSelectedLot =
         event.target.value === "" ? null : (event.target.value as LotEnum);
-      console.log("New status selected:", newSelectedLot);
 
       setSelectedLot(newSelectedLot);
     },

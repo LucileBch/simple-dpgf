@@ -81,7 +81,7 @@ export function DialogContextProvider({
       <AlertSnack
         open={openAlert}
         onClose={handleCloseAlert}
-        severity={alertMessage?.startsWith("Une erreur") ? "error" : "success"}
+        severity={alertMessage?.startsWith("Erreur") ? "error" : "success"}
         message={alertMessage}
       />
     </DialogContext.Provider>
