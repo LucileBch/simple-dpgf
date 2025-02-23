@@ -15,4 +15,8 @@ public interface DpgfRepository extends MongoRepository<Dpgf, ObjectId> {
     List<Dpgf> findByUserIdAndDpgfStatusNot(ObjectId userId, DpgfStatusEnum dpgfStatus);
 
     List<Dpgf> findByOrganizationIdAndDpgfStatusNot(ObjectId organizationId, DpgfStatusEnum dpgfStatus);
+
+    List<Dpgf> findByOrganizationId(ObjectId organizationId);
+
+    List<Dpgf> findByUserId(ObjectId userId);
 }

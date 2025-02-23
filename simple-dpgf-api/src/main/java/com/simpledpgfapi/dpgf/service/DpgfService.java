@@ -19,7 +19,6 @@ import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.repository.UserRepository;
 import com.simpledpgfapi.user.repository.organizationrepository.OrganizationRepository;
 import com.simpledpgfapi.user.service.LicenseService;
-import com.simpledpgfapi.user.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,6 @@ import java.util.Objects;
 public class DpgfService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private OrganizationService organizationService;
     @Autowired
     private DpgfMapper dpgfMapper;
     @Autowired
@@ -58,7 +55,8 @@ public class DpgfService {
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
-        Organization organization = organizationService.findByUserId(currentUser);
+        Organization organization = organizationRepository.findById(currentUser.getOrganizationId())
+                .orElseThrow(()-> new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
 
         // transform in model
         Dpgf newDpgf = dpgfMapper.creationDtoToModel(dpgfCreationDto);
@@ -132,7 +130,6 @@ public class DpgfService {
         }
 
         updateLotStatus(dpgfToUpdate);
-
         updateProductStatus(dpgfToUpdate);
     }
 
@@ -150,7 +147,6 @@ public class DpgfService {
             dpgfRepository.save(dpgfToDelete);
 
             updateLotStatus(dpgfToDelete);
-
             updateProductStatus(dpgfToDelete);
 
             User currentUser = userRepository.findById(dpgfToDelete.getUserId())
