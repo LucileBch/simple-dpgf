@@ -6,13 +6,11 @@ import {
 import { theme } from "../../styles/theme";
 import React from "react";
 
-interface IChipStatusProps {
+interface IProps {
   label: DpgfStatusEnum;
 }
 
-export default function ChipStatus({
-  label,
-}: Readonly<IChipStatusProps>): JSX.Element {
+export default function ChipStatus({ label }: Readonly<IProps>): JSX.Element {
   const getColorFromLabel = (label: DpgfStatusEnum): React.CSSProperties => {
     switch (label) {
       case DpgfStatusEnum.IN_PROGRESS:

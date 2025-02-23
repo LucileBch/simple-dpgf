@@ -1,4 +1,5 @@
 import { Box, Container, Grid2, Link, Typography } from "@mui/material";
+import { theme } from "../styles/theme";
 
 export default function Footer(): JSX.Element {
   return (
@@ -8,8 +9,13 @@ export default function Footer(): JSX.Element {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        p: 4,
-        backgroundColor: "lightgray",
+        p: 2,
+
+        backgroundColor: theme.palette.background.paper,
+        border: "solid",
+        borderColor: theme.palette.primary.main,
+        borderRadius: "5px",
+        boxShadow: "0px -10px 12px rgba(0, 0, 0, 0.3)",
       }}
     >
       <Box>
