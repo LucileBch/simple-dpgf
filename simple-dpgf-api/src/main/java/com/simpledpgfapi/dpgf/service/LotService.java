@@ -82,4 +82,11 @@ public class LotService {
 
         lotRepository.delete(currentLot);
     }
+
+    // utils
+//    public void updateLotStatus(Dpgf dpgf) {
+//        List<Lot> lotList = lotRepository.findByDpgfId(dpgf.getId());
+//        lotList.forEach(lot -> lot.setDpgfStatus(dpgf.getDpgfStatus()));
+//        lotRepository.saveAll(lotList);
+//    }
 }

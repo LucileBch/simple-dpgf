@@ -6,7 +6,7 @@ import { theme } from "../styles/theme";
 export default function Footer(): JSX.Element {
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         display: "flex",
         alignItems: "center",

@@ -26,7 +26,7 @@ export default function Header() {
 
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         display: "flex",
         alignItems: "center",
