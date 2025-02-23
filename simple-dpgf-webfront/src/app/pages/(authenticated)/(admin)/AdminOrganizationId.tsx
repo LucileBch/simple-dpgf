@@ -52,41 +52,122 @@ export default function AdminOrganizationId(): JSX.Element {
   }, [setIsDeleteDialogOpen]);
 
   return (
-    <PageContainer>
-      {isOrganizationLoading ? (
-        <CircularLoadingPage />
-      ) : (
-        <>
-          <NavBar />
-
-          <Grid2
-            container
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <Grid2>
-              <TitleH2>{organization?.name}</TitleH2>
+    <>
+      <NavBar />
+      <PageContainer>
+        {isOrganizationLoading ? (
+          <CircularLoadingPage />
+        ) : (
+          <>
+            <Grid2
+              container
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <Grid2>
+                <TitleH2>{organization?.name}</TitleH2>
+              </Grid2>
+              <Grid2>
+                <Typography>({organization?.organizationType})</Typography>
+              </Grid2>
             </Grid2>
-            <Grid2>
-              <Typography>({organization?.organizationType})</Typography>
-            </Grid2>
-          </Grid2>
 
-          <Box sx={{ pb: 3 }}>
-            <TitleH3>Informations sur les licenses :</TitleH3>
-            <Typography>
-              Nombre de licenses utilisateurs :{" "}
-              {organization?.memberLicenseCounter} /{" "}
-              {organization?.maxMemberLicenseCounter}
-            </Typography>
-            <Typography>
-              Nombre de licenses projets : {organization?.projectLicenseCounter}{" "}
-              / {organization?.maxProjectLicenseCounter}
-            </Typography>
+            <Box sx={{ pb: 3 }}>
+              <TitleH3>Informations sur les licenses :</TitleH3>
+              <Typography>
+                Nombre de licenses utilisateurs :{" "}
+                {organization?.memberLicenseCounter} /{" "}
+                {organization?.maxMemberLicenseCounter}
+              </Typography>
+              <Typography>
+                Nombre de licenses projets :{" "}
+                {organization?.projectLicenseCounter} /{" "}
+                {organization?.maxProjectLicenseCounter}
+              </Typography>
+              {organization?.id && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "end",
+                  }}
+                >
+                  <OutlinedButton
+                    label="Mettre à jour les licenses"
+                    onClick={handleOpenUpdateDialog}
+                  />
+                  <UpdateLicenseDialog
+                    dialogTitle="Modifier les licenses de l'organisation."
+                    organization={organization}
+                  />
+                </Box>
+              )}
+            </Box>
+            <Divider />
+
+            <Box sx={{ pb: 3 }}>
+              <TitleH3>Informations sur le manager de l'organisation :</TitleH3>
+              {organizationMemberList
+                ?.filter(
+                  (member) => member.role === RoleEnum.ORGANIZATION_MANAGER
+                )
+                .map((member) => {
+                  return (
+                    <div key={member.id}>
+                      <Typography>
+                        Nom : {member.firstName} {member.lastName}
+                      </Typography>
+                      <Typography>Email : {member.email}</Typography>
+                      <Typography>Role : {member.role}</Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "end",
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          component="a"
+                          href={`mailto:${member.email}`}
+                        >
+                          Contacter le manager
+                        </Button>
+                      </Box>
+                    </div>
+                  );
+                })}
+            </Box>
+            <Divider />
+
+            <Box sx={{ pb: 3 }}>
+              <TitleH3>
+                Informations sur les membres de l'organisation :
+              </TitleH3>
+              {notManagerMembers !== undefined &&
+              notManagerMembers.length > 0 ? (
+                notManagerMembers?.map((member) => {
+                  return (
+                    <div key={member.id}>
+                      <Typography>
+                        Nom : {member.firstName} {member.lastName}
+                      </Typography>
+                      <Typography>Email : {member.email}</Typography>
+                      <Typography>Role : {member.role}</Typography>
+                    </div>
+                  );
+                })
+              ) : (
+                <Typography>
+                  Pas encore de membres autre que le manager.
+                </Typography>
+              )}
+            </Box>
+
+            {/* TODO */}
+            {/* Penser à delete les projets une fois créés*/}
             {organization?.id && (
               <Box
                 sx={{
@@ -95,94 +176,18 @@ export default function AdminOrganizationId(): JSX.Element {
                 }}
               >
                 <OutlinedButton
-                  label="Mettre à jour les licenses"
-                  onClick={handleOpenUpdateDialog}
+                  label="Supprimer l'organisation"
+                  onClick={handleOpenDeleteDialog}
                 />
-                <UpdateLicenseDialog
-                  dialogTitle="Modifier les licenses de l'organisation."
-                  organization={organization}
+                <DeleteOrgaDialog
+                  dialogTitle="Etes-vous sur de vouloir supprimer cette organisation ?"
+                  organizationId={organization.id}
                 />
               </Box>
             )}
-          </Box>
-          <Divider />
-
-          <Box sx={{ pb: 3 }}>
-            <TitleH3>Informations sur le manager de l'organisation :</TitleH3>
-            {organizationMemberList
-              ?.filter(
-                (member) => member.role === RoleEnum.ORGANIZATION_MANAGER
-              )
-              .map((member) => {
-                return (
-                  <div key={member.id}>
-                    <Typography>
-                      Nom : {member.firstName} {member.lastName}
-                    </Typography>
-                    <Typography>Email : {member.email}</Typography>
-                    <Typography>Role : {member.role}</Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "end",
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        component="a"
-                        href={`mailto:${member.email}`}
-                      >
-                        Contacter le manager
-                      </Button>
-                    </Box>
-                  </div>
-                );
-              })}
-          </Box>
-          <Divider />
-
-          <Box sx={{ pb: 3 }}>
-            <TitleH3>Informations sur les membres de l'organisation :</TitleH3>
-            {notManagerMembers !== undefined && notManagerMembers.length > 0 ? (
-              notManagerMembers?.map((member) => {
-                return (
-                  <div key={member.id}>
-                    <Typography>
-                      Nom : {member.firstName} {member.lastName}
-                    </Typography>
-                    <Typography>Email : {member.email}</Typography>
-                    <Typography>Role : {member.role}</Typography>
-                  </div>
-                );
-              })
-            ) : (
-              <Typography>
-                Pas encore de membres autre que le manager.
-              </Typography>
-            )}
-          </Box>
-
-          {/* TODO */}
-          {/* Penser à delete les projets une fois créés*/}
-          {organization?.id && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
-              <OutlinedButton
-                label="Supprimer l'organisation"
-                onClick={handleOpenDeleteDialog}
-              />
-              <DeleteOrgaDialog
-                dialogTitle="Etes-vous sur de vouloir supprimer cette organisation ?"
-                organizationId={organization.id}
-              />
-            </Box>
-          )}
-        </>
-      )}
-    </PageContainer>
+          </>
+        )}
+      </PageContainer>
+    </>
   );
 }

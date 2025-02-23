@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { resolveUrl } from "../core/services/http-service";
 import { OrganizationContext } from "../core/contexts/organization-context";
 import { AlertContext } from "../core/contexts/alert-context";
+import { theme } from "../styles/theme";
 
 export default function NavBar(): JSX.Element {
   const navigate = useNavigate();
@@ -39,7 +40,9 @@ export default function NavBar(): JSX.Element {
       sx={{
         display: "flex",
         justifyContent: "space-between",
-        backgroundColor: "cyan",
+        borderBottom: "2px solid",
+        borderColor: theme.palette.background.paper,
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Box>

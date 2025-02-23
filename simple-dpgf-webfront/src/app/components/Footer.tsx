@@ -1,4 +1,7 @@
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import XIcon from "@mui/icons-material/X";
 import { Box, Container, Grid2, Link, Typography } from "@mui/material";
+import { theme } from "../styles/theme";
 
 export default function Footer(): JSX.Element {
   return (
@@ -8,12 +11,34 @@ export default function Footer(): JSX.Element {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        p: 4,
-        backgroundColor: "lightgray",
+        p: 2,
+
+        backgroundColor: theme.palette.background.paper,
+        border: "solid",
+        borderColor: theme.palette.primary.main,
+        borderRadius: "5px",
+        boxShadow: "0px -10px 12px rgba(0, 0, 0, 0.3)",
       }}
     >
       <Box>
-        <Typography variant="h2">Footer</Typography>
+        <Link href="#" underline="hover" target="_blank">
+          <XIcon
+            sx={{
+              fontSize: "30px",
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+            }}
+          />
+        </Link>
+        <Link href="#" underline="hover" target="_blank">
+          <LinkedInIcon
+            sx={{
+              fontSize: "30px",
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+            }}
+          />
+        </Link>
       </Box>
       <Grid2 container spacing={2}>
         <Grid2 size={6}>

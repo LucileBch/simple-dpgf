@@ -14,6 +14,7 @@ import {
 } from "../../core/services/authentication-service";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
+import BackgroundImage from "../../components/cards/BackgroundImage";
 
 export default function SignIn(): JSX.Element {
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ export default function SignIn(): JSX.Element {
 
   return (
     <PageContainer>
+      <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Se connecter</Typography>
       </Box>

@@ -32,9 +32,15 @@ export default function OrganizationCard({
       sx={{
         maxWidth: 275,
         minHeight: 200,
+        cursor: "pointer",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateZ(10px)",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 042)",
+        },
       }}
     >
-      <CardContent onClick={navigateToOrganization} sx={{ cursor: "pointer" }}>
+      <CardContent onClick={navigateToOrganization}>
         <TitleH3>{organization.name}</TitleH3>
         <Typography>
           Type d'organisation : {organization.organizationType}
