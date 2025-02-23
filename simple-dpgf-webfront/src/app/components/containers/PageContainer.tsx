@@ -10,7 +10,7 @@ export default function PageContainer({
 }: Readonly<IProps>): JSX.Element {
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         p: 1,
         minHeight: "calc(100vh - 150px)",

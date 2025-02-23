@@ -6,8 +6,11 @@ import com.simpledpgfapi.dpgf.model.dpgf.Dpgf;
 import com.simpledpgfapi.dpgf.model.dpgf.DpgfStatusEnum;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfCreationDto;
 import com.simpledpgfapi.dpgf.model.dpgf.dto.DpgfDto;
+import com.simpledpgfapi.dpgf.model.lot.Lot;
 import com.simpledpgfapi.dpgf.model.product.Product;
 import com.simpledpgfapi.dpgf.repository.DpgfRepository;
+import com.simpledpgfapi.dpgf.repository.LotRepository;
+import com.simpledpgfapi.dpgf.repository.ProductRepository;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
 import com.simpledpgfapi.user.exceptions.UserErrorCodes;
@@ -43,6 +46,10 @@ public class DpgfService {
     private LicenseService licenseService;
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Autowired
+    private LotRepository lotRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Transactional
     public DpgfDto createDpgf(DpgfCreationDto dpgfCreationDto) {
@@ -123,6 +130,10 @@ public class DpgfService {
             dpgfToUpdate.setDpgfStatus(dpgfStatus);
             dpgfRepository.save(dpgfToUpdate);
         }
+
+        updateLotStatus(dpgfToUpdate);
+
+        updateProductStatus(dpgfToUpdate);
     }
 
     @Transactional
@@ -137,6 +148,10 @@ public class DpgfService {
         } else {
             dpgfToDelete.setDpgfStatus(DpgfStatusEnum.DELETED);
             dpgfRepository.save(dpgfToDelete);
+
+            updateLotStatus(dpgfToDelete);
+
+            updateProductStatus(dpgfToDelete);
 
             User currentUser = userRepository.findById(dpgfToDelete.getUserId())
                     .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
@@ -192,5 +207,17 @@ public class DpgfService {
 
         dpgf.setDpgfTotal(dpgfTotal);
         dpgfRepository.save(dpgf);
+    }
+
+    public void updateLotStatus(Dpgf dpgf) {
+        List<Lot> lotList = lotRepository.findByDpgfId(dpgf.getId());
+        lotList.forEach(lot -> lot.setDpgfStatus(dpgf.getDpgfStatus()));
+        lotRepository.saveAll(lotList);
+    }
+
+    public void updateProductStatus(Dpgf dpgf) {
+        List<Product> productList = productRepository.findByDpgfId(dpgf.getId());
+        productList.forEach(product -> product.setDpgfStatus(dpgf.getDpgfStatus()));
+        productRepository.saveAll(productList);
     }
 }

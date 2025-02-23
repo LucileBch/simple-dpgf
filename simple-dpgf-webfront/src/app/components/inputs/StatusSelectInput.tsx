@@ -34,9 +34,8 @@ export default function StatusSelectInput({
   const handleChange = useCallback(
     async (event: SelectChangeEvent<string>) => {
       const newStatus = event.target.value as DpgfStatusEnum;
-      console.log("New status selected:", newStatus, dpgfId);
       if (!dpgfId) {
-        handleErrorAlert("Dpgf non reconnu");
+        handleErrorAlert("Erreur : Dpgf non reconnu");
         return;
       }
 

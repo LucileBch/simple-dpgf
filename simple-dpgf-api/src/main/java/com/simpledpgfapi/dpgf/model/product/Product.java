@@ -1,5 +1,6 @@
 package com.simpledpgfapi.dpgf.model.product;
 
+import com.simpledpgfapi.dpgf.model.dpgf.DpgfStatusEnum;
 import com.simpledpgfapi.global.model.BaseEntity;
 import com.simpledpgfapi.global.model.UnitEnum;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,7 @@ public class Product extends BaseEntity {
     private int lotCode;
     @NotNull
     private String name;
+    private DpgfStatusEnum dpgfStatus = DpgfStatusEnum.IN_PROGRESS;
 
     private UnitEnum unit;
     private double unitPrice = 0.;
