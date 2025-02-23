@@ -5,6 +5,10 @@ export function getErrorMessage(errorMessage: string): string {
       return "L'url demandée n'existe pas.";
     case "UNAUTHORIZED":
       return "Vous n'avez pas l'autorisation.";
+    case "FORBIDDEN":
+      return "Vous n'avez pas l'accès.";
+    case "EMAIL_OR_PASSWORD_INCORRECT":
+      return "Utilisateur non reconnu.";
 
     // User Errors
     case "USER_NOT_FOUND":

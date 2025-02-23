@@ -1,6 +1,5 @@
 package com.simpledpgfapi.configuration.security;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,19 +69,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
          );
 
-        httpSecurity.exceptionHandling(exceptionHandling ->
-                exceptionHandling
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
-                            response.getWriter().write("Unauthorized: " + authException.getMessage());
-                        })
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
-                            response.getWriter().write("Access Denied: " + accessDeniedException.getMessage());
-                        })
-        );
-
-         // application du filtre jwt filter
+           // application du filtre jwt filter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
