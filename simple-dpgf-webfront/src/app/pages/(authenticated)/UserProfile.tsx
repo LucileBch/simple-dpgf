@@ -1,7 +1,7 @@
 import SubmitButton from "../../components/buttons/SubmitButton";
 import PageContainer from "../../components/containers/PageContainer";
 import { TextInput } from "../../components/inputs/TextInput";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/navbar/NavBar";
 import { Box, Typography } from "@mui/material";
 import { useCallback, useContext } from "react";
 import { FormValues, useForm } from "../../core/hooks/use-form";

@@ -114,5 +114,22 @@ export const theme = createTheme({
         },
       },
     },
+    MuiPagination: {
+      styleOverrides: {
+        ul: {
+          justifyContent: "center",
+        },
+      },
+    },
+    MuiPaginationItem: {
+      styleOverrides: {
+        root: {
+          "&.Mui-selected": {
+            backgroundColor: "rgba(13, 92, 99, 0.8)",
+            color: "white",
+          },
+        },
+      },
+    },
   },
 });

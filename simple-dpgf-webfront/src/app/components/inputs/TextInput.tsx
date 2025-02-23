@@ -1,8 +1,8 @@
 import { TextField } from "@mui/material";
 
-interface ITextInputProps {
-  id: string;
-  name: string;
+interface IProps {
+  id?: string;
+  name?: string;
   type?: string;
   label: string;
   required?: boolean;
@@ -28,7 +28,7 @@ export function TextInput({
   autoComplete = "off",
   error,
   helperText,
-}: ITextInputProps): JSX.Element {
+}: IProps): JSX.Element {
   return (
     <TextField
       id={id}

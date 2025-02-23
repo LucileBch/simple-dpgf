@@ -7,7 +7,6 @@ import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { UserContext } from "../../core/contexts/user-context";
 import { TokenContext } from "../../core/contexts/token-context";
-import PageContainer from "../../components/containers/PageContainer";
 import {
   setTokensInCookies,
   setUserInLocalStorage,
@@ -15,6 +14,7 @@ import {
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
+import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
 export default function SignIn(): JSX.Element {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ export default function SignIn(): JSX.Element {
     useForm({ initialFormValues, validate, onSubmit });
 
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Se connecter</Typography>
@@ -127,6 +127,6 @@ export default function SignIn(): JSX.Element {
           <SubmitButton label="Se connecter" disabled={isSubmitting} />
         </Box>
       </form>
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

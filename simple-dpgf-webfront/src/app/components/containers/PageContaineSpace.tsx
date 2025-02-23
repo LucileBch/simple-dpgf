@@ -5,7 +5,7 @@ interface IProps {
   children: ReactNode;
 }
 
-export default function PageContainer({
+export default function PageContainerSpace({
   children,
 }: Readonly<IProps>): JSX.Element {
   return (
@@ -13,7 +13,7 @@ export default function PageContainer({
       maxWidth="xl"
       sx={{
         p: 1,
-        minHeight: "calc(100vh - 300px)",
+        minHeight: "calc(100vh - 150px)",
       }}
     >
       {children}

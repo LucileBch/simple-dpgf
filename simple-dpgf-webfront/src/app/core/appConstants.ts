@@ -20,6 +20,7 @@ export const pagesUrl = {
   // moa manager url
   MOA_MANAGER: "/moa/manager",
   MOA_MANAGER_PROJECTS_PAGE: "/moa/manager/projects",
+  MOA_MANAGER_PROJECT_SUMMARY: "/moa/manager/projet/:dpgfId",
   MOA_MANAGER_TEAM_PAGE: "/moa/manager/:organizationId/team",
   MOA_MANAGER_INVITE_PAGE: "/moa/manager/invitation",
 

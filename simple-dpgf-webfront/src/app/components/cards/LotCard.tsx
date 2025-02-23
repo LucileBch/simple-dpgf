@@ -12,9 +12,13 @@ import DeleteLotDialog from "../modals/DeleteLotDialog";
 
 interface IProps {
   lot: LotDto;
+  isManager?: boolean;
 }
 
-export default function LotCard({ lot }: Readonly<IProps>): JSX.Element {
+export default function LotCard({
+  lot,
+  isManager = false,
+}: Readonly<IProps>): JSX.Element {
   const [selectedLot, setSelectedLot] = useState<LotDto | undefined>(undefined);
 
   const { setIsCreateDialogProductOpen, setIsDeleteDialogOpen } =
@@ -50,55 +54,58 @@ export default function LotCard({ lot }: Readonly<IProps>): JSX.Element {
         <TitleH3>{lot.code}.</TitleH3>
         <TitleH3>{lotNameToLabel(lot.lotName)}</TitleH3>
       </Grid2>
-      <Grid2 sx={{ display: "flex", gap: "10px" }}>
-        <Tooltip title="Ajouter un poste">
-          <AddIcon
-            onClick={handleOpenCreateDialog}
-            sx={{
-              color: theme.palette.primary.main,
-              cursor: "pointer",
-              transition: "transform 0.2s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.1)",
-              },
-            }}
-          />
-        </Tooltip>
-        {selectedLot && (
-          <ProductCreationDialog
-            dialogTitle="Ajouter un nouveau poste"
-            selectedLot={selectedLot}
-            setSelectedLot={setSelectedLot}
-          />
-        )}
 
-        <Tooltip title="Supprimer un lot">
-          <DeleteOutlineIcon
-            onClick={handleOpenDeleteDialog}
-            sx={{
-              color: theme.palette.error.main,
-              cursor: "pointer",
-              transition: "transform 0.2s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.1)",
-              },
-            }}
-          />
-        </Tooltip>
+      {!isManager && (
+        <Grid2 sx={{ display: "flex", gap: "10px" }}>
+          <Tooltip title="Ajouter un poste">
+            <AddIcon
+              onClick={handleOpenCreateDialog}
+              sx={{
+                color: theme.palette.primary.main,
+                cursor: "pointer",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.1)",
+                },
+              }}
+            />
+          </Tooltip>
+          {selectedLot && (
+            <ProductCreationDialog
+              dialogTitle="Ajouter un nouveau poste"
+              selectedLot={selectedLot}
+              setSelectedLot={setSelectedLot}
+            />
+          )}
 
-        {selectedLot && (
-          <DeleteLotDialog
-            dialogTitle="Supprimer un lot"
-            dialogContent={`Êtes-vous sur de vouloir supprimer le lot n°${
-              lot.code
-            } : ${lotNameToLabel(
-              lot.lotName
-            )}, ainsi que tous les postes associés ?`}
-            selectedLot={selectedLot}
-            setSelectedLot={setSelectedLot}
-          />
-        )}
-      </Grid2>
+          <Tooltip title="Supprimer un lot">
+            <DeleteOutlineIcon
+              onClick={handleOpenDeleteDialog}
+              sx={{
+                color: theme.palette.error.main,
+                cursor: "pointer",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.1)",
+                },
+              }}
+            />
+          </Tooltip>
+
+          {selectedLot && (
+            <DeleteLotDialog
+              dialogTitle="Supprimer un lot"
+              dialogContent={`Êtes-vous sur de vouloir supprimer le lot n°${
+                lot.code
+              } : ${lotNameToLabel(
+                lot.lotName
+              )}, ainsi que tous les postes associés ?`}
+              selectedLot={selectedLot}
+              setSelectedLot={setSelectedLot}
+            />
+          )}
+        </Grid2>
+      )}
     </Grid2>
   );
 }

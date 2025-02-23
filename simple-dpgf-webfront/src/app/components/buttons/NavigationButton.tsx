@@ -31,6 +31,13 @@ export default function NavigationButton({
           ? theme.palette.secondary.main
           : theme.palette.primary.main,
         boxShadow: "0px 10px 12px rgba(0, 0, 0, 0.5)",
+        transition: "background-color 0.3s ease-in-out",
+        "&:hover": {
+          backgroundColor: isActive
+            ? theme.palette.secondary.light
+            : theme.palette.primary.light,
+          boxShadow: "0px 10px 12px rgba(0, 0, 0, 0.5)",
+        },
       }}
     >
       {loading ? <CircularProgress size={24} color="inherit" /> : label}

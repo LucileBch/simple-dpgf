@@ -14,7 +14,7 @@ import { pagesUrl } from "../core/appConstants";
 import Home from "../pages/Home";
 import SignIn from "../pages/(authentication)/SignIn";
 import SignUp from "../pages/(authentication)/SignUp";
-import Header from "../components/Header";
+
 import Footer from "../components/Footer";
 import AccountValidation from "../pages/(authentication)/AccountValidation";
 import MoaProjects from "../pages/(authenticated)/(projectowner)/MoaProjects";
@@ -37,6 +37,8 @@ import { OrganizationContextProvider } from "../core/contexts/organization-conte
 import AcceptInvitation from "../pages/(authentication)/AcceptInvitation";
 import Project from "../pages/(authenticated)/(projectowner)/Project";
 import { DpgfContextProvider } from "../core/contexts/dpgf-context";
+import ProjectSummary from "../pages/(authenticated)/(moamanager)/ProjectSummary";
+import Header from "../components/headers/Header";
 
 export default function AppRouter(): JSX.Element {
   return (
@@ -125,6 +127,10 @@ export default function AppRouter(): JSX.Element {
               <Route
                 path={pagesUrl.MOA_MANAGER_PROJECTS_PAGE}
                 element={<ManagerProjects />}
+              />
+              <Route
+                path={pagesUrl.MOA_MANAGER_PROJECT_SUMMARY}
+                element={<ProjectSummary />}
               />
               <Route
                 path={pagesUrl.MOA_MANAGER_TEAM_PAGE}

@@ -113,8 +113,6 @@ export function DpgfContextProvider({
   // for organization manager
   const getAllDpgfByOrganizationId = useCallback(
     async (organization: OrganizationDto) => {
-      console.log("je passe ici", organization);
-
       setIsDpgfByOrganizationListLoading(true);
       fetchAllDpgfByOrganizationId(organization?.id)
         .then((newDpgfList) => setDpgfByOrganiztionList(newDpgfList))
@@ -184,10 +182,10 @@ export function DpgfContextProvider({
   );
 
   useEffect(() => {
-    if (user?.role === RoleEnum.PROJECT_OWNER && dpgfId) {
+    if (dpgfId) {
       getLotListByDpgfId(dpgfId);
     }
-  }, [dpgfId, getLotListByDpgfId, user?.role]);
+  }, [dpgfId, getLotListByDpgfId]);
 
   // products
   const createProduct = useCallback(
@@ -214,10 +212,10 @@ export function DpgfContextProvider({
   );
 
   useEffect(() => {
-    if (user?.role === RoleEnum.PROJECT_OWNER && dpgfId) {
+    if (dpgfId) {
       getProductListByDpgfId(dpgfId);
     }
-  }, [dpgfId, getProductListByDpgfId, user?.role]);
+  }, [dpgfId, getProductListByDpgfId]);
 
   const updateProductInfos = useCallback(
     async (
