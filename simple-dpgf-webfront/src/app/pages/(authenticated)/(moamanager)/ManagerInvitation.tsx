@@ -11,6 +11,7 @@ import { useMoaManger } from "../../../core/hooks/use-moaManager";
 import { AlertContext } from "../../../core/contexts/alert-context";
 import { useContext } from "react";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
+import BackgroundImage from "../../../components/cards/BackgroundImage";
 
 export default function ManagerInvitation() {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function ManagerInvitation() {
   const onSubmit = async (formData: FormValues<InvitationCreationDto>) => {
     if (organization !== undefined) {
       await sendInvitation(formData);
-      getInvitedMembers();
+      getInvitedMembers(organization);
       setOrganization((prev) =>
         prev
           ? { ...prev, memberLicenseCounter: prev.memberLicenseCounter + 1 }
@@ -108,8 +109,13 @@ export default function ManagerInvitation() {
             helperText={errors.emailReceiver}
           />
         </Box>
-        <SubmitButton label="Envoyer l'invitation" disabled={isSubmitting} />
+        <SubmitButton
+          label="Envoyer l'invitation"
+          disabled={isSubmitting}
+          sx={{ mb: 2 }}
+        />
       </form>
+      <BackgroundImage />
     </PageContainer>
   );
 }

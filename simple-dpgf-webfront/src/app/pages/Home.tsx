@@ -37,7 +37,7 @@ export default function Home(): JSX.Element {
           variant="h3"
           color="white"
           sx={{
-            position: "relative", // Pour être au-dessus du flou
+            position: "relative",
             bgcolor: "rgba(0, 0, 0, 0.5)",
             p: 2,
             borderRadius: 2,

@@ -1,3 +1,5 @@
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import XIcon from "@mui/icons-material/X";
 import { Box, Container, Grid2, Link, Typography } from "@mui/material";
 import { theme } from "../styles/theme";
 
@@ -19,7 +21,24 @@ export default function Footer(): JSX.Element {
       }}
     >
       <Box>
-        <Typography variant="h2">Footer</Typography>
+        <Link href="#" underline="hover" target="_blank">
+          <XIcon
+            sx={{
+              fontSize: "30px",
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+            }}
+          />
+        </Link>
+        <Link href="#" underline="hover" target="_blank">
+          <LinkedInIcon
+            sx={{
+              fontSize: "30px",
+              color: theme.palette.primary.main,
+              cursor: "pointer",
+            }}
+          />
+        </Link>
       </Box>
       <Grid2 container spacing={2}>
         <Grid2 size={6}>

@@ -8,6 +8,7 @@ import SubmitButton from "../../components/buttons/SubmitButton";
 import PageContainer from "../../components/containers/PageContainer";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
+import BackgroundImage from "../../components/cards/BackgroundImage";
 
 export default function RequestCode(): JSX.Element {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ export default function RequestCode(): JSX.Element {
 
   return (
     <PageContainer>
+      <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">
           Entrez votre email pour recevoir un nouveau code.

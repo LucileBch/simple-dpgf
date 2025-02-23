@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { UserInvitedDto } from "../../core/dtos/user/UserInvitedDto";
 import { resolveUrl } from "../../core/services/http-service";
+import BackgroundImage from "../../components/cards/BackgroundImage";
 
 export default function AcceptInvitation(): JSX.Element {
   const navigate = useNavigate();
@@ -91,6 +92,7 @@ export default function AcceptInvitation(): JSX.Element {
 
   return (
     <PageContainer>
+      <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Créer votre compte</Typography>
       </Box>

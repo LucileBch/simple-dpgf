@@ -52,7 +52,7 @@ export default function Header() {
         <Link to={isAuthenticated ? pagesUrl.DASHBOARD_PAGE : "/"}>
           <img
             style={{
-              width: 50,
+              width: 40,
               borderRadius: "50%",
               boxShadow: "6px 6px 6px rgba(0, 0, 0, 0.5)",
             }}

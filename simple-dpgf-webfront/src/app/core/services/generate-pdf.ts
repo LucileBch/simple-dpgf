@@ -4,6 +4,7 @@ import { ProductDto } from "../dtos/product/ProductDto";
 import { DpgfDto } from "../dtos/dpgf/DpgfDto";
 import { unitEnumtoLabel } from "../enums/UnitEnum";
 import { lotNameToLabel } from "../enums/LotEnum";
+import logo from "../../../assets/images/logo.webp";
 
 export function generatePdf(
   dpgf: DpgfDto,
@@ -13,6 +14,9 @@ export function generatePdf(
   const doc = new jsPDF("landscape");
 
   let yOffset = 20; // Initial position
+
+  doc.addImage(logo, "JPEG", 10, 10, 10, 10);
+  yOffset += 10;
 
   // Titre du PDF
   doc.setFont("helvetica", "bold");
