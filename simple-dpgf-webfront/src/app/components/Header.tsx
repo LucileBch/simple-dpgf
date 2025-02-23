@@ -40,7 +40,7 @@ export default function Header() {
           gap: 2,
         }}
       >
-        <Link to="/">
+        <Link to={isAuthenticated ? pagesUrl.DASHBOARD_PAGE : "/"}>
           {/* TODO: resize image */}
           <img style={{ width: 40 }} src={Logo} alt="Logo de Simple DPGF" />
         </Link>
