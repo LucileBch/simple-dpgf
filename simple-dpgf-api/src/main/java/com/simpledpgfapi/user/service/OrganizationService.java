@@ -1,5 +1,9 @@
 package com.simpledpgfapi.user.service;
 
+import com.simpledpgfapi.dpgf.model.dpgf.Dpgf;
+import com.simpledpgfapi.dpgf.model.dpgf.DpgfStatusEnum;
+import com.simpledpgfapi.dpgf.repository.DpgfRepository;
+import com.simpledpgfapi.dpgf.service.DpgfService;
 import com.simpledpgfapi.global.exceptions.HttpException;
 import com.simpledpgfapi.user.exceptions.InvitationErrorCodes;
 import com.simpledpgfapi.user.exceptions.OrganizationErrorCodes;
@@ -50,6 +54,12 @@ public class OrganizationService {
     private OrganizationMapper organizationMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DpgfRepository dpgfRepository;
+    @Autowired
+    private DpgfService dpgfService;
+    @Autowired
+    private LicenseService licenseService;
 
     public Organization createAdminOrganization(String adminOrganizationName, OrganizationTypeEnum adminOrganizationType) {
         Organization existingAdminOrganization = organizationRepository.findByName(adminOrganizationName);
@@ -70,14 +80,6 @@ public class OrganizationService {
         return adminOrganization;
     }
 
-    public Organization findByUserId(User user) {
-        return organizationRepository.findById(user.getOrganizationId())
-                .orElseThrow(()-> new HttpException(
-                        HttpStatus.BAD_REQUEST,
-                        OrganizationErrorCodes.ORGANIZATION_NOT_FOUND)
-                );
-    }
-
     public List<UserDto> getUserListByOrganizationId(ObjectId organizationId) {
         List<User> userList = userRepository.findByOrganizationId(organizationId);
         return userMapper.modelsToDtos(userList);
@@ -90,8 +92,6 @@ public class OrganizationService {
                 .toList();
     }
 
-    // TODO - GESTION PROJETS : si il a des projets non delete, il faudra attribuer un nouveau userId
-    // TODO - LICENSE UTILISATEUR : incrémenter la license nombre utilisateurs
     @Transactional
     public void removeUserFromOrganization(ObjectId organizationId, ObjectId invitationId) {
         Invitation currentInvitation = invitationRepository.findById(invitationId)
@@ -104,13 +104,19 @@ public class OrganizationService {
             throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.NOT_IN_THIS_ORGANIZATION);
         }
 
+        List<Dpgf> dpgfList = dpgfRepository.findByUserId(userToRemove.getId());
+        dpgfList.forEach(dpgf -> {
+            dpgf.setDpgfStatus(DpgfStatusEnum.DELETED);
+            dpgfRepository.save(dpgf);
+            dpgfService.updateLotStatus(dpgf);
+            dpgfService.updateProductStatus(dpgf);
+        });
+
         invitationRepository.deleteByEmailReceiver(userToRemove.getEmail());
+        licenseService.releaseUserLicenseCounter(userToRemove);
         userRepository.delete(userToRemove);
     }
 
-    //TODO: mettre transactionnal
-    // chercher les users + les dpgf ET CE QUI s'enssuit pour le futur (??? lot / resultat ?)
-    // delete invit ?
     @Transactional
     public void deleteOrganizationById(ObjectId organizationId) {
         // organization status to deleted
@@ -121,6 +127,9 @@ public class OrganizationService {
 
         organizationToDelete.setOrganizationStatus(OrganizationStatusEnum.DELETED);
         organizationRepository.save(organizationToDelete);
+
+        // update status in dpgf and associated itesm
+        updateDpgfStatusAndAssociatedLotAndProducts(organizationToDelete.getId());
 
         // user status to deleted
         List<User> userToDelete = userRepository.findByOrganizationId(organizationToDelete.getId());
@@ -162,5 +171,15 @@ public class OrganizationService {
         if(organization.getOrganizationStatus() == OrganizationStatusEnum.DELETED) {
             throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_ALREADY_DELETED);
         }
+    }
+
+    private void updateDpgfStatusAndAssociatedLotAndProducts(ObjectId organizationId) {
+        List<Dpgf> dpgfList = dpgfRepository.findByOrganizationId(organizationId);
+        dpgfList.forEach(dpgf -> {
+            dpgf.setDpgfStatus(DpgfStatusEnum.DELETED);
+            dpgfRepository.save(dpgf);
+            dpgfService.updateLotStatus(dpgf);
+            dpgfService.updateProductStatus(dpgf);
+        });
     }
 }

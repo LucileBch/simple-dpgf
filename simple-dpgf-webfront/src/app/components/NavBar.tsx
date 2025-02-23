@@ -21,8 +21,6 @@ export default function NavBar(): JSX.Element {
   const navigateToProfilePage = useCallback(() => {
     if (user !== undefined) {
       navigate(resolveUrl(pagesUrl.USER_PROFILE_PAGE, [user.id]));
-    } else {
-      console.log("aucun user");
     }
   }, [navigate, user]);
 
