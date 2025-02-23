@@ -82,7 +82,7 @@ export default function SignUp() {
   return (
     <PageContainer>
       <BackgroundImage />
-      <Box sx={{ textAlign: "center", p: 4 }}>
+      <Box sx={{ textAlign: "center", p: 1 }}>
         <Typography variant="h1">Créer votre compte</Typography>
       </Box>
 

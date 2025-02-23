@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { AdminOrganizationContext } from "../../../core/contexts/admin-organization-context";
 import { Box, Button, Divider, Grid2, Typography } from "@mui/material";
 import PageContainer from "../../../components/containers/PageContainer";
-import NavBar from "../../../components/NavBar";
+import NavBar from "../../../components/navbar/NavBar";
 import TitleH2 from "../../../components/typographies/TitleH2";
 import TitleH3 from "../../../components/typographies/TitleH3";
 import { UserDto } from "../../../core/dtos/user/UserDto";

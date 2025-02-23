@@ -2,7 +2,6 @@ import { Box, Typography } from "@mui/material";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { TextInput } from "../../components/inputs/TextInput";
-import PageContainer from "../../components/containers/PageContainer";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import { AlertContext } from "../../core/contexts/alert-context";
 import { UserInvitedDto } from "../../core/dtos/user/UserInvitedDto";
 import { resolveUrl } from "../../core/services/http-service";
 import BackgroundImage from "../../components/cards/BackgroundImage";
+import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
 export default function AcceptInvitation(): JSX.Element {
   const navigate = useNavigate();
@@ -91,7 +91,7 @@ export default function AcceptInvitation(): JSX.Element {
   }
 
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Créer votre compte</Typography>
@@ -159,6 +159,6 @@ export default function AcceptInvitation(): JSX.Element {
         </Box>
         <SubmitButton label="S'inscrire" disabled={isSubmitting} />
       </form>
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

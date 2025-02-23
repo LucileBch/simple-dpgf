@@ -1,12 +1,12 @@
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { Box, Typography } from "@mui/material";
-import PageContainer from "../components/containers/PageContainer";
 import BackgroundImage from "../components/cards/BackgroundImage";
 import { theme } from "../styles/theme";
+import PageContainerSpace from "../components/containers/PageContaineSpace";
 
 export default function Error(): JSX.Element {
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <QuestionMarkIcon
@@ -16,6 +16,6 @@ export default function Error(): JSX.Element {
           404 : Page Not Found
         </Typography>
       </Box>
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

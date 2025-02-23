@@ -6,10 +6,10 @@ import { UserPasswordResetDto } from "../../core/dtos/user/UserPasswordResetDto"
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
-import PageContainer from "../../components/containers/PageContainer";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
+import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
 export default function ForgotPassord(): JSX.Element {
   const navigate = useNavigate();
@@ -127,7 +127,7 @@ export default function ForgotPassord(): JSX.Element {
   });
 
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">
@@ -208,6 +208,6 @@ export default function ForgotPassord(): JSX.Element {
           <SubmitButton label="Valider" disabled={isSubmittingReset} />
         </form>
       )}
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

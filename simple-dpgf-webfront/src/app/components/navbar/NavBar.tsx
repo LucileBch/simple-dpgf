@@ -1,15 +1,15 @@
 import { Box, Container, Grid2 } from "@mui/material";
-import NavigationButton from "./buttons/NavigationButton";
-import { pagesUrl } from "../core/appConstants";
+import NavigationButton from "../buttons/NavigationButton";
+import { pagesUrl } from "../../core/appConstants";
 import { useCallback, useContext } from "react";
-import { UserContext } from "../core/contexts/user-context";
-import { RoleEnum } from "../core/enums/RoleEnum";
-import TitleH1 from "./typographies/TitleH1";
+import { UserContext } from "../../core/contexts/user-context";
+import { RoleEnum } from "../../core/enums/RoleEnum";
+import TitleH1 from "../typographies/TitleH1";
 import { useNavigate } from "react-router-dom";
-import { resolveUrl } from "../core/services/http-service";
-import { OrganizationContext } from "../core/contexts/organization-context";
-import { AlertContext } from "../core/contexts/alert-context";
-import { theme } from "../styles/theme";
+import { resolveUrl } from "../../core/services/http-service";
+import { OrganizationContext } from "../../core/contexts/organization-context";
+import { AlertContext } from "../../core/contexts/alert-context";
+import { theme } from "../../styles/theme";
 
 export default function NavBar(): JSX.Element {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function NavBar(): JSX.Element {
 
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         display: "flex",
         justifyContent: "space-between",

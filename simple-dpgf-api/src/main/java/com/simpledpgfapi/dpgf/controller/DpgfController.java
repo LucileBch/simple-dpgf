@@ -59,28 +59,28 @@ public class DpgfController {
         return dpgfService.getDpgfById(dpgfId);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @PutMapping("/{dpgfId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void updateDpgfStatus(@PathVariable ObjectId dpgfId, @RequestParam DpgfStatusEnum dpgfStatus) {
         dpgfService.updateDpgfStatusById(dpgfId, dpgfStatus);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @DeleteMapping("/{dpgfId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteDpgf(@PathVariable ObjectId dpgfId) {
        dpgfService.deleteDpgfById(dpgfId);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @PostMapping("/{dpgfId}/lot")
     @ResponseStatus(value = HttpStatus.OK)
     public LotDto createLotForDpgf(@PathVariable ObjectId dpgfId, @RequestParam LotEnum lotName) {
         return lotService.createLot(dpgfId, lotName);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @DeleteMapping("/{dpgfId}/lot/{lotId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteLotById(@PathVariable ObjectId dpgfId, @PathVariable ObjectId lotId) {
@@ -94,7 +94,7 @@ public class DpgfController {
         return lotService.getAllLot(dpgfId);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @PostMapping("/{dpgfId}/lot/{lotId}/product")
     @ResponseStatus(value = HttpStatus.OK)
     public ProductDto createProduct(@PathVariable ObjectId dpgfId, @PathVariable ObjectId lotId,
@@ -109,14 +109,14 @@ public class DpgfController {
         return productService.getAllProducts(dpgfId);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @PutMapping("/{dpgfId}/product/{productId}")
     @ResponseStatus(value = HttpStatus.OK)
     public ProductDto updateProduct(@PathVariable ObjectId dpgfId,@PathVariable ObjectId productId, @Valid @RequestBody ProductCreationDto productCreationDto) {
         return productService.updateProductById(dpgfId, productId, productCreationDto);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER', 'ROLE_ORGANIZATION_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_OWNER')")
     @DeleteMapping("/{dpgfId}/product/{productId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteProduct(@PathVariable ObjectId dpgfId, @PathVariable ObjectId productId) {

@@ -6,10 +6,10 @@ import { TextInput } from "../../components/inputs/TextInput";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { Box, Typography } from "@mui/material";
 import NavigationButton from "../../components/buttons/NavigationButton";
-import PageContainer from "../../components/containers/PageContainer";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
+import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
 export default function AccountValidation(): JSX.Element {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ export default function AccountValidation(): JSX.Element {
     useForm({ initialFormValues, validate, onSubmit });
 
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">Entrez votre code d'activation.</Typography>
@@ -97,6 +97,6 @@ export default function AccountValidation(): JSX.Element {
           )}
         </Box>
       </form>
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

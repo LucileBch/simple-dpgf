@@ -8,9 +8,13 @@ import ProductUpdateDialog from "../modals/ProductUpdateDialog";
 
 interface IProps {
   product: ProductDto;
+  isManager?: boolean;
 }
 
-export default function ProductRow({ product }: Readonly<IProps>): JSX.Element {
+export default function ProductRow({
+  product,
+  isManager = false,
+}: Readonly<IProps>): JSX.Element {
   const { selectedProduct, setSelectedProduct } = useContext(DpgfContext);
   const { setIsUpdateDialogOpen } = useContext(DialogContext);
 
@@ -27,14 +31,14 @@ export default function ProductRow({ product }: Readonly<IProps>): JSX.Element {
       <TableRow
         hover
         sx={{
-          cursor: "pointer",
-          transition: "box-shadow 0.2s ease-in-out",
+          cursor: isManager ? "default" : "pointer",
+          transition: isManager ? "none" : "box-shadow 0.2s ease-in-out",
           "&:hover": {
             boxShadow: 3,
             backgroundColor: "rgba(0, 0, 0, 0.04)",
           },
         }}
-        onClick={() => updateProduct(product)}
+        onClick={isManager ? undefined : () => updateProduct(product)}
       >
         <TableCell sx={{ padding: "4px 10px" }}>{product.name}</TableCell>
         <TableCell sx={{ padding: "4px 10px" }}>

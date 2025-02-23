@@ -1,24 +1,20 @@
 import DownloadIcon from "@mui/icons-material/Download";
 import { useCallback, useContext } from "react";
-import NavBar from "../../../components/navbar/NavBar";
-import TitleH2 from "../../../components/typographies/TitleH2";
 import { DpgfContext } from "../../../core/contexts/dpgf-context";
+import { generatePdf } from "../../../core/services/generate-pdf";
+import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
+import NavBar from "../../../components/navbar/NavBar";
+import PageContainer from "../../../components/containers/PageContainer";
 import { Box, Grid2, Table, TableBody, Tooltip } from "@mui/material";
-import StatusSelectInput from "../../../components/inputs/StatusSelectInput";
-import TooltipCustom from "../../../components/info/TooltipCustom";
-import OutlinedButton from "../../../components/buttons/OutlinedButton";
-import { DialogContext } from "../../../core/contexts/dialog-context";
-import LotCreationDialog from "../../../components/modals/LotCreationDialog";
-import LotCard from "../../../components/cards/LotCard";
+import TitleH2 from "../../../components/typographies/TitleH2";
 import ProductTableHead from "../../../components/table/ProductTableHead";
 import ProductRow from "../../../components/table/ProductRow";
-import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
+import LotCard from "../../../components/cards/LotCard";
 import TitleH3 from "../../../components/typographies/TitleH3";
 import { theme } from "../../../styles/theme";
-import { generatePdf } from "../../../core/services/generate-pdf";
-import PageContainerSpace from "../../../components/containers/PageContaineSpace";
+import ChipStatus from "../../../components/info/ChipStatus";
 
-export default function Project(): JSX.Element {
+export default function ProjectSummary(): JSX.Element {
   const {
     dpgf,
     lotList,
@@ -27,11 +23,6 @@ export default function Project(): JSX.Element {
     isLotListLoading,
     isProductListLoading,
   } = useContext(DpgfContext);
-  const { setIsCreateDialogOpen } = useContext(DialogContext);
-
-  const handleOpenCreateDialog = useCallback(() => {
-    setIsCreateDialogOpen(true);
-  }, [setIsCreateDialogOpen]);
 
   const handlePdfExport = useCallback(() => {
     if (dpgf && lotList && productList) {
@@ -46,7 +37,7 @@ export default function Project(): JSX.Element {
   return (
     <>
       <NavBar />
-      <PageContainerSpace>
+      <PageContainer>
         {dpgf && (
           <>
             <Box
@@ -57,18 +48,8 @@ export default function Project(): JSX.Element {
               }}
             >
               <TitleH2>{dpgf.name}</TitleH2>
-
               <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <Box>
-                  <OutlinedButton
-                    label="Ajouter un lot"
-                    onClick={handleOpenCreateDialog}
-                  />
-                  <LotCreationDialog dialogTitle="Ajouter un nouveau lot" />
-                </Box>
-                <TooltipCustom title="Mettre à jour le status du projet">
-                  <StatusSelectInput label={dpgf.dpgfStatus} />
-                </TooltipCustom>
+                <ChipStatus label={dpgf.dpgfStatus} />
               </Box>
             </Box>
 
@@ -84,13 +65,13 @@ export default function Project(): JSX.Element {
 
                   return (
                     <Box key={lot.id} sx={{ marginBottom: "10px" }}>
-                      <LotCard lot={lot} />
+                      <LotCard lot={lot} isManager />
                       {filteredProducts && filteredProducts.length > 0 && (
                         <Table>
                           <ProductTableHead />
                           {filteredProducts.map((product) => (
                             <TableBody key={product.id}>
-                              <ProductRow product={product} />
+                              <ProductRow product={product} isManager />
                             </TableBody>
                           ))}
                         </Table>
@@ -144,7 +125,7 @@ export default function Project(): JSX.Element {
               </Tooltip>
             </Box>
           )}
-      </PageContainerSpace>
+      </PageContainer>
     </>
   );
 }

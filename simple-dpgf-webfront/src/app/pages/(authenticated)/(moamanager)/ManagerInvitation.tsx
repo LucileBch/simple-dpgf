@@ -5,7 +5,7 @@ import { TextInput } from "../../../components/inputs/TextInput";
 import SubmitButton from "../../../components/buttons/SubmitButton";
 import { InvitationCreationDto } from "../../../core/dtos/invitation/InvitationCreationDto";
 import PageContainer from "../../../components/containers/PageContainer";
-import NavBar from "../../../components/NavBar";
+import NavBar from "../../../components/navbar/NavBar";
 import { FormValues, useForm } from "../../../core/hooks/use-form";
 import { useMoaManger } from "../../../core/hooks/use-moaManager";
 import { AlertContext } from "../../../core/contexts/alert-context";
