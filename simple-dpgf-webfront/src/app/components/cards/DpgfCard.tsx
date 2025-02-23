@@ -16,10 +16,10 @@ export default function DpgfCard({
     <Card
       sx={{
         minHeight: 180,
-        transition: "transform 0.3s ease, box-shadow 0.3s ease", // Transition douce
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
-          transform: "translateZ(10px)", // Déplacement vers l'avant (au-dessus du plan)
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)", // Ombre pour l'effet de survol
+          transform: "translateZ(10px)",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
         },
       }}
     >
