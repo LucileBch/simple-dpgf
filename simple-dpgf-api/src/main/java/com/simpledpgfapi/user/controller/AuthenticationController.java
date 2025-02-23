@@ -29,7 +29,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     @ResponseStatus(value = HttpStatus.CREATED)
     @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User created"), @ApiResponse(responseCode = "400", description = "[USER_ALREADY_EXISTS]")})
-    public UserDto createOrganizationManager(@RequestBody UserCreationDto userCreationDto) {
+    public UserDto createOrganizationManager(@Valid @RequestBody UserCreationDto userCreationDto) {
         log.info("userCreationDto created");
         return authenticationService.createUser(userCreationDto);
     }

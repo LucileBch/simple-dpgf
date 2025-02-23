@@ -17,6 +17,7 @@ import {
   setUserInLocalStorage,
 } from "../../core/services/authentication-service";
 import { TokenContext } from "../../core/contexts/token-context";
+import PasswordRules from "../../components/rules/passwordRules";
 
 export default function UserProfile(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -102,7 +103,7 @@ export default function UserProfile(): JSX.Element {
     <>
       <NavBar />
       <PageContainer>
-        <Box sx={{ textAlign: "center", p: 4 }}>
+        <Box sx={{ textAlign: "center", p: 2 }}>
           <Typography variant="h1">Modifier mes informations :</Typography>
         </Box>
 
@@ -113,7 +114,7 @@ export default function UserProfile(): JSX.Element {
               flexDirection: "column",
               alignItems: "center",
               gap: 2,
-              pb: 5,
+              pb: 3,
             }}
           >
             <TextInput
@@ -171,6 +172,9 @@ export default function UserProfile(): JSX.Element {
               helperText={errors.password}
             />
           </Box>
+
+          <PasswordRules />
+
           <SubmitButton label="Valider" disabled={isSubmitting} />
         </form>
       </PageContainer>

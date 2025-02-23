@@ -28,6 +28,34 @@ export function getErrorMessage(errorMessage: string): string {
     case "USER_NEW_PASSWORD_EQUALS_OLD":
       return "Le nouveau mot de passe doit être différent de l'ancien";
 
+    // validation rules
+    case "EMAIL_FIELD_TOO_LONG":
+      return "L'email est trop long";
+    case "LAST_NAME_FIELD_TOO_LONG":
+      return "Le prénom est trop long";
+    case "NAME_FIELD_TOO_LONG":
+      return "Le nom est trop long";
+    case "INVALID_EMAIL_FORMAT":
+      return "Le format de l'email est invalide";
+    case "EMAIL_REQUIRED":
+      return "Email requis";
+    case "PASSWORD_REQUIRED":
+      return "Le mot de passe est requis";
+    case "ACTIVATION_CODE_REQUIRED":
+      return "Le code d'activation est requis";
+    case "PASSWORD_BETWEEN_8_AND_20":
+      return "Le mot de passe doit contenir entre 8 et 20 caractères";
+    case "PASSWORD_ONE_UPPERCASE":
+      return "Le mot de passe doit contenir au moins une majuscule";
+    case "PASSWORD_ONE_LOWERCASE":
+      return "Le mot de passe doit contenir au moins une minuscule";
+    case "PASSWORD_ONE_NUMBER":
+      return "Le mot de passe doit contenir au moins un chiffre";
+    case "PASSWORD_ONE_SPECIAL_CHAR":
+      return "Le mot de passe doit contenir au moins un charactère spécial";
+    case "SOME_ERROR":
+      return "Une erreur s'est produite";
+
     // Token Errors
     case "REFRESH_TOKEN_EXPIRED":
       return "Votre session a expiré. Veuillez vous reconnecter.";
