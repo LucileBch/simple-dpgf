@@ -26,6 +26,7 @@ public class User extends BaseEntity implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
+    
     private String password;
     private boolean isAccountActivated;
     private ObjectId organizationId;

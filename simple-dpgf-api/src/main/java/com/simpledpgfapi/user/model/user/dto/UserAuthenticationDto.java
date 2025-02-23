@@ -1,14 +1,13 @@
 package com.simpledpgfapi.user.model.user.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import com.simpledpgfapi.global.exceptions.CodeErrorConstant;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class UserAuthenticationDto {
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotNull(message = CodeErrorConstant.EMAIL_REQUIRED)
     private String email;
-    @NotBlank(message = "Password is required")
+    @NotNull(message = CodeErrorConstant.PASSWORD_REQUIRED)
     private String password;
 }
