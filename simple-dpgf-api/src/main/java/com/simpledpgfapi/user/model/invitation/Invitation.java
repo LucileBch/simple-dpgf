@@ -12,6 +12,9 @@ import org.springframework.data.annotation.Id;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Invitation extends BaseEntity {
+    public static final String INVIT_TOKEN = "invitationToken";
+    public static final String ORGANIZATION_ID = "organizationId";
+    public static final String EMAIL_RECEIVER = "emailReceiver";
 
     @Id
     private ObjectId id;

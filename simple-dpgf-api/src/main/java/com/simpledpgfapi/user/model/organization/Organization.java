@@ -13,9 +13,12 @@ import org.springframework.data.annotation.Id;
 @ToString(callSuper = true)
 @Builder
 public class Organization extends BaseEntity {
-    public static final String ID = "_id";
+    public static final String ORGANIZATION_ID = "_id";
     public static final String USER_LICENSE_COUNTER = "memberLicenseCounter";
     public static final String PROJECT_LICENSE_COUNTER = "projectLicenseCounter";
+    public static final String NAME = "name";
+    public static final String ORGANIZATION_STATUS = "organizationStatus";
+    public static final String ORGANIZATION_TYPE = "organizationType";
 
     @Id
     private ObjectId id;

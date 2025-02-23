@@ -14,6 +14,7 @@ import org.springframework.data.annotation.Id;
 public class Dpgf extends BaseEntity {
     public static final String USER_ID = "userId";
     public static final String ORGANIZATION_ID = "organizationId";
+    public static final String DPGF_STATUS = "dpgfStatus";
 
     @Id
     private ObjectId id;

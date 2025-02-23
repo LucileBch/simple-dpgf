@@ -3,7 +3,6 @@ package com.simpledpgfapi.configuration.database;
 import com.simpledpgfapi.admin.service.AdminUserService;
 import com.simpledpgfapi.user.model.organization.Organization;
 import com.simpledpgfapi.user.model.organization.OrganizationTypeEnum;
-import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.service.OrganizationService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,8 @@ public class MongoInitializer {
     private AdminUserService adminService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private MongoConfiguration mongoConfiguration;
 
     @Value("${mongo.admin.firstname}")
     private String adminFirstName;
@@ -43,7 +44,7 @@ public class MongoInitializer {
             String adminUserEmail = adminEmail;
             String adminUserPassword = adminPassword;
 
-            User adminUser = adminService.createAdminUser(
+           adminService.createAdminUser(
                     adminUserFirstName,
                     adminUserLastName,
                     adminUserEmail,
@@ -51,5 +52,10 @@ public class MongoInitializer {
                     adminOrganization.getId()
             );
         }
+    }
+
+    @PostConstruct
+    private void initDataBaseIndex() {
+        mongoConfiguration.initIndex();
     }
 }

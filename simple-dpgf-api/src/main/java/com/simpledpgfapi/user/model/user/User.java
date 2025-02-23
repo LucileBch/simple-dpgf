@@ -19,6 +19,7 @@ import java.util.Collection;
 @Builder
 public class User extends BaseEntity implements UserDetails {
     public static final String ORGANIZATION_ID="organizationId";
+    public static final String EMAIL="email";
 
     @Id
     private ObjectId id;
