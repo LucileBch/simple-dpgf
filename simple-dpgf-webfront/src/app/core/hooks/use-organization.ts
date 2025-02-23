@@ -2,7 +2,7 @@ import { OrganizationDto } from "../dtos/organization/OrganizationDto";
 import { useHttp } from "./use-http";
 import { apiEndpoints } from "../appConstants";
 import { UserDto } from "../dtos/user/UserDto";
-import { OrganizationLicenseUpdateDto } from "../dtos/OrganizationLicenseUpdateDto";
+import { OrganizationLicenseUpdateDto } from "../dtos/organization/OrganizationLicenseUpdateDto";
 import { useMemo } from "react";
 import { resolveUrl } from "../services/http-service";
 import { InvitationDto } from "../dtos/invitation/InvitationDto";

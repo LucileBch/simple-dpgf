@@ -10,10 +10,10 @@ import java.time.Instant;
 
 @Data
 public abstract class BaseEntity {
-    public static final String CREATED_DATE="createdDate";
-    public static final String LAST_MODIFIED_DATE="lastModifiedDate";
-    public static final String CREATED_BY_USER="createdByUser";
-    public static final String MODIFIED_BY_USER="modifiedByUser";
+    public static final String CREATED_DATE = "createdDate";
+    public static final String LAST_MODIFIED_DATE = "lastModifiedDate";
+    public static final String CREATED_BY_USER = "createdByUser";
+    public static final String MODIFIED_BY_USER = "modifiedByUser";
 
     @CreatedDate
     private Instant createdDate;

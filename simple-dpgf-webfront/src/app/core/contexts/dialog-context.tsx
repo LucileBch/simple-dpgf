@@ -15,9 +15,13 @@ export const DialogContext = React.createContext<DialogStore>(
 export function DialogContextProvider({
   children,
 }: React.PropsWithChildren): React.JSX.Element {
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState<boolean>(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState<boolean>(false);
-  // ?????
+  const [isCreateDialogProductOpen, setIsCreateDialogProductOpen] =
+    useState<boolean>(false);
+  const [isDeleteDialogProductOpen, setIsDeleteDialogProductOpen] =
+    useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -27,29 +31,44 @@ export function DialogContextProvider({
   }, []);
 
   const handleCancelAndClose = useCallback(() => {
+    setIsCreateDialogOpen(false);
     setIsUpdateDialogOpen(false);
     setIsDeleteDialogOpen(false);
+    setIsCreateDialogProductOpen(false);
+    setIsDeleteDialogProductOpen(false);
   }, []);
 
   const dialogStore: DialogStore = useMemo(
     () => ({
+      isCreateDialogOpen,
       isUpdateDialogOpen,
       isDeleteDialogOpen,
       isSubmitting,
+      isCreateDialogProductOpen,
+      isDeleteDialogProductOpen,
+      setIsDeleteDialogProductOpen,
+      setIsCreateDialogProductOpen,
       setIsSubmitting,
       setIsDeleteDialogOpen,
       setIsUpdateDialogOpen,
+      setIsCreateDialogOpen,
       setAlertMessage,
       setOpenAlert,
       handleCancelAndClose,
     }),
     [
+      isCreateDialogOpen,
       isUpdateDialogOpen,
       isDeleteDialogOpen,
       isSubmitting,
+      isCreateDialogProductOpen,
+      isDeleteDialogProductOpen,
+      setIsDeleteDialogProductOpen,
+      setIsCreateDialogProductOpen,
       setIsSubmitting,
       setIsDeleteDialogOpen,
       setIsUpdateDialogOpen,
+      setIsCreateDialogOpen,
       setAlertMessage,
       setOpenAlert,
       handleCancelAndClose,
@@ -62,7 +81,7 @@ export function DialogContextProvider({
       <AlertSnack
         open={openAlert}
         onClose={handleCloseAlert}
-        severity={alertMessage?.startsWith("Une erreur") ? "error" : "success"}
+        severity={alertMessage?.startsWith("Erreur") ? "error" : "success"}
         message={alertMessage}
       />
     </DialogContext.Provider>
@@ -70,12 +89,18 @@ export function DialogContextProvider({
 }
 
 export type DialogStore = {
+  isCreateDialogOpen: boolean;
   isUpdateDialogOpen: boolean;
   isDeleteDialogOpen: boolean;
   isSubmitting: boolean;
+  isCreateDialogProductOpen: boolean;
+  isDeleteDialogProductOpen: boolean;
+  setIsDeleteDialogProductOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreateDialogProductOpen: Dispatch<SetStateAction<boolean>>;
   setIsSubmitting: Dispatch<SetStateAction<boolean>>;
   setIsDeleteDialogOpen: Dispatch<SetStateAction<boolean>>;
   setIsUpdateDialogOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCreateDialogOpen: Dispatch<SetStateAction<boolean>>;
   setAlertMessage: Dispatch<SetStateAction<string | null>>;
   setOpenAlert: Dispatch<SetStateAction<boolean>>;
   handleCancelAndClose(): void;

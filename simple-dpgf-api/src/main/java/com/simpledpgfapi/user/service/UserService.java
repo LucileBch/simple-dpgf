@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class UserService {
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
     }
 
+    @Transactional
     public UserTokenUpdateDto updateUserInfoById(ObjectId userId, UserProfileUpdateDto userProfileUpdateDto) {
         User currentUser = userRepository.findById(userId).orElseThrow(() -> new HttpException(
                 HttpStatus.BAD_REQUEST,

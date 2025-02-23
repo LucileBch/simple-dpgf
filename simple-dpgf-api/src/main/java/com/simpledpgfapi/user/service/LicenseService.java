@@ -14,10 +14,6 @@ public class LicenseService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
-    public boolean checkRemainingUserLicenseCounter(Organization organization) {
-        return organization.getMemberLicenseCounter() < organization.getMaxMemberLicenseCounter();
-    }
-
     public void incrementUserLicenseCounter(User user) {
         Organization currentOrganization = organizationRepository.findById(user.getOrganizationId())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
@@ -37,16 +33,12 @@ public class LicenseService {
         organizationRepository.decrementUserLicenseCounter(currentOrganization.getId());
     }
 
-    public boolean checkRemainingProjectLicenseCounter(Organization organization) {
-        return organization.getProjectLicenseCounter() < organization.getMaxProjectLicenseCounter();
-    }
-
     public void incrementProjectLicenseCounter(User user) {
         Organization currentOrganization = organizationRepository.findById(user.getOrganizationId())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
 
-        boolean isRemainingUserLicense = checkRemainingProjectLicenseCounter(currentOrganization);
-        if(isRemainingUserLicense) {
+        boolean isRemainingProjectLicense = checkRemainingProjectLicenseCounter(currentOrganization);
+        if(isRemainingProjectLicense) {
             organizationRepository.incrementProjectLicenseCounter(currentOrganization.getId());
         } else {
             throw new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.NO_MORE_PROJECT_LICENSE);
@@ -57,6 +49,15 @@ public class LicenseService {
         Organization currentOrganization = organizationRepository.findById(user.getOrganizationId())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, OrganizationErrorCodes.ORGANIZATION_NOT_FOUND));
 
-        organizationRepository.decrementUserLicenseCounter(currentOrganization.getId());
+        organizationRepository.decrementProjectLicenseCounter(currentOrganization.getId());
+    }
+
+    // utils
+    private boolean checkRemainingUserLicenseCounter(Organization organization) {
+        return organization.getMemberLicenseCounter() < organization.getMaxMemberLicenseCounter();
+    }
+
+    private boolean checkRemainingProjectLicenseCounter(Organization organization) {
+        return organization.getProjectLicenseCounter() < organization.getMaxProjectLicenseCounter();
     }
 }

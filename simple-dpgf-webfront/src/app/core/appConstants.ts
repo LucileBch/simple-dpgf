@@ -26,7 +26,7 @@ export const pagesUrl = {
   // moa project owner url
   MOA_PROJECT_OWNER: "/moa",
   MOA_PROJECTS_PAGE: "/moa/projects",
-  PROJECT: "/moa/projet/:projectId",
+  MOA_PROJECT: "/moa/projet/:dpgfId",
 
   // error url
   ERROR_404: "*",
@@ -66,6 +66,19 @@ export const apiEndpoints = {
   DELETE_ORGANIZATION_INVITATION: "/invitation/:invitationId",
   DELETE_ORGANIZATION_MEMBER:
     "/organization/:organizationId/invitation/:invitationId",
+  GET_ALL_DPGF_BY_ORGANIZATION_ID: "/dpgf/:organizationId/list",
 
   // moa project owner
+  CREATE_DPGF: "/dpgf",
+  GET_ALL_DPGF: "/dpgf/list",
+  GET_DPGF_BY_ID: "/dpgf/:dpgfId",
+  UPDATE_DPGF_STATUS: "/dpgf/:dpgfId",
+  DELETE_DPGF_BY_ID: "/dpgf/:dpgfId",
+  CREATE_LOT: "/dpgf/:dpgfId/lot",
+  DELETE_LOT: "/dpgf/:dpgfId/lot/:lotId",
+  GET_ALL_LOT: "/dpgf/:dpgfId/lot-list",
+  CREATE_PRODUCT: "/dpgf/:dpgfId/lot/:lotId/product",
+  GET_ALL_PRODUCT: "/dpgf/:dpgfId/product-list",
+  PUT_PRODUCT_BY_ID: "/dpgf/:dpgfId/product/:productId",
+  DELETE_PRODUCT_BY_ID: "/dpgf/:dpgfId/product/:productId",
 };

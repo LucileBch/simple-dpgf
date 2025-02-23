@@ -51,6 +51,24 @@ export function getErrorMessage(errorMessage: string): string {
       return "Vous avez atteint le nombre maximum de collaborateurs";
     case "NO_MORE_PROJECT_LICENSE":
       return "Vous avez atteint le nombre maximum de projets";
+    case "USER_NOT_IN_ORGANIZATION":
+      return "Vous ne faites pas partie de l'organisation";
+
+    // Dpgf Errors
+    case "DPGF_NOT_FOUND":
+      return "Le Dpgf n'existe pas";
+    case "DPGF_ALREADY_DELETED":
+      return "Le Dpgf a déjà été supprimé";
+    case "DPGF_SHOULD_BE_ARCHIVED":
+      return "Le Dpgf doit être archivé avant de pouvoir être supprimé";
+    case "DPGF_ARCHIVED":
+      return "Le Dpgf est archivé";
+    case "LOT_ALREADY_EXISTS":
+      return "Ce lot existe déjà dans votre DPGF";
+    case "PRODUCT_NOT_FOUND":
+      return "Ce poste n'existe pas dans votre DPGF";
+    case "DPGF_TOTAL_NEGATIV":
+      return "Le total ne peut être négatif";
 
     default:
       return "Une erreur est survenue";

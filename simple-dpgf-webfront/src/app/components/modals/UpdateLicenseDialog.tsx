@@ -7,7 +7,7 @@ import {
 import OutlinedButton from "../buttons/OutlinedButton";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
-import { OrganizationLicenseUpdateDto } from "../../core/dtos/OrganizationLicenseUpdateDto";
+import { OrganizationLicenseUpdateDto } from "../../core/dtos/organization/OrganizationLicenseUpdateDto";
 import { useOrganization } from "../../core/hooks/use-organization";
 import { OrganizationDto } from "../../core/dtos/organization/OrganizationDto";
 import { NumberInput } from "../inputs/NumberInput";

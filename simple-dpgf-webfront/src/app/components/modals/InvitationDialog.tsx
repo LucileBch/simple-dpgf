@@ -79,16 +79,17 @@ export default function InvitationDialog({
       setIsSubmitting(false);
     }
   }, [
-    cancelInvitation,
-    deleteTeamMember,
-    invitationId,
     isSubmitting,
-    navigate,
+    setIsSubmitting,
+    setAlertMessage,
+    setOpenAlert,
     dialogOption,
     organizationId,
-    setAlertMessage,
-    setIsSubmitting,
-    setOpenAlert,
+    invitationId,
+    deleteTeamMember,
+    setOrganization,
+    cancelInvitation,
+    navigate,
   ]);
 
   return (

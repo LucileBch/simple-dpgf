@@ -6,7 +6,6 @@ import Logo from "../../assets/images/logo.webp";
 import { useCallback, useContext, useState } from "react";
 import { TokenContext } from "../core/contexts/token-context";
 import { UserContext } from "../core/contexts/user-context";
-import { getUserFromLocalStorage } from "../core/services/authentication-service";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -22,8 +21,6 @@ export default function Header() {
     setIsLoading(false);
     navigate(pagesUrl.HOME_PAGE);
   }, [logoutUser, navigate]);
-
-  console.log("getlocalstorage", getUserFromLocalStorage());
 
   return (
     <Container
@@ -43,7 +40,7 @@ export default function Header() {
           gap: 2,
         }}
       >
-        <Link to="/">
+        <Link to={isAuthenticated ? pagesUrl.DASHBOARD_PAGE : "/"}>
           {/* TODO: resize image */}
           <img style={{ width: 40 }} src={Logo} alt="Logo de Simple DPGF" />
         </Link>

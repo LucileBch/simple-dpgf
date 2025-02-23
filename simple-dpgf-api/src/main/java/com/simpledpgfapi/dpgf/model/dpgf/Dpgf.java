@@ -23,7 +23,7 @@ public class Dpgf extends BaseEntity {
     private ObjectId organizationId;
     @NotNull
     private ObjectId userId;
-    private int lotQuantity = 0;
-    private DpgfVersionEnum dpgfVersion = DpgfVersionEnum.INITIATED;
+    private DpgfStatusEnum dpgfStatus = DpgfStatusEnum.IN_PROGRESS;
+    private double dpgfTotal = 0;
 
 }

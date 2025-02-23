@@ -41,9 +41,11 @@ export const theme = createTheme({
     },
     error: {
       main: "#A30015",
+      contrastText: "rgba(163, 0, 21, 0.4)",
     },
     success: {
       main: "#104911",
+      contrastText: "rgba(16, 73, 17, 0.5)",
     },
     background: {
       default: "#ffffff",
@@ -98,6 +100,17 @@ export const theme = createTheme({
           "&:hover": {
             backgroundColor: "#44a1a0", // Couleur de fond au hover
           },
+        },
+      },
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: "rgba(13, 92, 99, 0.8) ",
+          fontWeight: "bold",
+        },
+        arrow: {
+          color: "rgba(13, 92, 99, 0.8)",
         },
       },
     },
