@@ -13,6 +13,8 @@ import java.time.Instant;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class RefreshToken extends BaseEntity {
+    public static final String USER_ID = "userId";
+
     @Id
     private ObjectId id;
     private String token;

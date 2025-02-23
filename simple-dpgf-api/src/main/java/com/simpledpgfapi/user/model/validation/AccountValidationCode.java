@@ -13,6 +13,8 @@ import java.time.Instant;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class AccountValidationCode extends BaseEntity {
+    public static final String CODE = "activationCode";
+
     @Id
     private ObjectId id;
     private String activationCode;

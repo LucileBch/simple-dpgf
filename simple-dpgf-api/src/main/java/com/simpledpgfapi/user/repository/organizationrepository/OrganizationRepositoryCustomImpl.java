@@ -15,7 +15,7 @@ public class OrganizationRepositoryCustomImpl implements OrganizationRepositoryC
 
     @Override
     public void incrementUserLicenseCounter(ObjectId organizationId) {
-        Query query = new Query().addCriteria(Criteria.where(Organization.ID).is(organizationId));
+        Query query = new Query().addCriteria(Criteria.where(Organization.ORGANIZATION_ID).is(organizationId));
 
         Update update = new Update().inc(Organization.USER_LICENSE_COUNTER, 1);
 
@@ -25,7 +25,7 @@ public class OrganizationRepositoryCustomImpl implements OrganizationRepositoryC
     @Override
     public void decrementUserLicenseCounter(ObjectId organizationId) {
         Query query = new Query();
-        query.addCriteria(Criteria.where(Organization.ID).is(organizationId));
+        query.addCriteria(Criteria.where(Organization.ORGANIZATION_ID).is(organizationId));
         query.addCriteria(Criteria.where(Organization.USER_LICENSE_COUNTER).gt(0));
 
         Update update = new Update().inc(Organization.USER_LICENSE_COUNTER, -1);
@@ -35,7 +35,7 @@ public class OrganizationRepositoryCustomImpl implements OrganizationRepositoryC
 
     @Override
     public void incrementProjectLicenseCounter(ObjectId organizationId) {
-        Query query = new Query().addCriteria(Criteria.where(Organization.ID).is(organizationId));
+        Query query = new Query().addCriteria(Criteria.where(Organization.ORGANIZATION_ID).is(organizationId));
 
         Update update = new Update().inc(Organization.PROJECT_LICENSE_COUNTER, 1);
 
@@ -45,7 +45,7 @@ public class OrganizationRepositoryCustomImpl implements OrganizationRepositoryC
     @Override
     public void decrementProjectLicenseCounter(ObjectId organizationId) {
         Query query = new Query();
-        query.addCriteria(Criteria.where(Organization.ID).is(organizationId));
+        query.addCriteria(Criteria.where(Organization.ORGANIZATION_ID).is(organizationId));
         query.addCriteria(Criteria.where(Organization.PROJECT_LICENSE_COUNTER).gt(0));
 
         Update update = new Update().inc(Organization.PROJECT_LICENSE_COUNTER, -1);

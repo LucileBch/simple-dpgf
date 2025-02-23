@@ -14,6 +14,10 @@ import org.springframework.data.annotation.Id;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Product extends BaseEntity {
+    public static final String DPGF_ID = "dpgfId";
+    public static final String LOT_ID = "lotId";
+    public static final String LOT_CODE = "lotCode";
+    public static final String DPGF_STATUS = "dpgfStatus";
 
     @Id
     private ObjectId id;
