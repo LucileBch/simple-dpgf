@@ -18,10 +18,10 @@ public class UserProfileUpdateDto {
     private String email;
     @NotNull(message = CodeErrorConstant.PASSWORD_REQUIRED)
     private String oldPassword;
-    @Size(min = 8, max = 20, message = "Le mot de passe doit contenir entre 8 et 20 caractères")
-    @Pattern(regexp = ".*[A-Z].*", message = "Le mot de passe doit contenir au moins une majuscule")
-    @Pattern(regexp = ".*[a-z].*", message = "Le mot de passe doit contenir au moins une minuscule")
-    @Pattern(regexp = ".*[0-9].*", message = "Le mot de passe doit contenir au moins un chiffre")
-    @Pattern(regexp = ".*[@$!%*?&].*", message = "Le mot de passe doit contenir au moins un caractère spécial")
+    @Size(min = 8, max = 20, message = CodeErrorConstant.PASSWORD_BETWEEN_8_AND_20)
+    @Pattern(regexp = ".*[A-Z].*", message = CodeErrorConstant.PASSWORD_ONE_UPPERCASE)
+    @Pattern(regexp = ".*[a-z].*", message = CodeErrorConstant.PASSWORD_ONE_LOWERCASE)
+    @Pattern(regexp = ".*[0-9].*", message = CodeErrorConstant.PASSWORD_ONE_NUMBER)
+    @Pattern(regexp = ".*[@$!%*?&].*", message = CodeErrorConstant.PASSWORD_ONE_SPECIAL_CHAR)
     private String newPassword;
 }
