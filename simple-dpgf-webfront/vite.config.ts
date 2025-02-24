@@ -7,6 +7,9 @@ export default defineConfig({
   base: "/simple-dpgf-webfront/",
   build: {
     outDir: "dist",
+    rollupOptions: {
+      input: "./index.html", // Indiquer le fichier d'entrée
+    },
   },
 
   // server: {
