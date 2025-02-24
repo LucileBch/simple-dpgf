@@ -4,7 +4,6 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "generate-client": "openapi-generator-cli generate -i http://localhost:8080/v3/api-docs -g typescript-axios -o ./generated-api",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
