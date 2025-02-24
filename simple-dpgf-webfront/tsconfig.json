@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2022", // Utilise ES6 comme cible de compilation
-    "module": "esnext", // Utilisation de modules ES pour React
+    "target": "ESNext", // Utilise ES6 comme cible de compilation
+    "module": "ESNext", // Utilisation de modules ES pour React
     "jsx": "react-jsx", // Nécessaire pour React 17+ et JSX transform
     "strict": true, // Active toutes les vérifications strictes
-    "outDir": "./dist", // Répertoire de sortie pour les fichiers compilés
+    "outDir": "./dist",
     "esModuleInterop": true, // Pour faciliter l'importation des modules CommonJS
     "moduleResolution": "node", // Résolution des modules comme en Node.js
     "skipLibCheck": true, // Ignore les vérifications des fichiers de type
     "forceConsistentCasingInFileNames": true // Assure une casse cohérente pour les noms de fichiers
   },
-  "include": ["src/**/*"], // Inclut tous les fichiers TS/JS dans src
+  "include": ["src/**/*", "vite.config.ts"], // Inclut tous les fichiers TS/JS dans src
   "exclude": ["node_modules", "**/*.test.ts"] // Exclut les modules et tests
 }
