@@ -4,7 +4,7 @@
     "module": "esnext", // Utilisation de modules ES pour React
     "jsx": "react-jsx", // Nécessaire pour React 17+ et JSX transform
     "strict": true, // Active toutes les vérifications strictes
-    "outDir": "./dist", // Répertoire de sortie pour les fichiers compilés
+    //"outDir": "./dist", // Répertoire de sortie pour les fichiers compilés
     "esModuleInterop": true, // Pour faciliter l'importation des modules CommonJS
     "moduleResolution": "node", // Résolution des modules comme en Node.js
     "skipLibCheck": true, // Ignore les vérifications des fichiers de type

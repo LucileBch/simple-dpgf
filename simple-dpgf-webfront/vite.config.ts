@@ -4,13 +4,13 @@ import react from "@vitejs/plugin-react";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/",
+  //base: "/",
   build: {
     outDir: "dist",
     rollupOptions: {
       output: {
-        chunkFileNames: "assets/[name]-[hash].js",
-        entryFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/js/[name]-[hash].js",
+        chunkFileNames: "assets/js/[name]-[hash].js",
       },
     },
   },
