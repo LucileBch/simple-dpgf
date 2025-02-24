@@ -5,7 +5,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import { LotEnum, lotNameToLabel } from "../../core/enums/LotEnum";
 
 interface IProps {
@@ -16,7 +16,7 @@ interface IProps {
 export default function LotSelectInput({
   selectedLot,
   setSelectedLot,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const handleChange = useCallback(
     async (event: SelectChangeEvent<string>) => {
       const newSelectedLot =

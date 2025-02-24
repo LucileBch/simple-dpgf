@@ -2,8 +2,9 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import XIcon from "@mui/icons-material/X";
 import { Box, Container, Grid2, Link, Typography } from "@mui/material";
 import { theme } from "../styles/theme";
+import React from "react";
 
-export default function Footer(): JSX.Element {
+export default function Footer(): React.JSX.Element {
   return (
     <Container
       maxWidth="xl"

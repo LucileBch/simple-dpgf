@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import NavigationButton from "../../../components/buttons/NavigationButton";
 import DpgfCreationDialog from "../../../components/modals/DpgfCreationDialog";
 import NavBar from "../../../components/navbar/NavBar";
@@ -18,7 +18,7 @@ import PageContainerSpace from "../../../components/containers/PageContaineSpace
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import { dpgfStatusToLabel } from "../../../core/enums/DpgfStatusEnum";
 
-export default function MoaProjects(): JSX.Element {
+export default function MoaProjects(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { setIsCreateDialogOpen } = useContext(DialogContext);

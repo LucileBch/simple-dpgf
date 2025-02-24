@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import OutlinedButton from "../buttons/OutlinedButton";
 import SubmitButton from "../buttons/SubmitButton";
@@ -21,7 +21,7 @@ interface IProps {
 
 export default function LotCreationDialog({
   dialogTitle,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { dpgfId } = useParams();
 
   const {

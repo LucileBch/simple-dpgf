@@ -1,5 +1,6 @@
 import { Box, CircularProgress, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 interface IProps {
@@ -16,7 +17,7 @@ export default function NavigationButton({
   disabled = false,
   loading,
   onClick,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const theme = useTheme();
   const location = useLocation();
   const isActive = location.pathname === path;

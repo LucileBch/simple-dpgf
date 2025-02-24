@@ -2,12 +2,15 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, Typography } from "@mui/material";
 import { theme } from "../../styles/theme";
 import NoProjectImage from "../../../assets/images/no-project-image.webp";
+import React from "react";
 
 interface IProps {
   title: string;
 }
 
-export default function NoOutcome({ title }: Readonly<IProps>): JSX.Element {
+export default function NoOutcome({
+  title,
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <>
       <Box

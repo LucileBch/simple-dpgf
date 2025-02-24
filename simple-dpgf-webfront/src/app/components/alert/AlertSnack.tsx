@@ -5,6 +5,7 @@ import {
   Snackbar,
 } from "@mui/material";
 import { OverridableStringUnion } from "@mui/types";
+import React from "react";
 
 interface IProps {
   anchorOrigin?: {
@@ -25,7 +26,7 @@ export default function AlertSnack({
   onClose,
   severity,
   message: errorMessage,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Snackbar
       anchorOrigin={anchorOrigin}

@@ -1,12 +1,14 @@
 import { Typography } from "@mui/material";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { theme } from "../../styles/theme";
 
 interface IProps {
   children: ReactNode;
 }
 
-export default function TitleH2({ children }: Readonly<IProps>): JSX.Element {
+export default function TitleH2({
+  children,
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Typography
       variant="h2"

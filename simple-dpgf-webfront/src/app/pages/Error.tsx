@@ -3,8 +3,9 @@ import { Box, Typography } from "@mui/material";
 import BackgroundImage from "../components/cards/BackgroundImage";
 import { theme } from "../styles/theme";
 import PageContainerSpace from "../components/containers/PageContaineSpace";
+import React from "react";
 
-export default function Error(): JSX.Element {
+export default function Error(): React.JSX.Element {
   return (
     <PageContainerSpace>
       <BackgroundImage />

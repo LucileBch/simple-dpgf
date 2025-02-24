@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import OutlinedButton from "../buttons/OutlinedButton";
 import { DialogContext } from "../../core/contexts/dialog-context";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { pagesUrl } from "../../core/appConstants";
 import { TextInput } from "../inputs/TextInput";
@@ -24,7 +24,7 @@ interface IProps {
 
 export default function DpgfCreationDialog({
   dialogTitle,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const navigate = useNavigate();
 
   const { createNewDpgf, setDpgf, setDpgfByUserList } = useContext(DpgfContext);

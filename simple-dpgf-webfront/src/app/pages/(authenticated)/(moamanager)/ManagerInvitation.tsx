@@ -9,11 +9,11 @@ import NavBar from "../../../components/navbar/NavBar";
 import { FormValues, useForm } from "../../../core/hooks/use-form";
 import { useMoaManger } from "../../../core/hooks/use-moaManager";
 import { AlertContext } from "../../../core/contexts/alert-context";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
 import BackgroundImage from "../../../components/cards/BackgroundImage";
 
-export default function ManagerInvitation() {
+export default function ManagerInvitation(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { sendInvitation } = useMoaManger();

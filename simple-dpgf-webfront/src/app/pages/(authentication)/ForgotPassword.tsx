@@ -3,7 +3,7 @@ import SubmitButton from "../../components/buttons/SubmitButton";
 import { TextInput } from "../../components/inputs/TextInput";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { UserPasswordResetDto } from "../../core/dtos/user/UserPasswordResetDto";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
 import { AlertContext } from "../../core/contexts/alert-context";
@@ -11,7 +11,7 @@ import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
-export default function ForgotPassord(): JSX.Element {
+export default function ForgotPassord(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { handleErrorAlert } = useContext(AlertContext);

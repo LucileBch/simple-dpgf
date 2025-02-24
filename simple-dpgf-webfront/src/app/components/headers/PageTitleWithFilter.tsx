@@ -1,5 +1,6 @@
 import { Box, TextField } from "@mui/material";
 import TitleH2 from "../typographies/TitleH2";
+import React from "react";
 
 interface IProps {
   title: string;
@@ -13,7 +14,7 @@ export default function PageTitleWithFilter({
   inputLabel,
   searchValue,
   onChange,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
       <TitleH2>{title}</TitleH2>

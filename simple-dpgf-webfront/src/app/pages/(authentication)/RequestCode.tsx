@@ -3,14 +3,14 @@ import { TextInput } from "../../components/inputs/TextInput";
 import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { Box, Typography } from "@mui/material";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import PageContainer from "../../components/containers/PageContainer";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 
-export default function RequestCode(): JSX.Element {
+export default function RequestCode(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { handleErrorAlert } = useContext(AlertContext);

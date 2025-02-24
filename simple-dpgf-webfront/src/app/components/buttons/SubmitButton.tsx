@@ -1,5 +1,6 @@
 import { Box, CircularProgress } from "@mui/material";
 import Button, { ButtonProps } from "@mui/material/Button";
+import React from "react";
 
 interface ISubmitButtonProps extends ButtonProps {
   label: string;
@@ -11,7 +12,7 @@ export default function SubmitButton({
   label,
   disabled = false,
   ...rest
-}: Readonly<ISubmitButtonProps>): JSX.Element {
+}: Readonly<ISubmitButtonProps>): React.JSX.Element {
   return (
     <Box
       sx={{

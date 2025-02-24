@@ -1,5 +1,5 @@
 import { pagesUrl } from "../../../core/appConstants";
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Box, Grid2, Typography } from "@mui/material";
 import PageContainer from "../../../components/containers/PageContainer";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
@@ -13,7 +13,7 @@ import CustomPagination from "../../../components/pagination/CustomPagination";
 import { invitationStatusToLabel } from "../../../core/enums/InvitationStatusEnum";
 import PageTitleWithFilter from "../../../components/headers/PageTitleWithFilter";
 
-export default function ManagerTeam(): JSX.Element {
+export default function ManagerTeam(): React.JSX.Element {
   const { organization, isInvitedMemberListLoading, invitedMemberList } =
     useContext(OrganizationContext);
 

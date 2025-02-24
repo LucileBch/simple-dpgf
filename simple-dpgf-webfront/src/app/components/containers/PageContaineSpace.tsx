@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 interface IProps {
   children: ReactNode;
@@ -7,7 +7,7 @@ interface IProps {
 
 export default function PageContainerSpace({
   children,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Container
       maxWidth="xl"

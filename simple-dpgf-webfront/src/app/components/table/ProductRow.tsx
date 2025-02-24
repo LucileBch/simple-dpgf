@@ -1,7 +1,7 @@
 import { TableCell, TableRow } from "@mui/material";
 import { ProductDto } from "../../core/dtos/product/ProductDto";
 import { unitEnumtoLabel } from "../../core/enums/UnitEnum";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { DpgfContext } from "../../core/contexts/dpgf-context";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import ProductUpdateDialog from "../modals/ProductUpdateDialog";
@@ -14,7 +14,7 @@ interface IProps {
 export default function ProductRow({
   product,
   isManager = false,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { selectedProduct, setSelectedProduct } = useContext(DpgfContext);
   const { setIsUpdateDialogOpen } = useContext(DialogContext);
 

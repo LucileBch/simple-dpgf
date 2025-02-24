@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import MainImage from "../../../assets/images/landing-page-image.png";
+import React from "react";
 
-export default function BackgroundImage(): JSX.Element {
+export default function BackgroundImage(): React.JSX.Element {
   return (
     <Box
       sx={{

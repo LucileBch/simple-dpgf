@@ -1,11 +1,13 @@
 import { Typography, useTheme } from "@mui/material";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 interface IProps {
   children: ReactNode;
 }
 
-export default function TitleH3({ children }: Readonly<IProps>): JSX.Element {
+export default function TitleH3({
+  children,
+}: Readonly<IProps>): React.JSX.Element {
   const theme = useTheme();
   return (
     <Typography

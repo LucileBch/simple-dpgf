@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useContext, useEffect } from "react";
+import React, { ReactNode, useCallback, useContext, useEffect } from "react";
 import { TokenContext } from "../../core/contexts/token-context";
 import { pagesUrl } from "../../core/appConstants";
 import { Navigate } from "react-router-dom";
@@ -10,7 +10,7 @@ interface IProps {
 
 export default function RequireAuth({
   children,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { isAuthenticated } = useContext(TokenContext);
   const { organization, setOrganization } = useContext(OrganizationContext);
 

@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import OutlinedButton from "../buttons/OutlinedButton";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import { OrganizationContext } from "../../core/contexts/organization-context";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +24,7 @@ export default function InvitationDialog({
   dialogContent,
   dialogOption,
   invitationId,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const navigate = useNavigate();
   const { organizationId } = useParams();
 

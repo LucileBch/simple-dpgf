@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Chip, Grid2, Typography } from "@mui/material";
 import TitleH2 from "../typographies/TitleH2";
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 import { theme } from "../../styles/theme";
 
 interface IProps {
@@ -15,7 +15,7 @@ export default function InformativeCard({
   content,
   icon,
   showChip = false,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Grid2 size={4}>
       <Card

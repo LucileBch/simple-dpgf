@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AdminOrganizationContext } from "../../../core/contexts/admin-organization-context";
 import { Box, Button, Divider, Grid2, Typography } from "@mui/material";
 import PageContainer from "../../../components/containers/PageContainer";
@@ -14,7 +14,7 @@ import DeleteOrgaDialog from "../../../components/modals/DeleteOrgaDialog";
 import UpdateLicenseDialog from "../../../components/modals/UpdateLicenseDialog";
 import { DialogContext } from "../../../core/contexts/dialog-context";
 
-export default function AdminOrganizationId(): JSX.Element {
+export default function AdminOrganizationId(): React.JSX.Element {
   const { organization, isOrganizationLoading } = useContext(
     AdminOrganizationContext
   );

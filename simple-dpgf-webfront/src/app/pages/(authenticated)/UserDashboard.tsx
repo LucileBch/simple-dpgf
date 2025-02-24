@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../../core/contexts/user-context";
 import { RoleEnum } from "../../core/enums/RoleEnum";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ import {
 } from "../../core/services/authentication-service";
 import { TokenContext } from "../../core/contexts/token-context";
 
-export default function UserDashboard(): JSX.Element | null {
+export default function UserDashboard(): React.JSX.Element | null {
   const navigate = useNavigate();
   const location = useLocation();
 

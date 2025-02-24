@@ -6,7 +6,7 @@ import {
   invitationStatusToLabel,
 } from "../../core/enums/InvitationStatusEnum";
 import { theme } from "../../styles/theme";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import InvitationDialog from "../modals/InvitationDialog";
 
@@ -16,7 +16,7 @@ interface IProps {
 
 export default function MemberCard({
   invitedMember,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { isDeleteDialogOpen, setIsDeleteDialogOpen } =
     useContext(DialogContext);
 

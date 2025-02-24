@@ -39,8 +39,9 @@ import Project from "../pages/(authenticated)/(projectowner)/Project";
 import { DpgfContextProvider } from "../core/contexts/dpgf-context";
 import ProjectSummary from "../pages/(authenticated)/(moamanager)/ProjectSummary";
 import Header from "../components/headers/Header";
+import React from "react";
 
-export default function AppRouter(): JSX.Element {
+export default function AppRouter(): React.JSX.Element {
   return (
     <Router>
       <Header />

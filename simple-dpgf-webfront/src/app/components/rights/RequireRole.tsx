@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect } from "react";
+import React, { ReactNode, useContext, useEffect } from "react";
 import { RoleEnum } from "../../core/enums/RoleEnum";
 import { UserContext } from "../../core/contexts/user-context";
 import { AlertContext } from "../../core/contexts/alert-context";
@@ -13,7 +13,7 @@ interface IProps {
 export default function RequireRole({
   children,
   allowedRole: allowedRole,
-}: Readonly<IProps>): JSX.Element | null {
+}: Readonly<IProps>): React.JSX.Element | null {
   const navigate = useNavigate();
 
   const { user } = useContext(UserContext);

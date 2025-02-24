@@ -1,7 +1,7 @@
 import { AdminOrganizationContext } from "../../../core/contexts/admin-organization-context";
 import OrganizationCard from "../../../components/cards/OrganizationCard";
 import { Grid2 } from "@mui/material";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import NavBar from "../../../components/navbar/NavBar";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
 import PageContainerSpace from "../../../components/containers/PageContaineSpace";
@@ -9,7 +9,7 @@ import NoOutcome from "../../../components/NoOutcome";
 import PageTitleWithFilter from "../../../components/headers/PageTitleWithFilter";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 
-export default function AdminOrganizations(): JSX.Element {
+export default function AdminOrganizations(): React.JSX.Element {
   const { organizationList, isOrganizationListLoading } = useContext(
     AdminOrganizationContext
   );

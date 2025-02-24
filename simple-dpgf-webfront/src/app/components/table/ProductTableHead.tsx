@@ -1,6 +1,7 @@
 import { TableCell, TableHead, TableRow } from "@mui/material";
+import React from "react";
 
-export default function ProductTableHead(): JSX.Element {
+export default function ProductTableHead(): React.JSX.Element {
   return (
     <TableHead>
       <TableRow>

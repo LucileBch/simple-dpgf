@@ -2,6 +2,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import { DpgfDto } from "../../core/dtos/dpgf/DpgfDto";
 import TitleH3 from "../typographies/TitleH3";
 import ChipStatus from "../info/ChipStatus";
+import React from "react";
 
 interface IProps {
   dpgf: DpgfDto;
@@ -11,7 +12,7 @@ interface IProps {
 export default function DpgfCard({
   dpgf,
   onClick,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Card
       sx={{

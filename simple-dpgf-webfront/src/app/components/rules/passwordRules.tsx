@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { theme } from "../../styles/theme";
+import React from "react";
 
-export default function PasswordRules(): JSX.Element {
+export default function PasswordRules(): React.JSX.Element {
   return (
     <Box
       sx={{

@@ -9,7 +9,7 @@ import {
   DpgfStatusEnum,
   dpgfStatusToLabel,
 } from "../../core/enums/DpgfStatusEnum";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { DpgfContext } from "../../core/contexts/dpgf-context";
 import { useNavigate, useParams } from "react-router-dom";
 import { AlertContext } from "../../core/contexts/alert-context";
@@ -21,7 +21,7 @@ interface IProps {
 
 export default function StatusSelectInput({
   label,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { dpgfId } = useParams();
 
   const navigate = useNavigate();

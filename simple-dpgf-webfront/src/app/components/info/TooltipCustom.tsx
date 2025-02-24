@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 
 interface IProps {
   children: ReactElement;
@@ -24,7 +24,7 @@ export default function TooltipCustom({
   children,
   title,
   placement = "left",
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <Tooltip arrow title={title} placement={placement}>
       <span>{children}</span>

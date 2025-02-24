@@ -20,7 +20,7 @@ import OutlinedButton from "../buttons/OutlinedButton";
 import SubmitButton from "../buttons/SubmitButton";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import { ProductCreationOrUpdateDto } from "../../core/dtos/product/ProductCreationDto";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { DpgfContext } from "../../core/contexts/dpgf-context";
@@ -35,7 +35,7 @@ interface IProps {
 export default function ProductUpdateDialog({
   dialogTitle,
   product,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { dpgfId } = useParams();
 
   const { isUpdateDialogOpen, setIsUpdateDialogOpen, handleCancelAndClose } =

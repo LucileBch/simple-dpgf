@@ -6,7 +6,12 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { Dispatch, SetStateAction, useCallback, useContext } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+} from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import { DpgfContext } from "../../core/contexts/dpgf-context";
 import { theme } from "../../styles/theme";
@@ -24,7 +29,7 @@ export default function DeleteLotDialog({
   dialogContent,
   selectedLot,
   setSelectedLot,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const {
     isDeleteDialogOpen,
     isSubmitting,

@@ -5,7 +5,7 @@ import { LotDto } from "../../core/dtos/lot/LotDto";
 import { lotNameToLabel } from "../../core/enums/LotEnum";
 import { theme } from "../../styles/theme";
 import TitleH3 from "../typographies/TitleH3";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import ProductCreationDialog from "../modals/ProductCreationDialog";
 import DeleteLotDialog from "../modals/DeleteLotDialog";
@@ -18,7 +18,7 @@ interface IProps {
 export default function LotCard({
   lot,
   isManager = false,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const [selectedLot, setSelectedLot] = useState<LotDto | undefined>(undefined);
 
   const { setIsCreateDialogProductOpen, setIsDeleteDialogOpen } =

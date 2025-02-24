@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/navbar/NavBar";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
@@ -15,7 +15,7 @@ import NoOutcome from "../../../components/NoOutcome";
 import { dpgfStatusToLabel } from "../../../core/enums/DpgfStatusEnum";
 import PageTitleWithFilter from "../../../components/headers/PageTitleWithFilter";
 
-export default function ManagerProjects(): JSX.Element {
+export default function ManagerProjects(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { organization } = useContext(OrganizationContext);

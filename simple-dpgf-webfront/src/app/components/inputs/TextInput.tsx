@@ -1,4 +1,5 @@
 import { TextField } from "@mui/material";
+import React from "react";
 
 interface IProps {
   id?: string;
@@ -28,7 +29,7 @@ export function TextInput({
   autoComplete = "off",
   error,
   helperText,
-}: IProps): JSX.Element {
+}: IProps): React.JSX.Element {
   return (
     <TextField
       id={id}

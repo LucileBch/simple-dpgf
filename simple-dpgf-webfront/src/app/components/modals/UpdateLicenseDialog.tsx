@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import OutlinedButton from "../buttons/OutlinedButton";
-import { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import { OrganizationLicenseUpdateDto } from "../../core/dtos/organization/OrganizationLicenseUpdateDto";
 import { useOrganization } from "../../core/hooks/use-organization";
@@ -23,7 +23,7 @@ export default function UpdateLicenseDialog({
   dialogTitle,
   dialogContent,
   organization,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { updateOrganizationLicense } = useOrganization();
 
   const { setOrganization } = useContext(AdminOrganizationContext);

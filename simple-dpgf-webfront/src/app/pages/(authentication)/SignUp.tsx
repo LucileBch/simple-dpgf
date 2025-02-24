@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { UserCreationDto } from "../../core/dtos/user/UserCreationDto";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { OrganizationTypeEnum } from "../../core/enums/OrganizationTypeEnum";
@@ -12,7 +12,7 @@ import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PasswordRules from "../../components/rules/passwordRules";
 
-export default function SignUp() {
+export default function SignUp(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { handleErrorAlert } = useContext(AlertContext);

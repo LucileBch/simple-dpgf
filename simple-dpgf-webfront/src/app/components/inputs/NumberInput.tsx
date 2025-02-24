@@ -1,4 +1,5 @@
 import { TextField } from "@mui/material";
+import React from "react";
 
 interface IProps {
   id: string;
@@ -32,7 +33,7 @@ export function NumberInput({
   fullWidth = false,
   error,
   helperText,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   return (
     <TextField
       id={id}

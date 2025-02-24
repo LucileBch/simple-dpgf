@@ -3,7 +3,7 @@ import PageContainer from "../../components/containers/PageContainer";
 import { TextInput } from "../../components/inputs/TextInput";
 import NavBar from "../../components/navbar/NavBar";
 import { Box, Typography } from "@mui/material";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import { UserProfileUpdateDto } from "../../core/dtos/user/UserProfileUpdateDto";
 import { UserContext } from "../../core/contexts/user-context";
@@ -19,7 +19,7 @@ import {
 import { TokenContext } from "../../core/contexts/token-context";
 import PasswordRules from "../../components/rules/passwordRules";
 
-export default function UserProfile(): JSX.Element {
+export default function UserProfile(): React.JSX.Element {
   const { user, setUser } = useContext(UserContext);
   const { handleErrorAlert, handleSuccessAlert } = useContext(AlertContext);
   const { setAccessToken, setRefreshToken } = useContext(TokenContext);

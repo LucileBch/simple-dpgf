@@ -2,7 +2,7 @@ import { Box, Container, Grid2 } from "@mui/material";
 
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../../assets/images/logo.webp";
-import { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { TokenContext } from "../../core/contexts/token-context";
 import { UserContext } from "../../core/contexts/user-context";
 import { theme } from "../../styles/theme";
@@ -10,7 +10,7 @@ import TitleH1 from "../typographies/TitleH1";
 import { pagesUrl } from "../../core/appConstants";
 import NavigationButton from "../buttons/NavigationButton";
 
-export default function Header() {
+export default function Header(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { isAuthenticated } = useContext(TokenContext);

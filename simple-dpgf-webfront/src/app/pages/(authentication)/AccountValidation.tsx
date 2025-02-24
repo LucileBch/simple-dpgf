@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { AccountValidationDto } from "../../core/dtos/user/AccountValidationDto";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
-export default function AccountValidation(): JSX.Element {
+export default function AccountValidation(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { alertMessage, handleErrorAlert } = useContext(AlertContext);

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { TextInput } from "../../components/inputs/TextInput";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { UserAuthenticationDto } from "../../core/dtos/user/UserAuthenticationDto";
 import { Link, useNavigate } from "react-router-dom";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
@@ -16,7 +16,7 @@ import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
-export default function SignIn(): JSX.Element {
+export default function SignIn(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { setUser } = useContext(UserContext);

@@ -1,5 +1,5 @@
 import DownloadIcon from "@mui/icons-material/Download";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import NavBar from "../../../components/navbar/NavBar";
 import TitleH2 from "../../../components/typographies/TitleH2";
 import { DpgfContext } from "../../../core/contexts/dpgf-context";
@@ -18,7 +18,7 @@ import { theme } from "../../../styles/theme";
 import { generatePdf } from "../../../core/services/generate-pdf";
 import PageContainerSpace from "../../../components/containers/PageContaineSpace";
 
-export default function Project(): JSX.Element {
+export default function Project(): React.JSX.Element {
   const {
     dpgf,
     lotList,

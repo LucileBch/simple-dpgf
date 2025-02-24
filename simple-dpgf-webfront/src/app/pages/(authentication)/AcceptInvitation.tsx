@@ -3,7 +3,7 @@ import SubmitButton from "../../components/buttons/SubmitButton";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { TextInput } from "../../components/inputs/TextInput";
 import { FormValues, useForm } from "../../core/hooks/use-form";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { UserInvitedDto } from "../../core/dtos/user/UserInvitedDto";
@@ -11,7 +11,7 @@ import { resolveUrl } from "../../core/services/http-service";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
-export default function AcceptInvitation(): JSX.Element {
+export default function AcceptInvitation(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { handleErrorAlert } = useContext(AlertContext);

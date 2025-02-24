@@ -6,7 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { AdminOrganizationContext } from "../../core/contexts/admin-organization-context";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import { useOrganization } from "../../core/hooks/use-organization";
@@ -24,7 +24,7 @@ export default function DeleteOrgaDialog({
   dialogTitle,
   dialogContent,
   organizationId,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const navigate = useNavigate();
 
   const { setOrganizationList } = useContext(AdminOrganizationContext);

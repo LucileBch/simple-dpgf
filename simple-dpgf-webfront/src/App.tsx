@@ -7,8 +7,9 @@ import { theme } from "./app/styles/theme";
 import { TokenContextProvider } from "./app/core/contexts/token-context";
 import { UserContextProvider } from "./app/core/contexts/user-context";
 import { AlertContextProvider } from "./app/core/contexts/alert-context";
+import React from "react";
 
-export default function App(): JSX.Element {
+export default function App(): React.JSX.Element {
   return (
     <>
       <ThemeProvider theme={theme}>

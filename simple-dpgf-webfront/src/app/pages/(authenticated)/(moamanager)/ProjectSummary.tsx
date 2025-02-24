@@ -1,5 +1,5 @@
 import DownloadIcon from "@mui/icons-material/Download";
-import { useCallback, useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { DpgfContext } from "../../../core/contexts/dpgf-context";
 import { generatePdf } from "../../../core/services/generate-pdf";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
@@ -14,7 +14,7 @@ import TitleH3 from "../../../components/typographies/TitleH3";
 import { theme } from "../../../styles/theme";
 import ChipStatus from "../../../components/info/ChipStatus";
 
-export default function ProjectSummary(): JSX.Element {
+export default function ProjectSummary(): React.JSX.Element {
   const {
     dpgf,
     lotList,

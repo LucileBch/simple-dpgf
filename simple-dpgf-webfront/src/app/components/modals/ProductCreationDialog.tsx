@@ -13,7 +13,12 @@ import {
 import OutlinedButton from "../buttons/OutlinedButton";
 import SubmitButton from "../buttons/SubmitButton";
 import { useParams } from "react-router-dom";
-import { Dispatch, SetStateAction, useCallback, useContext } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+} from "react";
 import { DialogContext } from "../../core/contexts/dialog-context";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { TextInput } from "../inputs/TextInput";
@@ -34,7 +39,7 @@ export default function ProductCreationDialog({
   dialogTitle,
   selectedLot,
   setSelectedLot,
-}: Readonly<IProps>): JSX.Element {
+}: Readonly<IProps>): React.JSX.Element {
   const { dpgfId } = useParams();
 
   const {

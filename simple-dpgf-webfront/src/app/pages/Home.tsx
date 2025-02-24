@@ -6,8 +6,9 @@ import PageContainer from "../components/containers/PageContainer";
 import MainImage from "../../assets/images/landing-page-image.png";
 import { theme } from "../styles/theme";
 import InformativeCard from "../components/cards/InformativeCard";
+import React from "react";
 
-export default function Home(): JSX.Element {
+export default function Home(): React.JSX.Element {
   return (
     <PageContainer>
       <Box
