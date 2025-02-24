@@ -6,7 +6,13 @@ export default defineConfig({
   plugins: [react()],
   base: "./",
   build: {
-    target: "esnext",
+    outDir: "dist",
+    rollupOptions: {
+      output: {
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
+      },
+    },
   },
   // server: {
   //   proxy: {
