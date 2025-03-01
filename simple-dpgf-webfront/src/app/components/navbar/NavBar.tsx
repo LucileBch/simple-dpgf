@@ -26,7 +26,7 @@ export default function NavBar(): React.JSX.Element {
 
   const navigateToTeamPage = useCallback(() => {
     if (organization != undefined) {
-      navigate(resolveUrl(pagesUrl.MOA_MANAGER_TEAM_PAGE, [organization.id]));
+      navigate(resolveUrl(pagesUrl.MOE_MANAGER_TEAM_PAGE, [organization.id]));
     } else {
       handleErrorAlert("Vous devez appartenir à une organisation valide");
     }
@@ -71,7 +71,7 @@ export default function NavBar(): React.JSX.Element {
             <Grid2>
               <NavigationButton
                 label="Projets"
-                path={pagesUrl.MOA_MANAGER_PROJECTS_PAGE}
+                path={pagesUrl.MOE_MANAGER_PROJECTS_PAGE}
               />
             </Grid2>
             <Grid2>
@@ -84,7 +84,7 @@ export default function NavBar(): React.JSX.Element {
           <Grid2>
             <NavigationButton
               label="Projets"
-              path={pagesUrl.MOA_PROJECTS_PAGE}
+              path={pagesUrl.MOE_PROJECTS_PAGE}
             />
           </Grid2>
         )}

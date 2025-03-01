@@ -22,7 +22,7 @@ export default function SignUp(): React.JSX.Element {
     lastName: "",
     email: "",
     password: "",
-    organization: { organizationType: OrganizationTypeEnum.MOA, name: "" },
+    organization: { organizationType: OrganizationTypeEnum.MOE, name: "" },
   };
 
   const validate = (formData: FormValues<UserCreationDto>) => {
@@ -132,7 +132,7 @@ export default function SignUp(): React.JSX.Element {
             type="text"
             label="Type d'organisation"
             disabled
-            value={OrganizationTypeEnum.MOA}
+            value={OrganizationTypeEnum.MOE}
             error={!!errors["organization.organizationType"]}
             helperText={errors["organization.organizationType"]}
           />

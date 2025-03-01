@@ -3,11 +3,11 @@ import { apiEndpoints } from "../appConstants";
 import { InvitationCreationDto } from "../dtos/invitation/InvitationCreationDto";
 import { useHttp } from "./use-http";
 
-type MoaManagerHook = {
+type MoeManagerHook = {
   sendInvitation(formData: InvitationCreationDto): Promise<Response>;
 };
 
-export function useMoaManger(): MoaManagerHook {
+export function useMoeManager(): MoeManagerHook {
   const { post } = useHttp();
 
   return useMemo(

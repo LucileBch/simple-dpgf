@@ -7,7 +7,7 @@ import { InvitationCreationDto } from "../../../core/dtos/invitation/InvitationC
 import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/navbar/NavBar";
 import { FormValues, useForm } from "../../../core/hooks/use-form";
-import { useMoaManger } from "../../../core/hooks/use-moaManager";
+import { useMoeManager } from "../../../core/hooks/use-moaManager";
 import { AlertContext } from "../../../core/contexts/alert-context";
 import React, { useContext } from "react";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
@@ -16,7 +16,7 @@ import BackgroundImage from "../../../components/cards/BackgroundImage";
 export default function ManagerInvitation(): React.JSX.Element {
   const navigate = useNavigate();
 
-  const { sendInvitation } = useMoaManger();
+  const { sendInvitation } = useMoeManager();
 
   const { handleSuccessAlert } = useContext(AlertContext);
   const { organization, setOrganization, getInvitedMembers } =
@@ -53,7 +53,7 @@ export default function ManagerInvitation(): React.JSX.Element {
           : prev
       );
       handleSuccessAlert("L'invitation a été envoyée");
-      navigate(pagesUrl.MOA_MANAGER_TEAM_PAGE);
+      navigate(pagesUrl.MOE_MANAGER_TEAM_PAGE);
     }
   };
 

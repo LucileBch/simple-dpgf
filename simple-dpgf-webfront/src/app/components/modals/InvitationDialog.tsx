@@ -72,7 +72,7 @@ export default function InvitationDialog({
       }
 
       setTimeout(() => {
-        navigate(resolveUrl(pagesUrl.MOA_MANAGER_TEAM_PAGE, [organizationId]));
+        navigate(resolveUrl(pagesUrl.MOE_MANAGER_TEAM_PAGE, [organizationId]));
         setIsSubmitting(false);
       }, 2000);
     } finally {

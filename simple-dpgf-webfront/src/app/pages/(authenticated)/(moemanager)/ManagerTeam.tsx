@@ -139,7 +139,7 @@ export default function ManagerTeam(): React.JSX.Element {
       <Box sx={{ marginBottom: 2, marginRight: 2 }}>
         <NavigationButton
           label="Inviter un membre"
-          path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
+          path={pagesUrl.MOE_MANAGER_INVITE_PAGE}
         />
       </Box>
       <CustomPagination

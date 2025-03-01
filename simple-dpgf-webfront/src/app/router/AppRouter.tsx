@@ -17,12 +17,12 @@ import SignUp from "../pages/(authentication)/SignUp";
 
 import Footer from "../components/Footer";
 import AccountValidation from "../pages/(authentication)/AccountValidation";
-import MoaProjects from "../pages/(authenticated)/(projectowner)/MoaProjects";
+import MoeProjects from "../pages/(authenticated)/(projectowner)/MoeProjects";
 import RequestCode from "../pages/(authentication)/RequestCode";
 import Error from "../pages/Error";
 import ForgotPassord from "../pages/(authentication)/ForgotPassword";
-import ManagerTeam from "../pages/(authenticated)/(moamanager)/ManagerTeam";
-import ManagerInvitation from "../pages/(authenticated)/(moamanager)/ManagerInvitation";
+import ManagerTeam from "../pages/(authenticated)/(moemanager)/ManagerTeam";
+import ManagerInvitation from "../pages/(authenticated)/(moemanager)/ManagerInvitation";
 import UserDashboard from "../pages/(authenticated)/UserDashboard";
 import { AdminOrganizationContextProvider } from "../core/contexts/admin-organization-context";
 import AdminOrganizations from "../pages/(authenticated)/(admin)/AdminOrganizations";
@@ -32,12 +32,12 @@ import { DialogContextProvider } from "../core/contexts/dialog-context";
 import RequireAuth from "../components/rights/RequireAuth";
 import RequireRole from "../components/rights/RequireRole";
 import { RoleEnum } from "../core/enums/RoleEnum";
-import ManagerProjects from "../pages/(authenticated)/(moamanager)/ManagerProjects";
+import ManagerProjects from "../pages/(authenticated)/(moemanager)/ManagerProjects";
 import { OrganizationContextProvider } from "../core/contexts/organization-context";
 import AcceptInvitation from "../pages/(authentication)/AcceptInvitation";
 import Project from "../pages/(authenticated)/(projectowner)/Project";
 import { DpgfContextProvider } from "../core/contexts/dpgf-context";
-import ProjectSummary from "../pages/(authenticated)/(moamanager)/ProjectSummary";
+import ProjectSummary from "../pages/(authenticated)/(moemanager)/ProjectSummary";
 import Header from "../components/headers/Header";
 import React from "react";
 
@@ -112,9 +112,9 @@ export default function AppRouter(): React.JSX.Element {
               />
             </Route>
 
-            {/* Role : MOA Manager */}
+            {/* Role : MOE Manager */}
             <Route
-              path={pagesUrl.MOA_MANAGER}
+              path={pagesUrl.MOE_MANAGER}
               element={
                 <RequireAuth>
                   <RequireRole allowedRole={RoleEnum.ORGANIZATION_MANAGER}>
@@ -126,26 +126,26 @@ export default function AppRouter(): React.JSX.Element {
               }
             >
               <Route
-                path={pagesUrl.MOA_MANAGER_PROJECTS_PAGE}
+                path={pagesUrl.MOE_MANAGER_PROJECTS_PAGE}
                 element={<ManagerProjects />}
               />
               <Route
-                path={pagesUrl.MOA_MANAGER_PROJECT_SUMMARY}
+                path={pagesUrl.MOE_MANAGER_PROJECT_SUMMARY}
                 element={<ProjectSummary />}
               />
               <Route
-                path={pagesUrl.MOA_MANAGER_TEAM_PAGE}
+                path={pagesUrl.MOE_MANAGER_TEAM_PAGE}
                 element={<ManagerTeam />}
               />
               <Route
-                path={pagesUrl.MOA_MANAGER_INVITE_PAGE}
+                path={pagesUrl.MOE_MANAGER_INVITE_PAGE}
                 element={<ManagerInvitation />}
               />
             </Route>
 
-            {/* Role : MOA Project Owner */}
+            {/* Role : MOE Project Owner */}
             <Route
-              path={pagesUrl.MOA_PROJECT_OWNER}
+              path={pagesUrl.MOE_PROJECT_OWNER}
               element={
                 <RequireAuth>
                   <RequireRole allowedRole={RoleEnum.PROJECT_OWNER}>
@@ -157,10 +157,10 @@ export default function AppRouter(): React.JSX.Element {
               }
             >
               <Route
-                path={pagesUrl.MOA_PROJECTS_PAGE}
-                element={<MoaProjects />}
+                path={pagesUrl.MOE_PROJECTS_PAGE}
+                element={<MoeProjects />}
               />
-              <Route path={pagesUrl.MOA_PROJECT} element={<Project />} />
+              <Route path={pagesUrl.MOE_PROJECT} element={<Project />} />
             </Route>
 
             {/* 404 */}

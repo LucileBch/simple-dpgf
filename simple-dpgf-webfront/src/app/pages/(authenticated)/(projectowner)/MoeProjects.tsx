@@ -18,7 +18,7 @@ import PageContainerSpace from "../../../components/containers/PageContaineSpace
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import { dpgfStatusToLabel } from "../../../core/enums/DpgfStatusEnum";
 
-export default function MoaProjects(): React.JSX.Element {
+export default function MoeProjects(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { setIsCreateDialogOpen } = useContext(DialogContext);
@@ -57,7 +57,7 @@ export default function MoaProjects(): React.JSX.Element {
 
   const navigateToDpgf = useCallback(
     (dpgf: DpgfDto) => {
-      navigate(resolveUrl(pagesUrl.MOA_PROJECT, [dpgf.id]));
+      navigate(resolveUrl(pagesUrl.MOE_PROJECT, [dpgf.id]));
     },
     [navigate]
   );

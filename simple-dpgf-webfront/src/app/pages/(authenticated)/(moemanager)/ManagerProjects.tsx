@@ -69,7 +69,7 @@ export default function ManagerProjects(): React.JSX.Element {
   const navigateToDpgfSummary = useCallback(
     (dpgf: DpgfDto) => {
       setDpgf(dpgf);
-      navigate(resolveUrl(pagesUrl.MOA_MANAGER_PROJECT_SUMMARY, [dpgf.id]));
+      navigate(resolveUrl(pagesUrl.MOE_MANAGER_PROJECT_SUMMARY, [dpgf.id]));
     },
     [navigate, setDpgf]
   );

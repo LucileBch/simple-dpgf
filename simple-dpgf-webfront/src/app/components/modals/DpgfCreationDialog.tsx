@@ -55,7 +55,7 @@ export default function DpgfCreationDialog({
       handleSuccessAlert("Nouveau DPGF créé");
 
       setTimeout(() => {
-        navigate(resolveUrl(pagesUrl.MOA_PROJECT, [newDpgf.id]));
+        navigate(resolveUrl(pagesUrl.MOE_PROJECT, [newDpgf.id]));
       }, 2000);
     },
     [

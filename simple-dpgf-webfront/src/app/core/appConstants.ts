@@ -17,17 +17,17 @@ export const pagesUrl = {
   ADMIN_ORGANIZATIONS_PAGE: "/admin/organizations",
   ADMIN_ORGANIZATION_PAGE: "/admin/organization/:organizationId",
 
-  // moa manager url
-  MOA_MANAGER: "/moa/manager",
-  MOA_MANAGER_PROJECTS_PAGE: "/moa/manager/projects",
-  MOA_MANAGER_PROJECT_SUMMARY: "/moa/manager/projet/:dpgfId",
-  MOA_MANAGER_TEAM_PAGE: "/moa/manager/:organizationId/team",
-  MOA_MANAGER_INVITE_PAGE: "/moa/manager/invitation",
+  // moe manager url
+  MOE_MANAGER: "/moe/manager",
+  MOE_MANAGER_PROJECTS_PAGE: "/moe/manager/projects",
+  MOE_MANAGER_PROJECT_SUMMARY: "/moe/manager/projet/:dpgfId",
+  MOE_MANAGER_TEAM_PAGE: "/moe/manager/:organizationId/team",
+  MOE_MANAGER_INVITE_PAGE: "/moe/manager/invitation",
 
-  // moa project owner url
-  MOA_PROJECT_OWNER: "/moa",
-  MOA_PROJECTS_PAGE: "/moa/projects",
-  MOA_PROJECT: "/moa/projet/:dpgfId",
+  // moe project owner url
+  MOE_PROJECT_OWNER: "/moe",
+  MOE_PROJECTS_PAGE: "/moe/projects",
+  MOE_PROJECT: "/moe/projet/:dpgfId",
 
   // error url
   ERROR_404: "*",
@@ -60,7 +60,7 @@ export const apiEndpoints = {
   ORGANIZATION_UPDATE_LICENSE: "/organization",
   ORGANIZATION_DELETE_BY_ID: "/organization",
 
-  // moa manager
+  // moe manager
   SEND_PROJECT_OWNER_INVITATION: "/invitation",
   GET_ORGANIZATION_INVITED_MEMBERS:
     "/organization/:organizationId/invitation-list",
@@ -69,7 +69,7 @@ export const apiEndpoints = {
     "/organization/:organizationId/invitation/:invitationId",
   GET_ALL_DPGF_BY_ORGANIZATION_ID: "/dpgf/:organizationId/list",
 
-  // moa project owner
+  // moe project owner
   CREATE_DPGF: "/dpgf",
   GET_ALL_DPGF: "/dpgf/list",
   GET_DPGF_BY_ID: "/dpgf/:dpgfId",

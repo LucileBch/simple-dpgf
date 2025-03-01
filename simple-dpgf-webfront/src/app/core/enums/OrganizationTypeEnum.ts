@@ -1,11 +1,11 @@
 export enum OrganizationTypeEnum {
   ADMIN = "ADMIN",
-  MOA = "MOA",
+  MOE = "MOE",
   ENTREPRISE = "ENTREPRISE",
 }
 
 export const organizationTypeEnumLabels = {
   [OrganizationTypeEnum.ADMIN]: "ADMIN",
-  [OrganizationTypeEnum.MOA]: "MOA",
+  [OrganizationTypeEnum.MOE]: "MOE",
   [OrganizationTypeEnum.ENTREPRISE]: "ENTREPRISE",
 };

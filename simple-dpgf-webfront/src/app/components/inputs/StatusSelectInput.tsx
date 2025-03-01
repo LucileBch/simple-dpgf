@@ -43,7 +43,7 @@ export default function StatusSelectInput({
         await deleteDpgf(dpgfId);
 
         handleSuccessAlert("Dpgf supprimé");
-        navigate(pagesUrl.MOA_PROJECTS_PAGE);
+        navigate(pagesUrl.MOE_PROJECTS_PAGE);
       } else {
         await updateDpgfStatus(dpgfId, newStatus);
 
