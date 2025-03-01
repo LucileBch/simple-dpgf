@@ -25,7 +25,7 @@ public class Product extends BaseEntity {
     private ObjectId dpgfId;
     @NotNull
     private ObjectId lotId;
-    private int lotCode;
+    private Integer lotCode;
     @NotNull
     private String name;
     private DpgfStatusEnum dpgfStatus = DpgfStatusEnum.IN_PROGRESS;

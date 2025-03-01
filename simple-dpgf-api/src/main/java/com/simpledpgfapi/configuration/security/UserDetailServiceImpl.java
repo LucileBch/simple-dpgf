@@ -22,10 +22,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(UserErrorCodes.USER_NOT_FOUND.toString()));
 
-        return User.builder()
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .role(user.getRole())
-                .build();
+        User userDetails = new User();
+            userDetails.setEmail(user.getEmail());
+            userDetails.setPassword(user.getPassword());
+            userDetails.setRole(user.getRole());
+
+            return userDetails;
+//        return User.builder()
+//                .email(user.getEmail())
+//                .password(user.getPassword())
+//                .role(user.getRole())
+//                .build();
     }
 }

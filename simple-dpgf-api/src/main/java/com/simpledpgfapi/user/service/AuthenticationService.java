@@ -129,16 +129,16 @@ public class AuthenticationService {
     }
 
     public ResponseEntity<Map<String, Object>> authenticateUser(UserAuthenticationDto userAuthenticationDto) {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
+        );
+
         User currentUser = userRepository.findByEmail(userAuthenticationDto.getEmail())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
         if(currentUser.getUserStatus() == UserStatusEnum.DELETED) {
             throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_DELETED);
         }
-
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userAuthenticationDto.getEmail(), userAuthenticationDto.getPassword())
-        );
 
         if(authentication.isAuthenticated()) {
             String accessToken = jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());

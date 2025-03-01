@@ -4,8 +4,6 @@ import com.simpledpgfapi.user.model.user.dto.*;
 import com.simpledpgfapi.user.model.validation.dto.AccountValidationCodeDto;
 import com.simpledpgfapi.user.service.AuthenticationService;
 import com.simpledpgfapi.user.service.RefreshTokenService;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +26,6 @@ public class AuthenticationController {
     // SIGNUP
     @PostMapping("/signup")
     @ResponseStatus(value = HttpStatus.CREATED)
-    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "User created"), @ApiResponse(responseCode = "400", description = "[USER_ALREADY_EXISTS]")})
     public UserDto createOrganizationManager(@Valid @RequestBody UserCreationDto userCreationDto) {
         log.info("userCreationDto created");
         return authenticationService.createUser(userCreationDto);
@@ -36,9 +33,6 @@ public class AuthenticationController {
 
     // ACTIVATE ACCOUNT
     @PostMapping("/activate-account")
-    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "Activation code accepted"),
-            @ApiResponse(responseCode = "400", description = "[INVALID_CODE], [CODE_EXPIRED]"),
-            @ApiResponse(responseCode = "404", description = "[USER_NOT_FOUND]")})
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void activateAccount(@RequestBody AccountValidationCodeDto accountValidationCodeDto) {
         authenticationService.activateUserAccount(accountValidationCodeDto);
@@ -54,8 +48,6 @@ public class AuthenticationController {
 
     // SIGNIN
     @PostMapping("/signin")
-    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "User authenticated"),
-        @ApiResponse(responseCode = "400", description = "[USER_ACCOUNT_NOT_ACTIVATED], [USER_NOT_AUTHENTICATED]")})
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public ResponseEntity<Map<String, Object>> authenticateUser(@Valid @RequestBody UserAuthenticationDto userAuthenticationDto) {
         return authenticationService.authenticateUser(userAuthenticationDto);
@@ -64,9 +56,6 @@ public class AuthenticationController {
     // REFRESH TOKEN
     //TODO: renvoyer un TokenDto
     @PostMapping("/refresh-token")
-    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "New access token generated"),
-            @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [USER_NOT_FOUND]"),
-            @ApiResponse(responseCode = "401", description = "REFRESH_TOKEN_EXPIRED")})
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public Map<String, String> refreshToken(HttpServletRequest httpServletRequest){
         return refreshTokenService.generateNewAccessToken(httpServletRequest);
@@ -74,25 +63,18 @@ public class AuthenticationController {
 
     // SIGNOUT
     @PostMapping("/signout")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "User successfully signed out"),
-            @ApiResponse(responseCode = "400", description = "[REFRESH_TOKEN_NOT_FOUND], [REFRESH_TOKEN_NOT_IN_COOKIE]"),
-            @ApiResponse(responseCode = "401", description = "[USER_NOT_AUTHENTICATED]")})
     @ResponseStatus(value = HttpStatus.OK)
     public void signOut(HttpServletRequest httpServletRequest){
         authenticationService.signOutUserAndRevokeRefreshToken(httpServletRequest);
     }
 
     // UPDATE PASSWORD
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Code sent"),
-            @ApiResponse(responseCode = "400", description = "[USER_NOT_FOUND]")})
     @PostMapping("/forgot-password-request")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void forgotPasswordRequest(@RequestBody UserCodeRequestDto userCodeRequestDto) {
         authenticationService.sendCodeNewPasswordRequest(userCodeRequestDto);
     }
 
-    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "New password registered"),
-            @ApiResponse(responseCode = "400", description = "[USER_NOT_FOUND], [INVALID_CODE], [CODE_EXPIRED]")})
     @PostMapping("/create-new-password")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void updateUserForgottenPassword(@Valid @RequestBody UserPasswordResetDto userPasswordResetDto) {

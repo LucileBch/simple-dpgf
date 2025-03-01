@@ -68,12 +68,19 @@ public class OrganizationService {
             return existingAdminOrganization;
         }
 
-        Organization adminOrganization = Organization.builder()
-                .name(adminOrganizationName)
-                .organizationType(adminOrganizationType)
-                .maxMemberLicenseCounter(1.)
-                .memberLicenseCounter(1.)
-                .build();
+        Organization adminOrganization = new Organization();
+            adminOrganization.setName(adminOrganizationName);
+            adminOrganization.setOrganizationType(adminOrganizationType);
+            adminOrganization.setMaxMemberLicenseCounter(1.);
+            adminOrganization.setMaxProjectLicenseCounter(1.);
+
+
+//                Organization.builder()
+//                        .name(adminOrganizationName)
+//                        .organizationType(adminOrganizationType)
+//                        .maxMemberLicenseCounter(1.)
+//                        .memberLicenseCounter(1.)
+//                        .build();
 
         organizationRepository.save(adminOrganization);
         log.info("Admin Organization created with Id : {}", adminOrganization.getId());

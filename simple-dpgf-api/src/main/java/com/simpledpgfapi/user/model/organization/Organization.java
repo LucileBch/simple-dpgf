@@ -1,7 +1,6 @@
 package com.simpledpgfapi.user.model.organization;
 
 import com.simpledpgfapi.global.model.BaseEntity;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -11,7 +10,6 @@ import org.springframework.data.annotation.Id;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Builder
 public class Organization extends BaseEntity {
     public static final String ORGANIZATION_ID = "_id";
     public static final String USER_LICENSE_COUNTER = "memberLicenseCounter";
@@ -29,4 +27,7 @@ public class Organization extends BaseEntity {
     private Double maxMemberLicenseCounter;
     private Double projectLicenseCounter;
     private Double maxProjectLicenseCounter;
+
+    public Organization() {
+    }
 }

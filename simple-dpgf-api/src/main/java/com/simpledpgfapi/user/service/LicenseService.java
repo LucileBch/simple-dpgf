@@ -53,11 +53,11 @@ public class LicenseService {
     }
 
     // utils
-    private boolean checkRemainingUserLicenseCounter(Organization organization) {
+    public boolean checkRemainingUserLicenseCounter(Organization organization) {
         return organization.getMemberLicenseCounter() < organization.getMaxMemberLicenseCounter();
     }
 
-    private boolean checkRemainingProjectLicenseCounter(Organization organization) {
+    public boolean checkRemainingProjectLicenseCounter(Organization organization) {
         return organization.getProjectLicenseCounter() < organization.getMaxProjectLicenseCounter();
     }
 }

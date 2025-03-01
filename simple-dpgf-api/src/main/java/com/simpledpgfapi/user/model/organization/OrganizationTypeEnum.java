@@ -1,5 +1,5 @@
 package com.simpledpgfapi.user.model.organization;
 
 public enum OrganizationTypeEnum {
-    ADMIN ,MOA, ENTREPRISE
+    ADMIN , MOE, ENTREPRISE
 }

@@ -47,15 +47,23 @@ public class AdminUserService {
 
         String cryptedPassword = bCryptPasswordEncoder.encode(adminUserPassword);
 
-        User adminUser = User.builder()
-                .firstName(adminUserFirstName)
-                .lastName(adminUserLastName)
-                .email(adminUserEmail)
-                .password(cryptedPassword)
-                .isAccountActivated(true)
-                .role(RoleEnum.ADMIN)
-                .organizationId(adminOrganizationId)
-                .build();
+        User adminUser = new User();
+            adminUser.setFirstName(adminUserFirstName);
+            adminUser.setLastName(adminUserLastName);
+            adminUser.setEmail(adminUserEmail);
+            adminUser.setPassword(cryptedPassword);
+            adminUser.setAccountActivated(true);
+            adminUser.setRole(RoleEnum.ADMIN);
+            adminUser.setOrganizationId(adminOrganizationId);
+
+//                .firstName(adminUserFirstName)
+//                .lastName(adminUserLastName)
+//                .email(adminUserEmail)
+//                .password(cryptedPassword)
+//                .isAccountActivated(true)
+//                .role(RoleEnum.ADMIN)
+//                .organizationId(adminOrganizationId)
+//                .build();
 
         userRepository.save(adminUser);
         log.info("Admin User created with Id : {}", adminUser.getId());

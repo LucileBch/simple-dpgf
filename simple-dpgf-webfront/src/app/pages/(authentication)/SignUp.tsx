@@ -6,11 +6,11 @@ import { OrganizationTypeEnum } from "../../core/enums/OrganizationTypeEnum";
 import { useNavigate } from "react-router-dom";
 import { TextInput } from "../../components/inputs/TextInput";
 import SubmitButton from "../../components/buttons/SubmitButton";
-import PageContainer from "../../components/containers/PageContainer";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PasswordRules from "../../components/rules/passwordRules";
+import PageContainerSpace from "../../components/containers/PageContaineSpace";
 
 export default function SignUp(): React.JSX.Element {
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ export default function SignUp(): React.JSX.Element {
     useForm({ initialFormValues, validate, onSubmit });
 
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <BackgroundImage />
       <Box sx={{ textAlign: "center", p: 1 }}>
         <Typography variant="h1">Créer votre compte</Typography>
@@ -183,6 +183,6 @@ export default function SignUp(): React.JSX.Element {
 
         <SubmitButton label="S'inscrire" disabled={isSubmitting} />
       </form>
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

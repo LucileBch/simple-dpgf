@@ -2,7 +2,6 @@ package com.simpledpgfapi.user.model.user;
 
 import com.simpledpgfapi.global.model.BaseEntity;
 import com.simpledpgfapi.user.model.role.RoleEnum;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,7 +15,7 @@ import java.util.Collection;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Builder
+
 public class User extends BaseEntity implements UserDetails {
     public static final String ORGANIZATION_ID="organizationId";
     public static final String EMAIL="email";
@@ -62,5 +61,8 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User() {
     }
 }
