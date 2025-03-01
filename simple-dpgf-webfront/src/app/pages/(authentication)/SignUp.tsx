@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import React, { useContext } from "react";
+import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
+import React, { useContext, useState } from "react";
 import { UserCreationDto } from "../../core/dtos/user/UserCreationDto";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { OrganizationTypeEnum } from "../../core/enums/OrganizationTypeEnum";
@@ -10,12 +10,28 @@ import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
 import PasswordRules from "../../components/rules/passwordRules";
-import PageContainerSpace from "../../components/containers/PageContaineSpace";
+import PageContainerSpace from "../../components/containers/PageContainerSpace";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function SignUp(): React.JSX.Element {
   const navigate = useNavigate();
 
   const { handleErrorAlert } = useContext(AlertContext);
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const handleDisplayPassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const initialFormValues: FormValues<UserCreationDto> = {
     firstName: "",
@@ -170,12 +186,27 @@ export default function SignUp(): React.JSX.Element {
           <TextInput
             id="password"
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             label="Mot de passe"
             value={formData.password}
             onChange={handleChange}
             error={!!errors.password}
             helperText={errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={
+                    showPassword ? "hide the password" : "display the password"
+                  }
+                  onClick={handleDisplayPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  onMouseUp={handleMouseUpPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
           />
         </Box>
 

@@ -14,7 +14,7 @@ public class CodeErrorConstant {
     public static final String PASSWORD_BETWEEN_8_AND_20 = "PASSWORD_BETWEEN_8_AND_20";
     public static final String PASSWORD_ONE_UPPERCASE = "PASSWORD_ONE_UPPERCASE";
     public static final String PASSWORD_ONE_LOWERCASE = "PASSWORD_ONE_LOWERCASE";
-
+    public static final String MUST_BE_POSITIV_NUMBER = "MUST_BE_POSITIV_NUMBER";
 
     private CodeErrorConstant() {
     }

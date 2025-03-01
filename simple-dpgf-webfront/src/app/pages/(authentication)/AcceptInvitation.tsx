@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
 import SubmitButton from "../../components/buttons/SubmitButton";
 import { apiEndpoints, pagesUrl } from "../../core/appConstants";
 import { TextInput } from "../../components/inputs/TextInput";
@@ -9,7 +9,8 @@ import { AlertContext } from "../../core/contexts/alert-context";
 import { UserInvitedDto } from "../../core/dtos/user/UserInvitedDto";
 import { resolveUrl } from "../../core/services/http-service";
 import BackgroundImage from "../../components/cards/BackgroundImage";
-import PageContainerSpace from "../../components/containers/PageContaineSpace";
+import PageContainerSpace from "../../components/containers/PageContainerSpace";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function AcceptInvitation(): React.JSX.Element {
   const navigate = useNavigate();
@@ -20,6 +21,21 @@ export default function AcceptInvitation(): React.JSX.Element {
   const [invitationToken, setInvitationToken] = useState<string | undefined>(
     undefined
   );
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const handleDisplayPassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const initialFormValues: FormValues<UserInvitedDto> = {
     firstName: "",
@@ -149,12 +165,27 @@ export default function AcceptInvitation(): React.JSX.Element {
           <TextInput
             id="password"
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             label="Mot de passe"
             value={formData.password}
             onChange={handleChange}
             error={!!errors.password}
             helperText={errors.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={
+                    showPassword ? "hide the password" : "display the password"
+                  }
+                  onClick={handleDisplayPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  onMouseUp={handleMouseUpPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
           />
         </Box>
         <SubmitButton label="S'inscrire" disabled={isSubmitting} />

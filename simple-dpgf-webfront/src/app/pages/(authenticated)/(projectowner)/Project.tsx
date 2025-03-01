@@ -16,7 +16,7 @@ import CircularLoadingPage from "../../../components/progress/CircularLoadingPag
 import TitleH3 from "../../../components/typographies/TitleH3";
 import { theme } from "../../../styles/theme";
 import { generatePdf } from "../../../core/services/generate-pdf";
-import PageContainerSpace from "../../../components/containers/PageContaineSpace";
+import PageContainerSpace from "../../../components/containers/PageContainerSpace";
 
 export default function Project(): React.JSX.Element {
   const {

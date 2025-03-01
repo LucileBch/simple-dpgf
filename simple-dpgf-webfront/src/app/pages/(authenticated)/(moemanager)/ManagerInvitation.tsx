@@ -4,7 +4,6 @@ import { Box, Typography } from "@mui/material";
 import { TextInput } from "../../../components/inputs/TextInput";
 import SubmitButton from "../../../components/buttons/SubmitButton";
 import { InvitationCreationDto } from "../../../core/dtos/invitation/InvitationCreationDto";
-import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/navbar/NavBar";
 import { FormValues, useForm } from "../../../core/hooks/use-form";
 import { useMoeManager } from "../../../core/hooks/use-moaManager";
@@ -12,6 +11,7 @@ import { AlertContext } from "../../../core/contexts/alert-context";
 import React, { useContext } from "react";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
 import BackgroundImage from "../../../components/cards/BackgroundImage";
+import PageContainerSpace from "../../../components/containers/PageContainerSpace";
 
 export default function ManagerInvitation(): React.JSX.Element {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ export default function ManagerInvitation(): React.JSX.Element {
     useForm({ initialFormValues, validate, onSubmit });
 
   return (
-    <PageContainer>
+    <PageContainerSpace>
       <NavBar />
       <Box sx={{ textAlign: "center", p: 4 }}>
         <Typography variant="h1">
@@ -116,6 +116,6 @@ export default function ManagerInvitation(): React.JSX.Element {
         />
       </form>
       <BackgroundImage />
-    </PageContainer>
+    </PageContainerSpace>
   );
 }

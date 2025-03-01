@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AdminOrganizationContext } from "../../../core/contexts/admin-organization-context";
 import { Box, Button, Divider, Grid2, Typography } from "@mui/material";
-import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/navbar/NavBar";
 import TitleH2 from "../../../components/typographies/TitleH2";
 import TitleH3 from "../../../components/typographies/TitleH3";
@@ -13,6 +12,8 @@ import CircularLoadingPage from "../../../components/progress/CircularLoadingPag
 import DeleteOrgaDialog from "../../../components/modals/DeleteOrgaDialog";
 import UpdateLicenseDialog from "../../../components/modals/UpdateLicenseDialog";
 import { DialogContext } from "../../../core/contexts/dialog-context";
+import PageContainerMedium from "../../../components/containers/PageContainerMedium";
+import PageContainerSpace from "../../../components/containers/PageContainerSpace";
 
 export default function AdminOrganizationId(): React.JSX.Element {
   const { organization, isOrganizationLoading } = useContext(
@@ -54,7 +55,7 @@ export default function AdminOrganizationId(): React.JSX.Element {
   return (
     <>
       <NavBar />
-      <PageContainer>
+      <PageContainerSpace>
         {isOrganizationLoading ? (
           <CircularLoadingPage />
         ) : (
@@ -187,7 +188,7 @@ export default function AdminOrganizationId(): React.JSX.Element {
             )}
           </>
         )}
-      </PageContainer>
+      </PageContainerSpace>
     </>
   );
 }

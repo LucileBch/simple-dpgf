@@ -4,10 +4,11 @@ import { Grid2 } from "@mui/material";
 import React, { useCallback, useContext, useState } from "react";
 import NavBar from "../../../components/navbar/NavBar";
 import CircularLoadingPage from "../../../components/progress/CircularLoadingPage";
-import PageContainerSpace from "../../../components/containers/PageContaineSpace";
+import PageContainerSpace from "../../../components/containers/PageContainerSpace";
 import NoOutcome from "../../../components/NoOutcome";
 import PageTitleWithFilter from "../../../components/headers/PageTitleWithFilter";
 import CustomPagination from "../../../components/pagination/CustomPagination";
+import PageContainerMedium from "../../../components/containers/PageContainerMedium";
 
 export default function AdminOrganizations(): React.JSX.Element {
   const { organizationList, isOrganizationListLoading } = useContext(
@@ -52,7 +53,7 @@ export default function AdminOrganizations(): React.JSX.Element {
   return (
     <>
       <NavBar />
-      <PageContainerSpace>
+      <PageContainerMedium>
         <PageTitleWithFilter
           title="Gestion des organisations"
           inputLabel="Rechercher une organisation"
@@ -62,7 +63,7 @@ export default function AdminOrganizations(): React.JSX.Element {
         {isOrganizationListLoading ? (
           <CircularLoadingPage />
         ) : (
-          <Grid2 container spacing={2}>
+          <Grid2 container spacing={1}>
             {organizationList.length === 0 ? (
               <NoOutcome content="Il n'y a pas encore d'organisation..." />
             ) : organisationSearch ? (
@@ -88,7 +89,7 @@ export default function AdminOrganizations(): React.JSX.Element {
             )}
           </Grid2>
         )}
-      </PageContainerSpace>
+      </PageContainerMedium>
 
       <CustomPagination
         count={totalPages}

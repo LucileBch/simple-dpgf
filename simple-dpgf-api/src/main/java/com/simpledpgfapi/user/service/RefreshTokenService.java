@@ -75,7 +75,7 @@ public class RefreshTokenService {
         User currentUser = userRepository.findById(storedRefreshToken.getUserId())
                 .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
-        String newAccessToken = jwtAuthenticationService.generateJwtToken(currentUser.getEmail());
+        String newAccessToken = jwtAuthenticationService.generateJwtToken(currentUser.getEmail(), currentUser);
 
         String newRefreshToken = UUID.randomUUID().toString();
         storedRefreshToken.setToken(bCryptPasswordEncoder.encode(newRefreshToken));

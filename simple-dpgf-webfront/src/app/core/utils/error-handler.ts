@@ -57,6 +57,8 @@ export function getErrorMessage(errorMessage: string): string {
       return "Le mot de passe doit contenir au moins un chiffre";
     case "PASSWORD_ONE_SPECIAL_CHAR":
       return "Le mot de passe doit contenir au moins un charactère spécial";
+    case "MUST_BE_POSITIV_NUMBER":
+      return "Le chiffre doit être supérieur à zéro";
     case "SOME_ERROR":
       return "Une erreur s'est produite";
 

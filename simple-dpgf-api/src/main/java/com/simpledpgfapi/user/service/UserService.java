@@ -73,7 +73,7 @@ public class UserService {
                 }
             });
 
-            newAccessToken = jwtAuthenticationService.generateJwtToken(userProfileUpdateDto.getEmail());
+            newAccessToken = jwtAuthenticationService.generateJwtToken(userProfileUpdateDto.getEmail(), currentUser);
             newRefreshToken = refreshTokenService.createRefreshToken(currentUser.getId());
         }
 
@@ -89,6 +89,7 @@ public class UserService {
             if(bCryptPasswordEncoder.matches(userProfileUpdateDto.getNewPassword(), currentUser.getPassword())) {
                 throw new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NEW_PASSWORD_EQUALS_OLD);
             }
+            validatePassword(userProfileUpdateDto.getNewPassword());
 
             String cryptedNewPassword = bCryptPasswordEncoder.encode(userProfileUpdateDto.getNewPassword());
             currentUser.setPassword(cryptedNewPassword);
@@ -96,5 +97,25 @@ public class UserService {
 
         userRepository.save(currentUser);
         return userMapper.modelAndTokenToDto(currentUser, newAccessToken, newRefreshToken);
+    }
+
+    private void validatePassword(String newPassword) {
+        if (newPassword != null && !newPassword.isEmpty()) {
+            if (newPassword.length() < 8 || newPassword.length() > 20) {
+                throw new HttpException(HttpStatus.BAD_REQUEST,  UserErrorCodes.PASSWORD_BETWEEN_8_AND_20);
+            }
+            if (!newPassword.matches(".*[A-Z].*")) {
+                throw new HttpException(HttpStatus.BAD_REQUEST,  UserErrorCodes.PASSWORD_ONE_UPPERCASE);
+            }
+            if (!newPassword.matches(".*[a-z].*")) {
+                throw new HttpException(HttpStatus.BAD_REQUEST,  UserErrorCodes.PASSWORD_ONE_LOWERCASE);
+            }
+            if (!newPassword.matches(".*[0-9].*")) {
+                throw new HttpException(HttpStatus.BAD_REQUEST,  UserErrorCodes.PASSWORD_ONE_NUMBER);
+            }
+            if (!newPassword.matches(".*[@$!%*?&].*")) {
+                throw new HttpException(HttpStatus.BAD_REQUEST,  UserErrorCodes.PASSWORD_ONE_SPECIAL_CHAR);
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ import { UserCodeRequestDto } from "../../core/dtos/user/UserCodeRequestDto";
 import { AlertContext } from "../../core/contexts/alert-context";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import BackgroundImage from "../../components/cards/BackgroundImage";
-import PageContainerSpace from "../../components/containers/PageContaineSpace";
+import PageContainerSpace from "../../components/containers/PageContainerSpace";
 
 export default function ForgotPassord(): React.JSX.Element {
   const navigate = useNavigate();

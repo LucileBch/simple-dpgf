@@ -9,10 +9,9 @@ public class ProductDto {
     private String dpgfId;
     private String lotId;
     private int lotCode;
-
     private String name;
     private UnitEnum unit;
-    private double unitPrice = 0.;
+    private double unitPrice;
     private double quantity;
-    private double totalPrice = 0.;
+    private double totalPrice;
 }

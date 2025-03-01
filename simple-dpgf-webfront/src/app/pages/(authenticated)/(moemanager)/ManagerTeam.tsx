@@ -136,7 +136,7 @@ export default function ManagerTeam(): React.JSX.Element {
         )}
       </PageContainer>
 
-      <Box sx={{ marginBottom: 2, marginRight: 2 }}>
+      <Box maxWidth="xl" sx={{ marginBottom: 2, marginRight: 2 }}>
         <NavigationButton
           label="Inviter un membre"
           path={pagesUrl.MOE_MANAGER_INVITE_PAGE}

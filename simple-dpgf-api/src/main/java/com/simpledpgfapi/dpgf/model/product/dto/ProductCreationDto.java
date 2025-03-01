@@ -1,7 +1,9 @@
 package com.simpledpgfapi.dpgf.model.product.dto;
 
+import com.simpledpgfapi.global.exceptions.CodeErrorConstant;
 import com.simpledpgfapi.global.model.UnitEnum;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
@@ -10,8 +12,8 @@ public class ProductCreationDto {
     private String name;
     @NotNull(message = "This field cannot be empty")
     private UnitEnum unit;
-    @NotNull(message = "This field cannot be empty")
-    private double unitPrice = 0.;
-    @NotNull(message = "This field cannot be empty")
+    @Positive(message = CodeErrorConstant.MUST_BE_POSITIV_NUMBER)
+    private double unitPrice;
+    @Positive(message = CodeErrorConstant.MUST_BE_POSITIV_NUMBER)
     private double quantity;
 }

@@ -14,9 +14,9 @@ import { pagesUrl } from "../../../core/appConstants";
 import { DpgfDto } from "../../../core/dtos/dpgf/DpgfDto";
 import NoProjectImage from "../../../../assets/images/no-project-image.webp";
 import NoOutcome from "../../../components/NoOutcome";
-import PageContainerSpace from "../../../components/containers/PageContaineSpace";
 import CustomPagination from "../../../components/pagination/CustomPagination";
 import { dpgfStatusToLabel } from "../../../core/enums/DpgfStatusEnum";
+import PageContainer from "../../../components/containers/PageContainer";
 
 export default function MoeProjects(): React.JSX.Element {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ export default function MoeProjects(): React.JSX.Element {
   return (
     <>
       <NavBar />
-      <PageContainerSpace>
+      <PageContainer>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <TitleH2>Mes projets</TitleH2>{" "}
           <TextField
@@ -135,9 +135,9 @@ export default function MoeProjects(): React.JSX.Element {
             )}
           </Grid2>
         )}
-      </PageContainerSpace>
+      </PageContainer>
 
-      <Box sx={{ marginBottom: 2, marginRight: 2 }}>
+      <Box maxWidth="xl" sx={{ marginBottom: 2, marginRight: 2 }}>
         <NavigationButton
           label="Créer un projet"
           onClick={handleOpenDpgfCreationDialog}

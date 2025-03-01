@@ -1,7 +1,5 @@
 package com.simpledpgfapi.configuration.security;
 
-import com.simpledpgfapi.global.exceptions.HttpException;
-import com.simpledpgfapi.user.exceptions.UserErrorCodes;
 import com.simpledpgfapi.user.model.user.User;
 import com.simpledpgfapi.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -11,7 +9,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -30,20 +27,20 @@ public class JwtAuthenticationService {
     @Value("${jwt.expiration-time}")
     private long expirationTime;
 
-    public String generateJwtToken(String email) {
-        return createJwtToken(email);
+    public String generateJwtToken(String email, User user) {
+        return createJwtToken(email, user);
     }
 
-    private String createJwtToken(String email) {
+    private String createJwtToken(String email, User user) {
         final long currentTime = System.currentTimeMillis();
         final long expiryDate = currentTime + this.expirationTime;
 
-        User currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+//        User currentUser = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
 
         final Map<String, Object> extraClaims = Map.of(
-                "id", currentUser.getId().toString(),
-                "role", currentUser.getRole()
+                "id", user.getId().toString(),
+                "role", user.getRole()
         );
 
         return Jwts.builder()

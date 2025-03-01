@@ -141,7 +141,7 @@ public class AuthenticationService {
         }
 
         if(authentication.isAuthenticated()) {
-            String accessToken = jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail());
+            String accessToken = jwtAuthenticationService.generateJwtToken(userAuthenticationDto.getEmail(), currentUser);
             String refreshToken = refreshTokenService.createRefreshToken(currentUser.getId());
 
             Map<String, Object> response = new HashMap<>();

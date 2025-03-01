@@ -79,7 +79,7 @@ export function useForm<T extends object>({
     () => {
       resetForm();
     },
-    // resetForm
+    //resetForm
     []
   );
 
@@ -100,11 +100,11 @@ export function useForm<T extends object>({
 
       try {
         await onSubmit(formData);
+        //resetForm();
       } catch (error) {
         console.log("error in submit form", error);
       } finally {
         setIsSubmitting(false);
-        resetForm();
       }
     },
     [formData, onSubmit, resetForm, validateForm]

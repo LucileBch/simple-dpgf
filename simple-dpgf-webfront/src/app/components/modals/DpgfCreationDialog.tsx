@@ -2,7 +2,7 @@ import {
   Box,
   Dialog,
   DialogActions,
-  DialogContentText,
+  DialogContent,
   DialogTitle,
 } from "@mui/material";
 import OutlinedButton from "../buttons/OutlinedButton";
@@ -74,7 +74,7 @@ export default function DpgfCreationDialog({
   return (
     <Dialog open={isCreateDialogOpen} onClose={handleCancelAndClose}>
       <DialogTitle>{dialogTitle}</DialogTitle>
-      <DialogContentText>
+      <DialogContent>
         <form onSubmit={handleSubmit}>
           <Box
             sx={{
@@ -107,7 +107,7 @@ export default function DpgfCreationDialog({
             <SubmitButton label="Confirmer" disabled={isSubmitting} />
           </DialogActions>
         </form>
-      </DialogContentText>
+      </DialogContent>
     </Dialog>
   );
 }

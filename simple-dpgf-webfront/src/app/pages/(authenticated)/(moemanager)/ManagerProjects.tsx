@@ -1,5 +1,4 @@
 import React, { useCallback, useContext, useState } from "react";
-import PageContainer from "../../../components/containers/PageContainer";
 import NavBar from "../../../components/navbar/NavBar";
 import { OrganizationContext } from "../../../core/contexts/organization-context";
 import { Grid2, Typography } from "@mui/material";
@@ -14,6 +13,7 @@ import CustomPagination from "../../../components/pagination/CustomPagination";
 import NoOutcome from "../../../components/NoOutcome";
 import { dpgfStatusToLabel } from "../../../core/enums/DpgfStatusEnum";
 import PageTitleWithFilter from "../../../components/headers/PageTitleWithFilter";
+import PageContainerSpace from "../../../components/containers/PageContainerSpace";
 
 export default function ManagerProjects(): React.JSX.Element {
   const navigate = useNavigate();
@@ -77,7 +77,7 @@ export default function ManagerProjects(): React.JSX.Element {
   return (
     <>
       <NavBar />
-      <PageContainer>
+      <PageContainerSpace>
         <PageTitleWithFilter
           title="Gestion des projets"
           inputLabel="Rechercher un projet"
@@ -126,7 +126,7 @@ export default function ManagerProjects(): React.JSX.Element {
           {organization?.projectLicenseCounter} /{" "}
           {organization?.maxProjectLicenseCounter}
         </Typography>
-      </PageContainer>
+      </PageContainerSpace>
 
       <CustomPagination
         count={totalPages}

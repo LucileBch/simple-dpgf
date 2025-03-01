@@ -14,6 +14,7 @@ interface IProps {
   autoComplete?: string;
   error?: boolean;
   helperText?: string;
+  endAdornment?: React.ReactNode;
 }
 
 export function TextInput({
@@ -29,6 +30,7 @@ export function TextInput({
   autoComplete = "off",
   error,
   helperText,
+  endAdornment,
 }: IProps): React.JSX.Element {
   return (
     <TextField
@@ -46,6 +48,9 @@ export function TextInput({
       helperText={helperText}
       variant="outlined"
       sx={{ width: "500px" }}
+      InputProps={{
+        endAdornment: endAdornment, // Utiliser endAdornment dans InputProps
+      }}
     />
   );
 }

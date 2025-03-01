@@ -3,7 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Dialog,
   DialogActions,
-  DialogContentText,
+  DialogContent,
   DialogTitle,
 } from "@mui/material";
 import React, {
@@ -108,9 +108,9 @@ export default function DeleteLotDialog({
   return (
     <Dialog open={isDeleteDialogOpen} onClose={handleCancelAndClose}>
       <DialogTitle sx={{ textAlign: "center" }}>{dialogTitle}</DialogTitle>
-      <DialogContentText sx={{ textAlign: "center", marginBottom: "10px" }}>
+      <DialogContent sx={{ textAlign: "center", marginBottom: "10px" }}>
         {dialogContent}
-      </DialogContentText>
+      </DialogContent>
       <DialogActions
         sx={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}
       >

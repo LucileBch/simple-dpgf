@@ -2,7 +2,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { Box, Typography } from "@mui/material";
 import BackgroundImage from "../components/cards/BackgroundImage";
 import { theme } from "../styles/theme";
-import PageContainerSpace from "../components/containers/PageContaineSpace";
+import PageContainerSpace from "../components/containers/PageContainerSpace";
 import React from "react";
 
 export default function Error(): React.JSX.Element {

@@ -13,13 +13,14 @@ interface IProps {
   fullWidth?: boolean;
   error?: boolean;
   helperText?: string;
+  restrictInput?: boolean;
 }
 
-const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (!["ArrowUp", "ArrowDown", "Tab", "Backspace"].includes(e.key)) {
-    e.preventDefault();
-  }
-};
+// const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+//   if (!["ArrowUp", "ArrowDown", "Tab", "Backspace"].includes(e.key)) {
+//     e.preventDefault();
+//   }
+// };
 
 export function NumberInput({
   id,
@@ -33,7 +34,14 @@ export function NumberInput({
   fullWidth = false,
   error,
   helperText,
+  restrictInput = true,
 }: Readonly<IProps>): React.JSX.Element {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (restrictInput && ["e", "E", "+", "-"].includes(event.key)) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <TextField
       id={id}
@@ -44,7 +52,7 @@ export function NumberInput({
       disabled={disabled}
       onChange={onChange}
       onKeyDown={handleKeyDown}
-      value={value}
+      value={value ?? ""}
       autoComplete={autoComplete}
       variant="outlined"
       error={error}

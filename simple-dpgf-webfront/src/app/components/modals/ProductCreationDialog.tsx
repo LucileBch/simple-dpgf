@@ -57,7 +57,7 @@ export default function ProductCreationDialog({
 
   const initialFormValues: FormValues<ProductCreationOrUpdateDto> = {
     name: "",
-    unit: UnitEnum.NONE,
+    unit: UnitEnum.NO_UNIT,
     unitPrice: 0,
     quantity: 0,
   };
@@ -73,7 +73,7 @@ export default function ProductCreationDialog({
     if (!formData.unitPrice) {
       errors.unitPrice = "Le prix unitaire est requis";
     }
-    if (formData.unit === UnitEnum.NONE) {
+    if (formData.unit === UnitEnum.NO_UNIT) {
       errors.unit = "L'unité est requise";
     }
 
@@ -179,6 +179,7 @@ export default function ProductCreationDialog({
               label="Quantité"
               error={!!errors.quantity}
               helperText={errors.quantity}
+              restrictInput={false}
             />
 
             <NumberInput
@@ -190,6 +191,7 @@ export default function ProductCreationDialog({
               onChange={handleChange}
               error={!!errors.unitPrice}
               helperText={errors.unitPrice}
+              restrictInput={false}
             />
 
             <FormControl>
@@ -202,9 +204,6 @@ export default function ProductCreationDialog({
                 onChange={handleSelectChange}
                 fullWidth
               >
-                <MenuItem value={UnitEnum.NONE}>
-                  <em>{unitEnumtoLabel(UnitEnum.NONE)}</em>
-                </MenuItem>
                 {Object.values(UnitEnum).map((unit) => (
                   <MenuItem key={unit} value={unit}>
                     {unitEnumtoLabel(unit)}

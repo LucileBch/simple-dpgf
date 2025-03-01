@@ -1,9 +1,8 @@
 import SubmitButton from "../../components/buttons/SubmitButton";
-import PageContainer from "../../components/containers/PageContainer";
 import { TextInput } from "../../components/inputs/TextInput";
 import NavBar from "../../components/navbar/NavBar";
-import { Box, Typography } from "@mui/material";
-import React, { useCallback, useContext } from "react";
+import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
+import React, { useCallback, useContext, useState } from "react";
 import { FormValues, useForm } from "../../core/hooks/use-form";
 import { UserProfileUpdateDto } from "../../core/dtos/user/UserProfileUpdateDto";
 import { UserContext } from "../../core/contexts/user-context";
@@ -18,6 +17,9 @@ import {
 } from "../../core/services/authentication-service";
 import { TokenContext } from "../../core/contexts/token-context";
 import PasswordRules from "../../components/rules/passwordRules";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import PageContainerSpace from "../../components/containers/PageContainerSpace";
+import PageContainerMedium from "../../components/containers/PageContainerMedium";
 
 export default function UserProfile(): React.JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -25,6 +27,21 @@ export default function UserProfile(): React.JSX.Element {
   const { setAccessToken, setRefreshToken } = useContext(TokenContext);
 
   const { updateUserProfile } = useUser();
+
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const handleDisplayPassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+  const handleMouseUpPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   const initialFormValues: FormValues<UserProfileUpdateDto> = {
     firstName: user?.firstName || "",
@@ -102,7 +119,7 @@ export default function UserProfile(): React.JSX.Element {
   return (
     <>
       <NavBar />
-      <PageContainer>
+      <PageContainerMedium>
         <Box sx={{ textAlign: "center", p: 2 }}>
           <Typography variant="h1">Modifier mes informations :</Typography>
         </Box>
@@ -153,23 +170,57 @@ export default function UserProfile(): React.JSX.Element {
             <TextInput
               id="oldPassword"
               name="oldPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               label="Ancien mot de passe"
               value={formData.oldPassword}
               onChange={handleChange}
               error={!!errors.oldPassword}
               helperText={errors.oldPassword}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={
+                      showPassword
+                        ? "hide the password"
+                        : "display the password"
+                    }
+                    onClick={handleDisplayPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
 
             <TextInput
               id="newPassword"
               name="newPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               label="Nouveau mot de passe"
               value={formData.newPassword}
               onChange={handleChange}
               error={!!errors.password}
               helperText={errors.password}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={
+                      showPassword
+                        ? "hide the password"
+                        : "display the password"
+                    }
+                    onClick={handleDisplayPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
           </Box>
 
@@ -177,7 +228,7 @@ export default function UserProfile(): React.JSX.Element {
 
           <SubmitButton label="Valider" disabled={isSubmitting} />
         </form>
-      </PageContainer>
+      </PageContainerMedium>
     </>
   );
 }

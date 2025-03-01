@@ -3,7 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   Dialog,
   DialogActions,
-  DialogContentText,
+  DialogContent,
   DialogTitle,
 } from "@mui/material";
 import React, { useCallback, useContext } from "react";
@@ -83,9 +83,9 @@ export default function DeleteOrgaDialog({
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">{dialogTitle}</DialogTitle>
-      <DialogContentText id="alert-dialog-description">
+      <DialogContent id="alert-dialog-description">
         {dialogContent}
-      </DialogContentText>
+      </DialogContent>
       <DialogActions
         sx={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}
       >
