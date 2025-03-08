@@ -27,12 +27,6 @@ public class SecurityConfiguration {
 
     // allowed path without authentication
     private static final String[] AUTH_WHITELIST = {
-            "/v3/api-docs",   // OpenAPI docs
-            "/v3/api-docs/**",   // OpenAPI docs
-            "/swagger-ui/**",     // Swagger UI
-            "/swagger-ui.html",
-            "/swagger-resources/**",
-            //"/actuator/health", ???
             "/auth/signup",
             "/auth/activate-account",
             "/auth/code-request",
@@ -43,33 +37,25 @@ public class SecurityConfiguration {
             "/invitation/accept"
     };
 
-    // construction d'un bean
-    // qui est une chaine de sécurité
-    // je désactive les cross origin request
-    // j'autorique les requetes qui sont sur inscription
-    // pour le reste il faudra être authentifié
+    // filter chain security
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         // disable csrf because jwt
          httpSecurity.csrf(AbstractHttpConfigurer::disable);
-
-         // allow cors request --> revoir cors
+         // allow cors request
          httpSecurity.cors(cors -> cors.configurationSource(request-> getCorsConfiguration()));
-
         // statelasse session policy
         httpSecurity.sessionManagement(httpSecuritySessionManagementConfigurer ->
                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
-
-         // config authorisation sur requete http
+         // config authorisation on http request
          httpSecurity.authorizeHttpRequests(
                  authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
          );
-
-           // application du filtre jwt filter
+         // apply jwt filter
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
@@ -79,31 +65,30 @@ public class SecurityConfiguration {
     public CorsConfiguration getCorsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         // headers
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "Cookies"));
-        // origins (qui à le droit d'appeller quels host
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        // origins allowed
         corsConfiguration.setAllowedOrigins(
-                List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:8080")
+                List.of("http://localhost:5173")
         );
-        // methodes authoriées
+        // authorized methods
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        // si app securisée avec authorisation header
+        // identification in headers
         corsConfiguration.setAllowCredentials(true);
-        // duree validité
+        // preflight validity
         corsConfiguration.setMaxAge(4800L);
-        // header expose en reponse
+        // header exposed in response
         corsConfiguration.setExposedHeaders(List.of("Authorization", "Set-Cookie"));
 
         return corsConfiguration;
     }
 
-    // pour crypter le MDP
+    // crypt pwd
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-    // gère l'authentication de notre projet
-    // on doit dire où il va chercher les infos de l'utilisateur pour pouvoir vérifeir les login + mdp correspondent
+    // when authentication asked, will check if email & pwd are valid
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

@@ -18,7 +18,6 @@ import {
 import { TokenContext } from "../../core/contexts/token-context";
 import PasswordRules from "../../components/rules/passwordRules";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import PageContainerSpace from "../../components/containers/PageContainerSpace";
 import PageContainerMedium from "../../components/containers/PageContainerMedium";
 
 export default function UserProfile(): React.JSX.Element {

@@ -12,7 +12,6 @@ import CircularLoadingPage from "../../../components/progress/CircularLoadingPag
 import DeleteOrgaDialog from "../../../components/modals/DeleteOrgaDialog";
 import UpdateLicenseDialog from "../../../components/modals/UpdateLicenseDialog";
 import { DialogContext } from "../../../core/contexts/dialog-context";
-import PageContainerMedium from "../../../components/containers/PageContainerMedium";
 import PageContainerSpace from "../../../components/containers/PageContainerSpace";
 
 export default function AdminOrganizationId(): React.JSX.Element {

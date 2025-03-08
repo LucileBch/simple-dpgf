@@ -13,5 +13,7 @@ import java.util.List;
 public interface OrganizationRepository extends MongoRepository<Organization, ObjectId>, OrganizationRepositoryCustom {
     Organization findByName(String organizationName);
 
-    List<Organization> findByOrganizationStatusNotAndOrganizationTypeNot(OrganizationStatusEnum status, OrganizationTypeEnum organizationType);
+    List<Organization> findByOrganizationStatusNotAndOrganizationTypeNot(
+            OrganizationStatusEnum status,
+            OrganizationTypeEnum organizationType);
 }

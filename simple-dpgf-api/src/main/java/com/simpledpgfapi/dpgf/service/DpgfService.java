@@ -100,7 +100,8 @@ public class DpgfService {
         List<DpgfDto> dpgfDtoList = dpgfMapper.modelsToDtos(dpgfList);
         dpgfDtoList.forEach(dpgfDto -> {
                     String userEmail = dpgfDto.getCreatedByUser();
-                    User userOwner = userRepository.findByEmail(userEmail).orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
+                    User userOwner = userRepository.findByEmail(userEmail).orElseThrow(() ->
+                            new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
                     dpgfDto.setCreatedByUser(userOwner.getFirstName() + " " + userOwner.getLastName());
         });
 
