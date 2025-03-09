@@ -1,4 +1,8 @@
-const BASE_URL = "http://localhost:8080/api";
+// URL for dev
+//const BASE_URL = "http://localhost:8080/api";
+
+// URL for prod
+const BASE_URL = "https://site--simple-dpgf-api--mrqlhtl4f2zp.code.run/api";
 
 export type RequestParam = {
   key: string;

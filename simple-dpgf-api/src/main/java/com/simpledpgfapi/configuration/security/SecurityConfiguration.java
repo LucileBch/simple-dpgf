@@ -34,7 +34,8 @@ public class SecurityConfiguration {
             "/auth/refresh-token",
             "/auth/update-password-request",
             "/auth/generate-new-password",
-            "/invitation/accept"
+            "/invitation/accept",
+            "/deployed",
     };
 
     // filter chain security

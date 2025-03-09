@@ -33,7 +33,8 @@ export const pagesUrl = {
   ERROR_404: "*",
 };
 
-const BASE_URL = "http://localhost:8080/api";
+//const BASE_URL = "http://localhost:8080/api";
+const BASE_URL = "https://site--simple-dpgf-api--mrqlhtl4f2zp.code.run/api";
 export const apiEndpoints = {
   // not authenticated
   // let as it is because I don't use use-http because user is not authenticated
