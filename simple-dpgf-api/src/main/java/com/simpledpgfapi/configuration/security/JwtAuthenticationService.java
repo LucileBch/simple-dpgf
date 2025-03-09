@@ -35,9 +35,6 @@ public class JwtAuthenticationService {
         final long currentTime = System.currentTimeMillis();
         final long expiryDate = currentTime + this.expirationTime;
 
-//        User currentUser = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new HttpException(HttpStatus.BAD_REQUEST, UserErrorCodes.USER_NOT_FOUND));
-
         final Map<String, Object> extraClaims = Map.of(
                 "id", user.getId().toString(),
                 "role", user.getRole()

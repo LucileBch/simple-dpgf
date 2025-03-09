@@ -34,7 +34,6 @@ public class MongoConfiguration {
                 .map(Principal::getName);
     }
 
-
     public void initIndex() {
         // accountValidationCode
         mongoTemplate.indexOps(AccountValidationCode.class).ensureIndex(new Index().unique()

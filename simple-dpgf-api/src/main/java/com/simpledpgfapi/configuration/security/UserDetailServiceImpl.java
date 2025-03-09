@@ -28,10 +28,5 @@ public class UserDetailServiceImpl implements UserDetailsService {
             userDetails.setRole(user.getRole());
 
             return userDetails;
-//        return User.builder()
-//                .email(user.getEmail())
-//                .password(user.getPassword())
-//                .role(user.getRole())
-//                .build();
     }
 }

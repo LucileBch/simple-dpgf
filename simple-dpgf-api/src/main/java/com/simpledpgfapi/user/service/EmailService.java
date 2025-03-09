@@ -28,7 +28,7 @@ public class EmailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
-            mimeMessageHelper.setFrom("no-reply@example.com");
+            mimeMessageHelper.setFrom("postmaster@sandbox3088a94949134493bf0e402263111360.mailgun.org");
 
             User user = userRepository.findById(accountValidationCode.getUserId())
                     .orElseThrow(() -> new HttpException(HttpStatus.NOT_FOUND, UserErrorCodes.USER_NOT_FOUND));
