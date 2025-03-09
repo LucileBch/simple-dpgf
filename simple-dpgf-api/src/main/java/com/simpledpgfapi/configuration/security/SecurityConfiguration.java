@@ -68,7 +68,7 @@ public class SecurityConfiguration {
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         // origins allowed
         corsConfiguration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of("http://localhost:5173", "https://simple-dpgf.netlify.app/")
         );
         // authorized methods
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));

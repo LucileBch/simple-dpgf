@@ -71,7 +71,7 @@ export default function ProductUpdateDialog({
     if (!formData.unitPrice) {
       errors.unitPrice = "Le prix unitaire est requis";
     }
-    if (formData.unit === UnitEnum.NONE) {
+    if (formData.unit === UnitEnum.NO_UNIT) {
       errors.unit = "L'unité est requise";
     }
 
@@ -245,8 +245,8 @@ export default function ProductUpdateDialog({
                 onChange={handleSelectChange}
                 fullWidth
               >
-                <MenuItem value={UnitEnum.NONE}>
-                  <em>{unitEnumtoLabel(UnitEnum.NONE)}</em>
+                <MenuItem value={UnitEnum.METER}>
+                  <em>{unitEnumtoLabel(UnitEnum.METER)}</em>
                 </MenuItem>
                 {Object.values(UnitEnum).map((unit) => (
                   <MenuItem key={unit} value={unit}>
